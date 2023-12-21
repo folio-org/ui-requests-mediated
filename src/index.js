@@ -1,56 +1,40 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-
 import React from 'react';
 import PropTypes from 'prop-types';
 import Switch from 'react-router-dom/Switch';
 import Route from 'react-router-dom/Route';
-import Application from './routes/application';
-import ExamplePage from './routes/example-page';
-import Settings from './settings';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 
-/*
-  STRIPES-NEW-APP
-  This is the main entry point into your new app.
-*/
+import MediatedRequests from './routes/MediatedRequests';
+import Settings from './settings';
 
 class RequestsMediated extends React.Component {
   static propTypes = {
     match: PropTypes.object.isRequired,
     showSettings: PropTypes.bool,
     stripes: PropTypes.shape({
-      connect: PropTypes.func
+      connect: PropTypes.func,
     })
   };
-
-  constructor(props) {
-    super(props);
-
-    this.connectedExamplePage = props.stripes.connect(ExamplePage);
-  }
 
   render() {
     const {
       showSettings,
       match: {
-        path
-      }
+        path,
+      },
     } = this.props;
 
     if (showSettings) {
       return <Settings {...this.props} />;
     }
+
     return (
       <Switch>
         <Route
           path={path}
           exact
-          component={Application}
-        />
-        <Route
-          path={`${path}/examples`}
-          exact
-          component={this.connectedExamplePage}
+          component={MediatedRequests}
         />
       </Switch>
     );

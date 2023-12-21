@@ -6,4 +6,7 @@ artifacts
 npm-debug.log
 yarn.lock
 package-lock.json
+yarn-error.log
+.vscode
+.idea
 junit.xml

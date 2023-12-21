@@ -1,32 +1,26 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
+
 import { Settings } from '@folio/stripes/smart-components';
-import GeneralSettings from './general-settings';
-import SomeFeatureSettings from './some-feature-settings';
 
-/*
-  STRIPES-NEW-APP
-  Your app's settings pages are defined here.
-  The pages "general" and "some feature" are examples. Name them however you like.
-*/
+import General from './General';
 
-export default class RequestsMediatedSettings extends React.Component {
+export default class MediatedRequestsSettings extends React.Component {
   pages = [
     {
       route: 'general',
       label: <FormattedMessage id="ui-requests-mediated.settings.general" />,
-      component: GeneralSettings,
-    },
-    {
-      route: 'somefeature',
-      label: <FormattedMessage id="ui-requests-mediated.settings.some-feature" />,
-      component: SomeFeatureSettings,
+      component: General,
     },
   ];
 
   render() {
     return (
-      <Settings {...this.props} pages={this.pages} paneTitle="requests-mediated" />
+      <Settings
+        {...this.props}
+        pages={this.pages}
+        paneTitle={<FormattedMessage id="ui-requests-mediated.settings.index.paneTitle" />}
+      />
     );
   }
 }
