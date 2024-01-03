@@ -1,0 +1,55 @@
+import React from 'react';
+import ReactRouterPropTypes from 'react-router-prop-types';
+import { FormattedMessage } from 'react-intl';
+
+import {
+  AppIcon,
+} from '@folio/stripes/core';
+
+import {
+  Pane,
+  Paneset,
+} from '@folio/stripes/components';
+
+import NavigationMenu from '../NavigationMenu';
+
+import {
+  APP_ICON_NAME,
+  FILTER_PANE_WIDTH,
+  getMediatedRequestsActionsUrl,
+} from '../../constants';
+
+export default class MediatedRequestsActions extends React.Component {
+  static propTypes = {
+    history: ReactRouterPropTypes.history.isRequired,
+    location: ReactRouterPropTypes.location.isRequired,
+  };
+
+  render() {
+    const {
+      history,
+      location,
+    } = this.props;
+
+    return (
+      <Paneset data-testid="mediatedRequestsActionsPaneSet">
+        <Pane
+          data-testid="mediatedRequestsActionPane"
+          defaultWidth={FILTER_PANE_WIDTH}
+          paneTitle={<FormattedMessage id="ui-requests-mediated.app.filterPane.selectActivity" />}
+        >
+          <NavigationMenu
+            history={history}
+            location={location}
+            value={getMediatedRequestsActionsUrl()}
+          />
+        </Pane>
+        <Pane
+          defaultWidth="fill"
+          appIcon={<AppIcon app={APP_ICON_NAME} />}
+          paneTitle={<FormattedMessage id="ui-requests-mediated.app.mediatedRequestsActions.paneTitle" />}
+        />
+      </Paneset>
+    );
+  }
+}
