@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024px" height="1024px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Icon Artboard</title>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="97.0714415%" id="linearGradient-1">
+            <stop stop-color="#FFD320" offset="0%"></stop>
+            <stop stop-color="#F8AB14" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="Icon-Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="BG-style-(-Change-background-colour-)" fill="url(#linearGradient-1)">
+            <rect id="BG" x="0" y="0" width="1024" height="1024"></rect>
+        </g>
+        <g id="lock" transform="translate(149.000000, 151.000000)"></g>
+        <g id="Shield" transform="translate(155.500000, 151.500000)">
+            <g id="Group" transform="translate(89.125000, 59.428571)">
+                <path d="M0,78.0837943 L267.502746,0 L534.75,78.0837943 L534.75,238.214971 C534.75,406.524114 427.060262,555.945371 267.413621,609.150286 C107.723902,555.946857 0,406.491429 0,238.140686 L0,78.0837943 Z" id="Path" stroke="#109A14" stroke-width="52.9285714" fill="#109A14" fill-rule="nonzero"></path>
+                <polyline id="Path" stroke="#FFFFFF" stroke-width="61.2857143" stroke-linecap="round" points="133.6875 282.285714 237.666667 386.285714 415.916667 208"></polyline>
+            </g>
+        </g>
+    </g>
+</svg>
