@@ -1,9 +1,6 @@
-import React from 'react';
-
 import {
   render,
   screen,
-  cleanup,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import General from './General';
@@ -23,8 +20,6 @@ describe('General', () => {
   beforeEach(() => {
     render(<General {...props} />);
   });
-
-  afterEach(cleanup);
 
   it('should render pane', () => {
     expect(screen.getByTestId(testIds.generalPane)).toBeInTheDocument();

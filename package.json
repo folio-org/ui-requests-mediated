@@ -42,7 +42,8 @@
     "regenerator-runtime": "^0.13.3"
   },
   "dependencies": {
-    "prop-types": "^15.6.0"
+    "prop-types": "^15.6.0",
+    "react-router-prop-types": "^1.0.4"
   },
   "peerDependencies": {
     "@folio/stripes": "^9.0.0",
@@ -77,6 +78,39 @@
         "displayName": "Settings (Mediated requests): display list of settings pages",
         "subPermissions": [
           "settings.enabled"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.view",
+        "displayName": "Mediated requests: View",
+        "subPermissions": [
+          "module.requests-mediated.enabled",
+          "settings.requests-mediated.enabled"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.view-create",
+        "displayName": "Mediated requests: View, create",
+        "subPermissions": [
+          "ui-requests-mediated.view"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.view-edit-cancel",
+        "displayName": "Mediated requests: View, edit, cancel",
+        "subPermissions": [
+          "ui-requests-mediated.view-create"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.all",
+        "displayName": "Mediated requests: All permissions",
+        "subPermissions": [
+          "ui-requests-mediated.view-edit-cancel"
         ],
         "visible": true
       }
