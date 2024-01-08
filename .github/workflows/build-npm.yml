@@ -1,13 +1,12 @@
 # This workflow will do a clean install of node dependencies, build the source code,
-# run unit tests, and perform a SonarCloud scan.
+# run unit tests, perform a Sonarqube scan, and publish NPM artifacts from master/main.
 
 # For more information see:
 # https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-# Common FOLIO configurable env:
+# Common FOLIO configurable environment variables to set:
 #   - YARN_TEST_OPTIONS (options to pass to 'yarn test')
-#   - SQ_ROOT_DIR (where to scan relative to top-level directory)
-#   - FOLIO_NAME
+#   - SQ_ROOT_DIR (root SQ directory to scan relative to top-level directory)
 #   - PUBLISH_MOD_DESCRIPTOR (boolean 'true' or 'false')
 #   - COMPILE_TRANSLATION_FILES (boolean 'true' or 'false')
 
@@ -15,25 +14,28 @@
 
 name: buildNPM Snapshot
 on: [push, pull_request]
+
 jobs:
-  build-npm:
+  github-actions-ci:
     env:
-      YARN_TEST_OPTIONS: '--ci --coverage --colors'
+      YARN_TEST_OPTIONS: ''
       SQ_ROOT_DIR: './src'
-      PUBLISH_MOD_DESCRIPTOR: 'false'
-      COMPILE_TRANSLATION_FILES: 'false'
+      COMPILE_TRANSLATION_FILES: 'true'
+      PUBLISH_MOD_DESCRIPTOR: 'true'
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folioci/'
       FOLIO_NPM_REGISTRY_AUTH: '//repository.folio.org/repository/npm-folioci/'
       FOLIO_MD_REGISTRY: 'https://folio-registry.dev.folio.org'
       NODEJS_VERSION: '18'
       JEST_JUNIT_OUTPUT_DIR: 'artifacts/jest-junit'
       JEST_COVERAGE_REPORT_DIR: 'artifacts/coverage-jest/lcov-report/'
+      BIGTEST_JUNIT_OUTPUT_DIR: 'artifacts/runTest'
+      BIGTEST_COVERAGE_REPORT_DIR: 'artifacts/coverage/lcov-report/'
       SQ_LCOV_REPORT: 'artifacts/coverage-jest/lcov.info'
       SQ_EXCLUSIONS: '**/platform/alias-service.js,**/docs/**,**/node_modules/**,**/examples/**,**/artifacts/**,**/ci/**,Jenkinsfile,**/LICENSE,**/*.css,**/*.md,**/*.json,**/tests/**,**/stories/*.js,**/test/**,**/.stories.js,**/resources/bigtest/interactors/**,**/resources/bigtest/network/**,**/*-test.js,**/*.test.js,**/*-spec.js,**/karma.conf.js,**/jest.config.js'
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: folio-org/checkout@v2
         with:
           fetch-depth: 0
 
@@ -67,39 +69,30 @@ jobs:
         run: yarn lint
         continue-on-error: true
 
-      - name: Get number of CPU cores
-        id: cpu-cores
-        uses: SimenB/github-actions-cpu-cores@v1
-
       - name: Run yarn test
-        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS  --max-workers ${{ steps.cpu-cores.outputs.count }}
+        run: xvfb-run --server-args="-screen 0 1024x768x24" yarn test $YARN_TEST_OPTIONS
 
       - name: Run yarn formatjs-compile
-        if : ${{ env.COMPILE_TRANSLATION_FILES == 'true' }}
+        if: ${{ env.COMPILE_TRANSLATION_FILES == 'true' }}
         run: yarn formatjs-compile
 
-      - name: Generate Module descriptor
+      - name: Generate FOLIO module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: yarn build-mod-descriptor
 
-      - name: debug mod descriptor
+      - name: Print FOLIO module descriptor
         if: ${{ env.PUBLISH_MOD_DESCRIPTOR == 'true' }}
         run: cat module-descriptor.json
 
-      - name: Upload event file
-        uses: actions/upload-artifact@v3
-        with:
-          name: Event File
-          path: ${{ github.event_path }}
-          retention-days: 30
-
-      - name: Upload Jest results
+      - name: Publish Jest unit test results
+        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
         if: always()
-        uses: actions/upload-artifact@v3
         with:
-          name: jest-test-results
-          path: ${{ env.JEST_JUNIT_OUTPUT_DIR }}/*.xml
-          retention-days: 30
+          github_token: ${{ github.token }}
+          files: "${{ env.JEST_JUNIT_OUTPUT_DIR }}/*.xml"
+          check_name: Jest Unit Test Results
+          comment_mode: update last
+          comment_title: Jest Unit Test Statistics
 
       - name: Publish Jest coverage report
         uses: actions/upload-artifact@v2
@@ -108,6 +101,32 @@ jobs:
           name: jest-coverage-report
           path: ${{ env.JEST_COVERAGE_REPORT_DIR }}
           retention-days: 30
+
+      - name: Publish BigTest unit test results
+        uses: docker://ghcr.io/enricomi/publish-unit-test-result-action:v1
+        if: always()
+        with:
+          github_token: ${{ github.token }}
+          files: "${{ env.BIGTEST_JUNIT_OUTPUT_DIR }}/*.xml"
+          check_name: BigTest Unit Test Results
+          comment_mode: update last
+          comment_title: BigTest Unit Test Statistics
+
+      - name: Publish BigTest coverage report
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: bigtest-coverage-report
+          path: ${{ env.BIGTEST_COVERAGE_REPORT_DIR }}
+          retention-days: 30
+
+      - name: Publish yarn.lock
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: yarn.lock
+          path: yarn.lock
+          retention-days: 5
 
       - name: Set default branch as env variable
         run: echo "DEFAULT_BRANCH=${{ github.event.repository.default_branch }}" >> $GITHUB_ENV
@@ -139,6 +158,7 @@ jobs:
           always-auth: true
 
       - name: Set _auth in .npmrc
+        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         run: |
           npm config set @folio:registry $FOLIO_NPM_REGISTRY
           npm config set $FOLIO_NPM_REGISTRY_AUTH:_auth $NODE_AUTH_TOKEN
@@ -146,6 +166,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Exclude some CI-generated artifacts in package
+        if: ${{ github.ref == 'refs/heads/master' || github.ref  == 'refs/heads/main' }}
         run: |
           echo "artifacts" >> .npmignore
           echo ".github" >> .npmignore
@@ -178,19 +199,3 @@ jobs:
           username: ${{ secrets.FOLIO_REGISTRY_USERNAME }}
           password: ${{ secrets.FOLIO_REGISTRY_PASSWORD }}
 
-  # restoring "github-actions-ci" with some dummy steps
-  # to maybe allow PR #14 to succeed, where it is stuck
-  # in "Waiting for status to be reported" ATM.
-  github-actions-ci:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: folio-org/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Use Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ env.NODEJS_VERSION }}
-          check-latest: true
-          always-auth: true
