@@ -26,8 +26,8 @@ jobs:
     env:
       YARN_TEST_OPTIONS: '--ci --coverage --colors'
       SQ_ROOT_DIR: './src'
-      PUBLISH_MOD_DESCRIPTOR: 'false'
-      COMPILE_TRANSLATION_FILES: 'false'
+      PUBLISH_MOD_DESCRIPTOR: 'true'
+      COMPILE_TRANSLATION_FILES: 'true'
       FOLIO_NPM_REGISTRY: 'https://repository.folio.org/repository/npm-folio/'
       FOLIO_NPM_REGISTRY_AUTH: '//repository.folio.org/repository/npm-folio/'
       FOLIO_MD_REGISTRY: 'https://folio-registry.dev.folio.org'
@@ -40,7 +40,7 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: folio-org/checkout@v2
         with:
           fetch-depth: 0
 
