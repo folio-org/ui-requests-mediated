@@ -1,4 +1,5 @@
 import { useIntl } from 'react-intl';
+import { MemoryRouter } from 'react-router-dom';
 
 import { Select } from '@folio/stripes/components';
 
@@ -44,16 +45,19 @@ describe('NavigationMenu', () => {
       pathname: getMediatedRequestsActivitiesUrl(),
       search: '',
     };
+    const route = getMediatedRequestsActivitiesUrl();
 
     beforeEach(() => {
       render(
-        <NavigationMenu
-          history={{
-            location,
-          }}
-          location={location}
-          value={`${getMediatedRequestsActivitiesUrl()}`}
-        />
+        <MemoryRouter initialEntries={[route]}>
+          <NavigationMenu
+            history={{
+              location,
+            }}
+            location={location}
+            value={getMediatedRequestsActivitiesUrl()}
+          />
+        </MemoryRouter>
       );
     });
 

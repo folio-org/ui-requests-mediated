@@ -1,4 +1,3 @@
-import ReactRouterPropTypes from 'react-router-prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -13,10 +12,7 @@ import {
   getSendItemInTransitUrl,
 } from '../../constants';
 
-const SendItemInTransit = ({
-  history,
-  location,
-}) => {
+const SendItemInTransit = () => {
   return (
     <Paneset data-testid="sendItemInTransitPaneSet">
       <Pane
@@ -24,11 +20,7 @@ const SendItemInTransit = ({
         defaultWidth={FILTER_PANE_WIDTH}
         paneTitle={<FormattedMessage id="ui-requests-mediated.app.filterPane.selectActivity" />}
       >
-        <NavigationMenu
-          history={history}
-          location={location}
-          value={getSendItemInTransitUrl()}
-        />
+        <NavigationMenu value={getSendItemInTransitUrl()} />
       </Pane>
       <Pane
         defaultWidth="fill"
@@ -36,11 +28,6 @@ const SendItemInTransit = ({
       />
     </Paneset>
   );
-};
-
-SendItemInTransit.propTypes = {
-  history: ReactRouterPropTypes.history.isRequired,
-  location: ReactRouterPropTypes.location.isRequired,
 };
 
 export default SendItemInTransit;

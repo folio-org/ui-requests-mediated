@@ -4,6 +4,11 @@ import {
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import ConfirmItemArrival from './ConfirmItemArrival';
+import NavigationMenu from '../NavigationMenu';
+
+import { getConfirmItemArrivalUrl } from '../../constants';
+
+jest.mock('../NavigationMenu', () => jest.fn((props) => (<div {...props} />)));
 
 const testIds = {
   confirmItemArrivalPaneSet: 'confirmItemArrivalPaneSet',
@@ -28,5 +33,11 @@ describe('ConfirmItemArrival', () => {
 
   it('should render pane title', () => {
     expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
+  });
+
+  it('should trigger NavigationMenu with correct props', () => {
+    expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
+      value: getConfirmItemArrivalUrl(),
+    }), {});
   });
 });

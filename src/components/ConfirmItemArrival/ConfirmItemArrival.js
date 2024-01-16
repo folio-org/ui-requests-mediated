@@ -1,4 +1,3 @@
-import ReactRouterPropTypes from 'react-router-prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -13,10 +12,7 @@ import {
   getConfirmItemArrivalUrl,
 } from '../../constants';
 
-const ConfirmItemArrival = ({
-  history,
-  location,
-}) => {
+const ConfirmItemArrival = () => {
   return (
     <Paneset data-testid="confirmItemArrivalPaneSet">
       <Pane
@@ -24,11 +20,7 @@ const ConfirmItemArrival = ({
         defaultWidth={FILTER_PANE_WIDTH}
         paneTitle={<FormattedMessage id="ui-requests-mediated.app.filterPane.selectActivity" />}
       >
-        <NavigationMenu
-          history={history}
-          location={location}
-          value={getConfirmItemArrivalUrl()}
-        />
+        <NavigationMenu value={getConfirmItemArrivalUrl()} />
       </Pane>
       <Pane
         defaultWidth="fill"
@@ -36,11 +28,6 @@ const ConfirmItemArrival = ({
       />
     </Paneset>
   );
-};
-
-ConfirmItemArrival.propTypes = {
-  history: ReactRouterPropTypes.history.isRequired,
-  location: ReactRouterPropTypes.location.isRequired,
 };
 
 export default ConfirmItemArrival;

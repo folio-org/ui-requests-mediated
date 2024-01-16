@@ -1,4 +1,3 @@
-import ReactRouterPropTypes from 'react-router-prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import { AppIcon } from '@folio/stripes/core';
@@ -16,10 +15,7 @@ import {
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
 
-const MediatedRequestsActivities = ({
-  history,
-  location,
-}) => {
+const MediatedRequestsActivities = () => {
   return (
     <Paneset data-testid="mediatedRequestsActivitiesPaneSet">
       <Pane
@@ -27,11 +23,7 @@ const MediatedRequestsActivities = ({
         defaultWidth={FILTER_PANE_WIDTH}
         paneTitle={<FormattedMessage id="ui-requests-mediated.app.filterPane.selectActivity" />}
       >
-        <NavigationMenu
-          history={history}
-          location={location}
-          value={getMediatedRequestsActivitiesUrl()}
-        />
+        <NavigationMenu value={getMediatedRequestsActivitiesUrl()} />
       </Pane>
       <Pane
         defaultWidth="fill"
@@ -40,11 +32,6 @@ const MediatedRequestsActivities = ({
       />
     </Paneset>
   );
-};
-
-MediatedRequestsActivities.propTypes = {
-  history: ReactRouterPropTypes.history.isRequired,
-  location: ReactRouterPropTypes.location.isRequired,
 };
 
 export default MediatedRequestsActivities;

@@ -4,6 +4,11 @@ import {
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import SendItemInTransit from './SendItemInTransit';
+import NavigationMenu from '../NavigationMenu';
+
+import { getSendItemInTransitUrl } from '../../constants';
+
+jest.mock('../NavigationMenu', () => jest.fn((props) => (<div {...props} />)));
 
 const testIds = {
   sendItemInTransitPaneSet: 'sendItemInTransitPaneSet',
@@ -28,5 +33,11 @@ describe('SendItemInTransit', () => {
 
   it('should render pane title', () => {
     expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
+  });
+
+  it('should trigger NavigationMenu with correct props', () => {
+    expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
+      value: getSendItemInTransitUrl(),
+    }), {});
   });
 });

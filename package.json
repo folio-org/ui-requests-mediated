@@ -42,8 +42,7 @@
     "regenerator-runtime": "^0.13.3"
   },
   "dependencies": {
-    "prop-types": "^15.6.0",
-    "react-router-prop-types": "^1.0.4"
+    "prop-types": "^15.6.0"
   },
   "peerDependencies": {
     "@folio/stripes": "^9.0.0",

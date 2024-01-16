@@ -1,5 +1,9 @@
 import PropTypes from 'prop-types';
 import { useIntl } from 'react-intl';
+import {
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 
 import { Select } from '@folio/stripes/components';
 
@@ -41,11 +45,11 @@ export const handleChangeMenu = (event, location, history) => {
 };
 
 const NavigationMenu = ({
-  history,
-  location,
   value,
 }) => {
   const intl = useIntl();
+  const history = useHistory();
+  const location = useLocation();
 
   return (
     <Select
@@ -58,10 +62,6 @@ const NavigationMenu = ({
 };
 
 NavigationMenu.propTypes = {
-  history: PropTypes.shape({
-    push: PropTypes.func.isRequired,
-  }).isRequired,
-  location: PropTypes.object.isRequired,
   value: PropTypes.string.isRequired,
 };
 
