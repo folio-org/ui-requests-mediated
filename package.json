@@ -79,6 +79,39 @@
           "settings.enabled"
         ],
         "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.view",
+        "displayName": "Mediated requests: View",
+        "subPermissions": [
+          "module.requests-mediated.enabled",
+          "settings.requests-mediated.enabled"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.view-create",
+        "displayName": "Mediated requests: View, create",
+        "subPermissions": [
+          "ui-requests-mediated.view"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.view-edit-cancel",
+        "displayName": "Mediated requests: View, edit, cancel",
+        "subPermissions": [
+          "ui-requests-mediated.view-create"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.all",
+        "displayName": "Mediated requests: All permissions",
+        "subPermissions": [
+          "ui-requests-mediated.view-edit-cancel"
+        ],
+        "visible": true
       }
     ]
   }

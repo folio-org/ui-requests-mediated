@@ -4,16 +4,6 @@ Copyright (C) 2023 The Open Library Foundation
 
 This software is distributed under the terms of the Apache License, Version 2.0. See the file "[LICENSE](LICENSE)" for more information.
 
-## Introduction
-
-Congratulations on creating a new Stripes UI app module!  Follow the instructions below to run ui-requests-mediated and start your development.
-
-TODO: Modify this README to replace these sections about getting started.
-
-## Prerequisites
-
-In order to view and log into the platform being served up, a suitable Okapi backend will need to be running. The [testing-backend](https://app.vagrantup.com/folio/boxes/testing-backend) Vagrant box should work if your app does not yet have its own backend module.
-
 ## Run your new app
 
 Run the following from the ui-requests-mediated directory to serve your new app using a development server:
@@ -35,18 +25,19 @@ stripes serve --okapi http://my-okapi.example.com:9130 --tenant my-tenant-id
 
 Run the included UI tests with the following command:
 ```
-stripes test karma
+yarn run test:jest"
 ```
 
-## What to do next?
+## Introduction
 
-Now that your new app is running, search the code for "`new-app`" to find comments and subbed placeholders that may need your attention.
+This is a [Stripes](https://github.com/folio-org/stripes-core/) UI module
+for making requests on items.
 
-Please remove or customize the sample strings in `en.json` (lines 3-10) before merging this file to master; the translators do not need to be providing translations for these sample strings.
+## Additional information
 
-Read the [Stripes Module Developer's Guide](https://github.com/folio-org/stripes/blob/master/doc/dev-guide.md).
+Other [modules](https://dev.folio.org/source-code/#client-side).
 
-When your new UI app is ready and being built by CI, then adjust its Jenkinsfile to remove the `npmDeploy = 'no'` parameter (which is then superfluous).
+See project [UIREQMED](https://issues.folio.org/browse/UIREQMED)
+at the [FOLIO issue tracker](https://dev.folio.org/guidelines/issue-tracker).
 
-TODO: Modify this README to replace these sections about getting started, link to your issue tracker, etc.
-
+Other FOLIO Developer documentation is at [dev.folio.org](https://dev.folio.org/)
