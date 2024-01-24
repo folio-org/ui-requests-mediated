@@ -1,7 +1,17 @@
 {
     "meta.title": "Solicitações mediadas",
-    "app.index.paneTitle": "Solicitações mediadas",
     "settings.index.paneTitle": "Solicitações mediadas",
     "settings.general": "Geral",
-    "settings.general.message": "Estas são as suas configurações gerais de aplicativos."
+    "settings.general.message": "Estas são as suas configurações gerais de aplicativos.",
+    "permission.view": "Solicitações mediadas: Visualizar",
+    "permission.view-create": "Solicitações mediadas: Visualizar, criar",
+    "permission.view-create-edit": "Solicitações mediadas: Visualizar, editar, cancelar",
+    "permission.all": "Solicitações mediadas: todas as permissões",
+    "app.filterPane.selectActivity": "Selecionar atividade",
+    "app.confirmItemArrival.navigation": "Confirmar a chegada do item",
+    "app.mediatedRequestsActivities.navigation": "Atividades de solicitações mediadas",
+    "app.sendItemInTransit.navigation": "Enviar item em trânsito",
+    "app.confirmItemArrival.paneTitle": "Confirmar a chegada do item",
+    "app.mediatedRequestsActivities.paneTitle": "Solicitações mediadas",
+    "app.sendItemInTransit.paneTitle": "Enviar item em trânsito"
 }
