@@ -69,16 +69,14 @@
     "permissionSets": [
       {
         "permissionName": "module.requests-mediated.enabled",
-        "displayName": "UI: Mediated requests module is enabled",
-        "visible": true
+        "displayName": "UI: Mediated requests module is enabled"
       },
       {
         "permissionName": "settings.requests-mediated.enabled",
         "displayName": "Settings (Mediated requests): display list of settings pages",
         "subPermissions": [
           "settings.enabled"
-        ],
-        "visible": true
+        ]
       },
       {
         "permissionName": "ui-requests-mediated.view",
