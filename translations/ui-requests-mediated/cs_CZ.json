@@ -1,7 +1,17 @@
 {
-    "meta.title": "Mediated requests",
-    "app.index.paneTitle": "Mediated requests",
-    "settings.index.paneTitle": "Mediated requests",
-    "settings.general": "General",
-    "settings.general.message": "These are your general app settings."
+    "meta.title": "Zprostředkované žádanky",
+    "settings.index.paneTitle": "Zprostředkované žádanky",
+    "settings.general": "Obecné",
+    "settings.general.message": "Toto jsou obecná nastavení aplikace.",
+    "permission.view": "Zprostředkované žádanky: Zobrazit",
+    "permission.view-create": "Zprostředkované žádanky: Zobrazit, vytvořit",
+    "permission.view-create-edit": "Zprostředkované žádanky: Zobrazit, upravit, zrušit",
+    "permission.all": "Zprostředkované žádanky: Všechna oprávnění",
+    "app.filterPane.selectActivity": "Zvolte aktivitu",
+    "app.confirmItemArrival.navigation": "Potvrdit příchod jednotky",
+    "app.mediatedRequestsActivities.navigation": "Aktivity zprostředkovaných žádanek",
+    "app.sendItemInTransit.navigation": "Odeslat jednotku v přepravě",
+    "app.confirmItemArrival.paneTitle": "Potvrdit příchod jednotky",
+    "app.mediatedRequestsActivities.paneTitle": "Zprostředkované žádanky",
+    "app.sendItemInTransit.paneTitle": "Odeslat jednotku v přepravě"
 }
