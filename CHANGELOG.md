@@ -3,6 +3,7 @@
 ## 1.1.0 (IN PROGRESS)
 * Update github actions. Refs UIREQMED-14.
 * Add landing page actions: Confirm item arrival, Mediated requests activities and Send item in transit. Refs UIREQMED-2.
+* Hide permission that should not be visible. Refs UIREQMED-20.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.
