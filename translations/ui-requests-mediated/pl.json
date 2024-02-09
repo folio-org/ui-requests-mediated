@@ -8,10 +8,10 @@
     "permission.view-create-edit": "Mediated requests: View, edit, cancel",
     "permission.all": "Mediated requests: All permissions",
     "app.filterPane.selectActivity": "Select activity",
-    "app.confirmItemArrival.navigation": "Confirm item arrival",
+    "app.confirmItemArrival.navigation": "Potwierdź przybycie egzemplarza",
     "app.mediatedRequestsActivities.navigation": "Mediated requests activities",
     "app.sendItemInTransit.navigation": "Send item in transit",
-    "app.confirmItemArrival.paneTitle": "Confirm item arrival",
+    "app.confirmItemArrival.paneTitle": "Potwierdź przybycie egzemplarza",
     "app.mediatedRequestsActivities.paneTitle": "Mediated requests",
     "app.sendItemInTransit.paneTitle": "Send item in transit"
 }
