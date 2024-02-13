@@ -10,8 +10,8 @@
     "app.filterPane.selectActivity": "Select activity",
     "app.confirmItemArrival.navigation": "Confirm item arrival",
     "app.mediatedRequestsActivities.navigation": "Mediated requests activities",
-    "app.sendItemInTransit.navigation": "Send item in transit",
+    "app.sendItemInTransit.navigation": "Enviar item a transito",
     "app.confirmItemArrival.paneTitle": "Confirm item arrival",
     "app.mediatedRequestsActivities.paneTitle": "Mediated requests",
-    "app.sendItemInTransit.paneTitle": "Send item in transit"
+    "app.sendItemInTransit.paneTitle": "Enviar item a transito\n"
 }
