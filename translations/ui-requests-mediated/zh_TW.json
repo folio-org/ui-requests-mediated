@@ -1,17 +1,17 @@
 {
     "meta.title": "Mediated requests",
     "settings.index.paneTitle": "Mediated requests",
-    "settings.general": "General",
-    "settings.general.message": "These are your general app settings.",
+    "settings.general": "一般",
+    "settings.general.message": "這是您的一般功能設定。",
     "permission.view": "Mediated requests: View",
     "permission.view-create": "Mediated requests: View, create",
     "permission.view-create-edit": "Mediated requests: View, edit, cancel",
     "permission.all": "Mediated requests: All permissions",
-    "app.filterPane.selectActivity": "Select activity",
-    "app.confirmItemArrival.navigation": "Confirm item arrival",
+    "app.filterPane.selectActivity": "選擇活動",
+    "app.confirmItemArrival.navigation": "確認館藏到館",
     "app.mediatedRequestsActivities.navigation": "Mediated requests activities",
     "app.sendItemInTransit.navigation": "Send item in transit",
-    "app.confirmItemArrival.paneTitle": "Confirm item arrival",
+    "app.confirmItemArrival.paneTitle": "確認館藏到館",
     "app.mediatedRequestsActivities.paneTitle": "Mediated requests",
     "app.sendItemInTransit.paneTitle": "Send item in transit"
 }
