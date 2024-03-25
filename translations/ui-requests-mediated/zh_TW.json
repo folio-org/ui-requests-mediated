@@ -1,17 +1,17 @@
 {
-    "meta.title": "Mediated requests",
-    "settings.index.paneTitle": "Mediated requests",
+    "meta.title": "預約請求",
+    "settings.index.paneTitle": "預約請求",
     "settings.general": "一般",
     "settings.general.message": "這是您的一般功能設定。",
-    "permission.view": "Mediated requests: View",
-    "permission.view-create": "Mediated requests: View, create",
-    "permission.view-create-edit": "Mediated requests: View, edit, cancel",
-    "permission.all": "Mediated requests: All permissions",
+    "permission.view": "預約請求：查看",
+    "permission.view-create": "預約請求：查看、新增",
+    "permission.view-create-edit": "預約請求：查看、編輯、取消",
+    "permission.all": "預約請求：所有權限",
     "app.filterPane.selectActivity": "選擇活動",
     "app.confirmItemArrival.navigation": "確認館藏到館",
-    "app.mediatedRequestsActivities.navigation": "Mediated requests activities",
-    "app.sendItemInTransit.navigation": "Send item in transit",
+    "app.mediatedRequestsActivities.navigation": "預約請求活動",
+    "app.sendItemInTransit.navigation": "寄出館藏傳送中",
     "app.confirmItemArrival.paneTitle": "確認館藏到館",
-    "app.mediatedRequestsActivities.paneTitle": "Mediated requests",
-    "app.sendItemInTransit.paneTitle": "Send item in transit"
+    "app.mediatedRequestsActivities.paneTitle": "預約請求",
+    "app.sendItemInTransit.paneTitle": "寄出館藏傳送中"
 }
