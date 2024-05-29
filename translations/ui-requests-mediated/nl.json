@@ -1,0 +1,17 @@
+{
+    "meta.title": "Mediated requests",
+    "settings.index.paneTitle": "Mediated requests",
+    "settings.general": "General",
+    "settings.general.message": "These are your general app settings.",
+    "permission.view": "Mediated requests: View",
+    "permission.view-create": "Mediated requests: View, create",
+    "permission.view-create-edit": "Mediated requests: View, edit, cancel",
+    "permission.all": "Mediated requests: All permissions",
+    "app.filterPane.selectActivity": "Select activity",
+    "app.confirmItemArrival.navigation": "Confirm item arrival",
+    "app.mediatedRequestsActivities.navigation": "Mediated requests activities",
+    "app.sendItemInTransit.navigation": "Send item in transit",
+    "app.confirmItemArrival.paneTitle": "Confirm item arrival",
+    "app.mediatedRequestsActivities.paneTitle": "Mediated requests",
+    "app.sendItemInTransit.paneTitle": "Send item in transit"
+}
