@@ -13,6 +13,7 @@ import ConfirmItemArrival from './components/ConfirmItemArrival';
 import MediatedRequestsActivities from './components/MediatedRequestsActivities';
 import SendItemInTransit from './components/SendItemInTransit';
 import Settings from './settings';
+import { RequestRoute } from './routes/RequestRoute';
 
 import {
   CONFIRM_ITEM_ARRIVAL,
@@ -51,6 +52,10 @@ class RequestsMediated extends React.Component {
         <Route
           path={`${path}/${SEND_ITEM_IN_TRANSIT}`}
           component={SendItemInTransit}
+        />
+        <Route
+          path={`${path}/create`}
+          component={RequestRoute}
         />
         <Redirect to={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}`} />
       </Switch>
