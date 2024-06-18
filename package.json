@@ -83,6 +83,10 @@
         "displayName": "Mediated requests: View",
         "subPermissions": [
           "module.requests-mediated.enabled",
+          "settings.circulation.enabled",
+          "mod-settings.global.read.circulation",
+          "mod-settings.entries.collection.get",
+          "mod-settings.entries.item.get",
           "settings.requests-mediated.enabled"
         ],
         "visible": true

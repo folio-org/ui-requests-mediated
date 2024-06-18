@@ -1,6 +1,37 @@
 import React from 'react';
 
 jest.mock('@folio/stripes/components', () => ({
+  Accordion: jest.fn(({
+    children,
+    label,
+    onClearFilter,
+    'data-testid': testId,
+  }) => (
+    <div data-testid={testId}>
+      {label}
+      {children}
+      <div>
+        <button
+          type="button"
+          onClick={onClearFilter}
+          data-testid={`${testId}Button`}
+        >Clear
+        </button>
+      </div>
+    </div>
+  )),
+  AccordionSet: jest.fn(({
+    children,
+    onToggle,
+    'data-testid': testId,
+  }) => (
+    <div data-testid={testId}>
+      <button type="button" onClick={onToggle}>
+        Toggle
+      </button>
+      {children}
+    </div>
+  )),
   Badge: jest.fn((props) => (
     <span>
       <span>{props.children}</span>

@@ -5,14 +5,18 @@ import {
 
 import MediatedRequestsActivities from './MediatedRequestsActivities';
 import NavigationMenu from '../NavigationMenu';
+import MediatedRequestsFilters from './components/MediatedRequestsFilters';
 
 import { getMediatedRequestsActivitiesUrl } from '../../constants';
 
 jest.mock('../NavigationMenu', () => jest.fn((props) => (<div {...props} />)));
+jest.mock('./components/MediatedRequestsFilters', () => jest.fn((props) => (<div {...props} />)));
 
 const testIds = {
+  mediatedRequestsActivitiesSearchAndSortQuery: 'mediatedRequestsActivitiesSearchAndSortQuery',
   mediatedRequestsActivitiesPaneSet: 'mediatedRequestsActivitiesPaneSet',
   mediatedRequestsActivitiesPane: 'mediatedRequestsActivitiesPane',
+  mediatedRequestsActivitiesCollapseFilterPaneButton: 'mediatedRequestsActivitiesCollapseFilterPaneButton',
 };
 const labelIds = {
   paneTitle: 'ui-requests-mediated.app.mediatedRequestsActivities.paneTitle',
@@ -21,6 +25,10 @@ const labelIds = {
 describe('MediatedRequestsActivities', () => {
   beforeEach(() => {
     render(<MediatedRequestsActivities />);
+  });
+
+  it('should render search and sort query', () => {
+    expect(screen.getByTestId(testIds.mediatedRequestsActivitiesSearchAndSortQuery)).toBeInTheDocument();
   });
 
   it('should render pane set', () => {
@@ -39,5 +47,13 @@ describe('MediatedRequestsActivities', () => {
     expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
       value: getMediatedRequestsActivitiesUrl(),
     }), {});
+  });
+
+  it('should trigger MediatedRequestsFilters with correct props', () => {
+    expect(MediatedRequestsFilters).toHaveBeenCalledWith(expect.objectContaining({}), {});
+  });
+
+  it('should render CollapseFilterPaneButton', () => {
+    expect(screen.getByTestId(testIds.mediatedRequestsActivitiesCollapseFilterPaneButton)).toBeInTheDocument();
   });
 });

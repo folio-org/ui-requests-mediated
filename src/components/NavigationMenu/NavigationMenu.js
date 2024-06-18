@@ -44,25 +44,38 @@ export const handleChangeMenu = (event, location, history) => {
   history.push(destination);
 };
 
+import styles from './NavigationMenu.css';
+
 const NavigationMenu = ({
   value,
+  separator,
 }) => {
   const intl = useIntl();
   const history = useHistory();
   const location = useLocation();
 
   return (
-    <Select
-      data-testid="navigationMenu"
-      value={value}
-      dataOptions={getDataOptions(intl)}
-      onChange={(event) => handleChangeMenu(event, location, history)}
-    />
+    <>
+      <Select
+        data-testid="navigationMenu"
+        value={value}
+        dataOptions={getDataOptions(intl)}
+        onChange={(event) => handleChangeMenu(event, location, history)}
+      />
+      { separator &&
+        <hr className={styles.separator} />
+      }
+    </>
   );
 };
 
 NavigationMenu.propTypes = {
   value: PropTypes.string.isRequired,
+  separator: PropTypes.bool,
+};
+
+NavigationMenu.defaultProps = {
+  separator: false,
 };
 
 export default NavigationMenu;

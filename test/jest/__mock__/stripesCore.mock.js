@@ -1,4 +1,5 @@
 jest.mock('@folio/stripes/core', () => ({
+  stripesConnect: Component => props => <Component {...props} />,
   IfInterface: jest.fn(({ name, children }) => {
     return name === 'interface' ? children : null;
   }),
