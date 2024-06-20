@@ -35,7 +35,7 @@ const MediatedRequestStatusFilter = () => {
       >
         <CheckboxFilter
           data-testid={`${MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_STATUS}Filter`}
-          dataOptions={transformRequestFilterOptions(MEDIATED_REQUEST_STATUS_TRANSLATIONS, formatMessage)}
+          dataOptions={transformRequestFilterOptions(formatMessage, MEDIATED_REQUEST_STATUS_TRANSLATIONS)}
           name={MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_STATUS}
           onChange={() => {}}
         />

@@ -4,14 +4,10 @@ import {
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import MediatedRequestsFilters from './MediatedRequestsFilters';
-
 import {
-  MediatedRequestLevelFilter,
   MediatedRequestStatusFilter,
   Search,
 } from './components';
-import NavigationMenu from '../../../NavigationMenu';
-import { getMediatedRequestsActivitiesUrl } from '../../../../constants';
 
 jest.mock('./components', () => ({
   MediatedRequestLevelFilter: jest.fn((props) => (<div {...props} />)),

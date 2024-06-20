@@ -13,6 +13,8 @@ import {
   getSendItemInTransitUrl,
 } from '../../constants';
 
+import styles from './NavigationMenu.css';
+
 export const getDataOptions = (intl) => ([
   {
     label: intl.formatMessage({ id: 'ui-requests-mediated.app.mediatedRequestsActivities.navigation' }),
@@ -43,8 +45,6 @@ export const handleChangeMenu = (event, location, history) => {
 
   history.push(destination);
 };
-
-import styles from './NavigationMenu.css';
 
 const NavigationMenu = ({
   value,

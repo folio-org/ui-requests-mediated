@@ -1,4 +1,4 @@
-export const transformRequestFilterOptions = (source = [], formatMessage) => (
+export const transformRequestFilterOptions = (formatMessage, source = []) => (
   source.map(({ label, value }) => ({
     label: formatMessage({ id: label }),
     value,

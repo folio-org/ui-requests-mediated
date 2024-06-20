@@ -35,7 +35,7 @@ const MediatedRequestLevelFilter = () => {
       >
         <CheckboxFilter
           data-testid={`${MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS}Filter`}
-          dataOptions={transformRequestFilterOptions(MEDIATED_REQUEST_LEVEL_TRANSLATIONS, formatMessage)}
+          dataOptions={transformRequestFilterOptions(formatMessage, MEDIATED_REQUEST_LEVEL_TRANSLATIONS)}
           name={MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS}
           onChange={() => {}}
         />
