@@ -1,5 +1,3 @@
-import { stripesConnect } from '@folio/stripes/core';
-
 import {
   MediatedRequestLevelFilter,
   MediatedRequestStatusFilter,
@@ -36,4 +34,4 @@ const MediatedRequestsFilters = () => {
   );
 };
 
-export default stripesConnect(MediatedRequestsFilters);
+export default MediatedRequestsFilters;
