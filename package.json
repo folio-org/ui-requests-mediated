@@ -38,6 +38,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-intl": "^6.4.4",
+    "react-query": "^3.6.0",
     "react-router-dom": "^5.2.0",
     "regenerator-runtime": "^0.13.3"
   },
@@ -83,6 +84,10 @@
         "displayName": "Mediated requests: View",
         "subPermissions": [
           "module.requests-mediated.enabled",
+          "settings.circulation.enabled",
+          "mod-settings.global.read.circulation",
+          "mod-settings.entries.collection.get",
+          "mod-settings.entries.item.get",
           "settings.requests-mediated.enabled"
         ],
         "visible": true

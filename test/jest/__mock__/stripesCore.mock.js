@@ -1,4 +1,13 @@
 jest.mock('@folio/stripes/core', () => ({
+  useOkapiKy: jest.fn().mockReturnValue({
+    get: jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({}) }),
+    post: jest.fn(),
+    put: jest.fn(),
+    delete: jest.fn(),
+    extend: jest.fn().mockReturnValue(this),
+  }),
+  useNamespace: () => ['@folio/requests-mediated'],
+  stripesConnect: Component => props => <Component {...props} />,
   IfInterface: jest.fn(({ name, children }) => {
     return name === 'interface' ? children : null;
   }),
