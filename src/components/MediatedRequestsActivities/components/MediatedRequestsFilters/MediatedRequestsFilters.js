@@ -1,5 +1,3 @@
-import PropTypes from 'prop-types';
-
 import { stripesConnect } from '@folio/stripes/core';
 
 import {
@@ -11,18 +9,13 @@ import {
 import {
   getIsTitleLevelRequestsFeatureEnabled,
 } from '../../../../utils';
+import {
+  useGeneralTlrSettings
+} from '../../../../hooks';
 
-const SETTINGS_SCOPES = {
-  CIRCULATION: 'circulation',
-};
-const SETTINGS_KEYS = {
-  GENERAL_TLR: 'generalTlr',
-};
-
-const MediatedRequestsFilters = ({
-  resources,
-}) => {
-  const isTitleLevelRequestsFeatureEnabled = getIsTitleLevelRequestsFeatureEnabled(resources);
+const MediatedRequestsFilters = () => {
+  const { data } = useGeneralTlrSettings();
+  const isTitleLevelRequestsFeatureEnabled = getIsTitleLevelRequestsFeatureEnabled(data);
 
   return (
     <form
@@ -41,21 +34,6 @@ const MediatedRequestsFilters = ({
       )}
     </form>
   );
-};
-
-MediatedRequestsFilters.manifest = {
-  configs: {
-    type: 'okapi',
-    records: 'items',
-    path: 'settings/entries',
-    params: {
-      query: `(scope==${SETTINGS_SCOPES.CIRCULATION} and key==${SETTINGS_KEYS.GENERAL_TLR})`,
-    },
-  },
-};
-
-MediatedRequestsFilters.propTypes = {
-  resources: PropTypes.object.isRequired,
 };
 
 export default stripesConnect(MediatedRequestsFilters);

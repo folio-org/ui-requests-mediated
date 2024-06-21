@@ -15,6 +15,10 @@ jest.mock('./components', () => ({
   Search: jest.fn((props) => (<div {...props} />)),
 }));
 
+jest.mock('../../../../hooks', () => ({
+  useGeneralTlrSettings:  () => false,
+}));
+
 const testIds = {
   mediatedRequestsFiltersForm: 'MediatedRequestsFiltersForm',
   mediatedRequestsFiltersSearch: 'MediatedRequestsFiltersSearch',
@@ -47,7 +51,7 @@ describe('MediatedRequestsFilters', () => {
     expect(MediatedRequestStatusFilter).toHaveBeenCalledWith(expect.objectContaining({}), {});
   });
 
-  it('should not render status filter', () => {
+  it('should not render level filter', () => {
     expect(screen.queryByTestId(testIds.mediatedRequestFiltersLevelFilter)).not.toBeInTheDocument();
   });
 });

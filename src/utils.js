@@ -6,5 +6,5 @@ export const transformRequestFilterOptions = (formatMessage, source = []) => (
 );
 
 export const getIsTitleLevelRequestsFeatureEnabled = (data) => (
-  data?.configs.records[0]?.value?.titleLevelRequestsFeatureEnabled || false
+  data?.items[0]?.value?.titleLevelRequestsFeatureEnabled || false
 );
