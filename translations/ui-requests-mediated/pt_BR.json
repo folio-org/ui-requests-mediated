@@ -13,5 +13,16 @@
     "app.sendItemInTransit.navigation": "Enviar item em trânsito",
     "app.confirmItemArrival.paneTitle": "Confirmar a chegada do item",
     "app.mediatedRequestsActivities.paneTitle": "Solicitações mediadas",
-    "app.sendItemInTransit.paneTitle": "Enviar item em trânsito"
+    "app.sendItemInTransit.paneTitle": "Enviar item em trânsito",
+    "filters.mediatedRequestStatus.accordionTitle": "Status da solicitação mediada",
+    "filters.mediatedRequestStatus.closedDeclined": "Fechado - Recusado",
+    "filters.mediatedRequestStatus.closedFilled": "Fechado - Completo",
+    "filters.mediatedRequestStatus.newAwaitingConfirmation": "Novo - Aguardando confirmação",
+    "filters.mediatedRequestStatus.openAwaitingPickup": "Aberto - Aguardando retirada",
+    "filters.mediatedRequestStatus.openInProgress": "Aberto - Em andamento",
+    "filters.mediatedRequestStatus.openInTransit": "Aberto - Em trânsito",
+    "filters.mediatedRequestStatus.openItemArrived": "Aberto - Item chegou",
+    "filters.mediatedRequestLevel.accordionTitle": "Nível de solicitação mediada",
+    "filters.mediatedRequestLevel.item": "Item",
+    "filters.mediatedRequestLevel.title": "Título"
 }
