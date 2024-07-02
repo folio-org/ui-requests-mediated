@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
 import { AppIcon } from '@folio/stripes/core';
@@ -24,7 +24,7 @@ import {
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
 
-const MediatedRequestsActivities = () => {
+const MediatedRequestsActivities = ({ settings }) => {
   const [filterPaneIsVisible, setFilterPaneIsVisible] = useState(true);
 
   const toggleFilterPane = () => {
@@ -67,7 +67,7 @@ const MediatedRequestsActivities = () => {
                 value={getMediatedRequestsActivitiesUrl()}
                 separator
               />
-              <MediatedRequestsFilters />
+              <MediatedRequestsFilters settings={settings} />
             </Pane>
           }
           <Pane
@@ -80,6 +80,10 @@ const MediatedRequestsActivities = () => {
       )}
     </SearchAndSortQuery>
   );
+};
+
+MediatedRequestsActivities.propTypes = {
+  settings: PropTypes.object.isRequired,
 };
 
 export default MediatedRequestsActivities;
