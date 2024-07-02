@@ -6,3 +6,4 @@ import './stripesIcon.mock';
 import './stripesComponents.mock';
 import './stripesSmartComponents.mock';
 import './stripesUtils.mock';
+import './finalFormComponents.mock';

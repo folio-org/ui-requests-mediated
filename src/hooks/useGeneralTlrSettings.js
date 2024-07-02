@@ -23,9 +23,9 @@ const useGeneralTlrSettings = () => {
   );
 
   return ({
+    settings: data,
     isLoading,
     isFetching,
-    data,
     refetch,
   });
 };

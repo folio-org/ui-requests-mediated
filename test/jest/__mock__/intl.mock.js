@@ -9,7 +9,7 @@ jest.mock('react-intl', () => {
     ...jest.requireActual('react-intl'),
     FormattedMessage: jest.fn(({ id, children }) => {
       if (children) {
-        return children([id]);
+        return children(id);
       }
 
       return id;
