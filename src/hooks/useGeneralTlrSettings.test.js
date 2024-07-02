@@ -39,6 +39,6 @@ describe('useGeneralTlrSettings', () => {
       return !result.current.isLoading;
     });
 
-    expect(result.current.data.data).toBe(data);
+    expect(result.current.settings.data).toBe(data);
   });
 });

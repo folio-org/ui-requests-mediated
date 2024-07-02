@@ -7,13 +7,9 @@ import {
 import {
   getIsTitleLevelRequestsFeatureEnabled,
 } from '../../../../utils';
-import {
-  useGeneralTlrSettings
-} from '../../../../hooks';
 
-const MediatedRequestsFilters = () => {
-  const { data } = useGeneralTlrSettings();
-  const isTitleLevelRequestsFeatureEnabled = getIsTitleLevelRequestsFeatureEnabled(data);
+const MediatedRequestsFilters = ({ settings }) => {
+  const isTitleLevelRequestsFeatureEnabled = getIsTitleLevelRequestsFeatureEnabled(settings);
 
   return (
     <form
