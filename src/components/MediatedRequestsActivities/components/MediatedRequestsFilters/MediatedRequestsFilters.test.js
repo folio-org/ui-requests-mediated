@@ -39,7 +39,7 @@ describe('MediatedRequestsFilters', () => {
     expect(screen.getByTestId(testIds.mediatedRequestsFiltersSearch)).toBeInTheDocument();
   });
 
-  it('should trigger search with correct props', () => {
+  it('should render search with correct props', () => {
     expect(Search).toHaveBeenCalledWith(expect.objectContaining({}), {});
   });
 
@@ -47,7 +47,7 @@ describe('MediatedRequestsFilters', () => {
     expect(screen.getByTestId(testIds.mediatedRequestFiltersStatusFilter)).toBeInTheDocument();
   });
 
-  it('should trigger status filter with correct props', () => {
+  it('should render status filter with correct props', () => {
     expect(MediatedRequestStatusFilter).toHaveBeenCalledWith(expect.objectContaining({}), {});
   });
 

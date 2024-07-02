@@ -38,12 +38,10 @@ jest.mock('@folio/stripes/components', () => ({
   )),
   Button: jest.fn(({
     children,
-    buttonStyle,
     ...rest
   }) => (
     <button
       type="button"
-      data-button-type={buttonStyle}
       {...rest}
     >
       <span>
@@ -59,6 +57,10 @@ jest.mock('@folio/stripes/components', () => ({
   )),
   checkScope: jest.fn(),
   Col: jest.fn(({ children }) => <div className="col">{ children }</div>),
+  MultiColumnList: jest.fn((props) => (
+    <div {...props} />
+  )),
+  FormattedTime: jest.fn(({ value }) => <div>{value}</div>),
   collapseAllSections: jest.fn(),
   Datepicker: jest.fn(({ ref, children, ...rest }) => (
     <div ref={ref} {...rest}>
@@ -145,7 +147,6 @@ jest.mock('@folio/stripes/components', () => ({
       {children}
     </div>
   )),
-  MultiColumnList: jest.fn(() => <div />),
   NavList: jest.fn(({ children, className, ...rest }) => (
     <div className={className} {...rest}>{children}</div>
   )),
@@ -216,6 +217,11 @@ jest.mock('@folio/stripes/components', () => ({
     </fieldset>
   )),
   Row: jest.fn(({ children }) => <div className="row">{ children }</div>),
+  SearchField: jest.fn((props) => (
+    <input
+      {...props}
+    />
+  )),
   Select: jest.fn(({
     children,
     'data-testid': testId,

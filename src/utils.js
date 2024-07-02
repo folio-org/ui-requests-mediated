@@ -3,6 +3,12 @@ import {
   isObject,
 } from 'lodash';
 
+import {
+  DEFAULT_VIEW_VALUE,
+  MEDIATED_REQUESTS_RECORD_FIELD_NAME,
+  MEDIATED_REQUESTS_RECORD_FIELD_PATH
+} from './constants';
+
 export const transformRequestFilterOptions = (formatMessage, source = []) => (
   source.map(({ label, value }) => ({
     label: formatMessage({ id: label }),
@@ -102,4 +108,27 @@ export const getFullName = (user) => {
   const displayedFirstName = preferredFirstName || firstName;
 
   return `${lastName}${displayedFirstName ? ', ' : ''}${displayedFirstName} ${middleName}`;
+};
+
+export const getRequesterName = (mediatedRequest) => {
+  const lastName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_LAST_NAME], DEFAULT_VIEW_VALUE);
+  const firstName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_FIRST_NAME], DEFAULT_VIEW_VALUE);
+  const middleName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_MIDDLE_NAME], DEFAULT_VIEW_VALUE);
+  const preferredFirstName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.PREFERRED_FIRST_NAME], DEFAULT_VIEW_VALUE);
+  const displayedFirstName = preferredFirstName || firstName;
+  let requesterName = lastName;
+
+  if (displayedFirstName || middleName) {
+    requesterName = requesterName.concat(', ');
+  }
+
+  if (displayedFirstName) {
+    requesterName = requesterName.concat(displayedFirstName);
+  }
+
+  if (middleName) {
+    requesterName = requesterName.concat(' ', middleName);
+  }
+
+  return requesterName;
 };

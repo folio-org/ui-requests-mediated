@@ -23,12 +23,28 @@ const labelIds = {
 };
 
 describe('MediatedRequestsActivities', () => {
-  const props = {
-    settings: {},
+  const mutator = {
+    resultOffset: {
+      replace: jest.fn(),
+    },
   };
+  const querySetter = jest.fn();
+  const queryGetter = jest.fn(() => {});
+  const source = [];
+  const resources = [];
+  const settings = {};
 
   beforeEach(() => {
-    render(<MediatedRequestsActivities {...props} />);
+    render(
+      <MediatedRequestsActivities
+        querySetter={querySetter}
+        queryGetter={queryGetter}
+        source={source}
+        resources={resources}
+        mutator={mutator}
+        settings={settings}
+      />
+    );
   });
 
   it('should render search and sort query', () => {
@@ -47,19 +63,19 @@ describe('MediatedRequestsActivities', () => {
     expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
   });
 
-  it('should trigger NavigationMenu with correct props', () => {
+  it('should render navigation menu with correct props', () => {
     expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
       value: getMediatedRequestsActivitiesUrl(),
     }), {});
   });
 
-  it('should trigger MediatedRequestsFilters with correct props', () => {
+  it('should render mediated requests filters with correct props', () => {
     expect(MediatedRequestsFilters).toHaveBeenCalledWith(expect.objectContaining({
-      settings: props.settings,
+      settings,
     }), {});
   });
 
-  it('should render CollapseFilterPaneButton', () => {
+  it('should render collapse filter pane button', () => {
     expect(screen.getByTestId(testIds.mediatedRequestsActivitiesCollapseFilterPaneButton)).toBeInTheDocument();
   });
 });
