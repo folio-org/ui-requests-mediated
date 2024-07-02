@@ -16,7 +16,7 @@
     "app.sendItemInTransit.paneTitle": "Odeslat jednotku v přepravě",
     "filters.mediatedRequestStatus.accordionTitle": "Mediated request status",
     "filters.mediatedRequestStatus.closedDeclined": "Closed - Declined",
-    "filters.mediatedRequestStatus.closedFilled": "Closed - Filled",
+    "filters.mediatedRequestStatus.closedFilled": "Uzavřená - Vyřízená",
     "filters.mediatedRequestStatus.newAwaitingConfirmation": "New - Awaiting confirmation",
     "filters.mediatedRequestStatus.openAwaitingPickup": "Open - Awaiting pickup",
     "filters.mediatedRequestStatus.openInProgress": "Open - In progress",
