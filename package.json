@@ -93,18 +93,26 @@
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.view-create",
-        "displayName": "Mediated requests: View, create",
+        "permissionName": "ui-requests-mediated.view-create-edit",
+        "displayName": "Mediated requests: View, create, edit",
         "subPermissions": [
           "ui-requests-mediated.view"
         ],
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.view-edit-cancel",
-        "displayName": "Mediated requests: View, edit, cancel",
+        "permissionName": "ui-requests-mediated.view-decline",
+        "displayName": "Mediated requests: View, decline",
         "subPermissions": [
-          "ui-requests-mediated.view-create"
+          "ui-requests-mediated.view"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.view-edit-decline",
+        "displayName": "Mediated requests: View, edit, decline",
+        "subPermissions": [
+          "ui-requests-mediated.view-decline"
         ],
         "visible": true
       },
@@ -112,7 +120,8 @@
         "permissionName": "ui-requests-mediated.all",
         "displayName": "Mediated requests: All permissions",
         "subPermissions": [
-          "ui-requests-mediated.view-edit-cancel"
+          "ui-requests-mediated.view-create-edit",
+          "ui-requests-mediated.view-decline"
         ],
         "visible": true
       }
