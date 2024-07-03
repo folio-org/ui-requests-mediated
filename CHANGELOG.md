@@ -7,6 +7,7 @@
 * Add caret to `react` peer dependency. Refs UIREQMED-23.
 * Add Search field for Mediated requests activity page. Refs UIREQMED-3.
 * Add Filters for Mediated requests actions page. Refs UIREQMED-4.
+* Update permission for Mediated requests. Refs UIREQMED-29.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.
