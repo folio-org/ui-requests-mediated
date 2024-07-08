@@ -44,6 +44,9 @@ class RequestForm extends React.Component {
     handleSubmit: PropTypes.func.isRequired,
     findResource: PropTypes.func.isRequired,
     request: PropTypes.object.isRequired,
+    settings: PropTypes.shape({
+      items: PropTypes.arrayOf(PropTypes.object),
+    }),
     initialValues: PropTypes.object.isRequired,
     location: PropTypes.shape({
       search: PropTypes.string,
@@ -56,7 +59,7 @@ class RequestForm extends React.Component {
     onSetSelectedInstance: PropTypes.func.isRequired,
     pristine: PropTypes.bool,
     submitting: PropTypes.bool,
-    patronGroups: PropTypes.arrayOf(PropTypes.object), // todo ddddd
+    patronGroups: PropTypes.arrayOf(PropTypes.object),
     selectedItem: PropTypes.object,
     selectedInstance: PropTypes.object,
     selectedUser: PropTypes.object,
@@ -73,7 +76,7 @@ class RequestForm extends React.Component {
     const {
       request,
       settings,
-    }  = props;
+    } = props;
     const { loan } = (request || {});
     const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.items[0]?.value);
 
@@ -88,33 +91,6 @@ class RequestForm extends React.Component {
   }
 
   componentDidMount() {
-    const { location } = this.props;
-    const {
-      userId,
-      userBarcode,
-      itemBarcode,
-      itemId,
-      instanceId,
-    } = parse(location?.search);
-
-    if (userBarcode) {
-      this.findUser(RESOURCE_KEYS.BARCODE, userBarcode);
-    } else if (userId) {
-      this.findUser(RESOURCE_KEYS.ID, userId);
-    }
-
-    if (itemBarcode) {
-      this.findItem(RESOURCE_KEYS.BARCODE, itemBarcode);
-    }
-
-    if (itemId) {
-      this.findItem(RESOURCE_KEYS.ID, itemId);
-    }
-
-    if (instanceId && !itemBarcode && !itemId) {
-      this.findInstance(instanceId);
-    }
-
     this.setTlrCheckboxInitialState();
   }
 
@@ -124,29 +100,13 @@ class RequestForm extends React.Component {
       request,
       onSetSelectedItem,
       onSetSelectedUser,
-      location,
       settings,
     } = this.props;
     const {
       initialValues: prevInitialValues,
       request: prevRequest,
-      location: prevLocation,
       settings: prevSettings,
     } = prevProps;
-    const {
-      userId,
-      userBarcode,
-      itemBarcode,
-      itemId,
-      instanceId,
-    } = parse(location?.search);
-    const {
-      userId: prevUserId,
-      userBarcode: prevUserBarcode,
-      itemBarcode: prevItemBarcode,
-      itemId: prevItemId,
-      instanceId: prevInstanceId,
-    } = parse(prevLocation?.search);
     const newSettings = settings?.items[0]?.value;
 
     if (
@@ -158,27 +118,6 @@ class RequestForm extends React.Component {
 
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ selectedLoan: request.loan });
-    }
-
-    if (prevUserBarcode !== userBarcode) {
-      this.findUser(RESOURCE_KEYS.BARCODE, userBarcode);
-    }
-
-    if (prevUserId !== userId) {
-      this.findUser(RESOURCE_KEYS.ID, userId);
-    }
-
-    if (prevItemBarcode !== itemBarcode) {
-      this.findItem(RESOURCE_KEYS.BARCODE, itemBarcode);
-    }
-
-    if (prevItemId !== itemId) {
-      this.findItem(RESOURCE_KEYS.ID, itemId);
-    }
-
-    if (prevInstanceId !== instanceId) {
-      this.findInstance(instanceId);
-      this.setTlrCheckboxInitialState();
     }
 
     if (prevSettings?.items[0]?.value !== newSettings) {
@@ -512,7 +451,7 @@ class RequestForm extends React.Component {
     const { onCancel } = this.props;
     const keepEditBtn = document.getElementById('clickable-cancel-editing-confirmation-confirm');
 
-    if (isItemsDialogOpen){
+    if (isItemsDialogOpen) {
       handleKeyCommand(this.handleItemsDialogClose);
     } else if (keepEditBtn) {
       keepEditBtn.click();

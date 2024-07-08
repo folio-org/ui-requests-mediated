@@ -9,16 +9,16 @@ import {
 import {
   MAX_RECORDS,
   OPEN_REQUESTS_STATUSES,
-} from '../constants';
-import { getStatusQuery } from  '../utils';
+} from '../../constants';
+import { getStatusQuery } from '../../utils';
 
 const CHUNK_SIZE = 40;
 
-export const getItems = async (ky, instanceId) => {
+export const getItems = (ky, instanceId) => {
   const query = `id==${instanceId}`;
   const searchParams = { query };
 
-  return await ky.get('circulation/items-by-instance', { searchParams }).json();
+  return ky.get('circulation/items-by-instance', { searchParams }).json();
 };
 
 export const getRequests = async (ky, instanceId) => {
@@ -30,7 +30,7 @@ export const getRequests = async (ky, instanceId) => {
     let query = itemChunk.map(i => `itemId==${i.id}`).join(' or ');
     const statusQuery = getStatusQuery(OPEN_REQUESTS_STATUSES);
 
-    query = `(${query}) and (${statusQuery})")`;
+    query = `(${query}) and (${statusQuery})`;
 
     const searchParams = {
       query,
@@ -52,7 +52,7 @@ export const getRequests = async (ky, instanceId) => {
 const useCirculationRequests = (instanceId, open) => {
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: 'availableItems' });
-  const getItemsData = async () => await getRequests(ky, instanceId);
+  const getItemsData = () => getRequests(ky, instanceId);
 
   const {
     data,
@@ -63,10 +63,10 @@ const useCirculationRequests = (instanceId, open) => {
     { enabled: Boolean(instanceId && open) },
   );
 
-  return ({
+  return {
     isFetching,
     data,
-  });
+  };
 };
 
 export default useCirculationRequests;

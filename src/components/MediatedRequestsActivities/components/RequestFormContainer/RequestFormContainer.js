@@ -91,11 +91,11 @@ const RequestFormContainer = ({
     createTitleLevelRequest: getTlrSettings(settings?.items[0]?.value)?.createTitleLevelRequestsByDefault,
   };
 
-  const findResource = async (resource, value, idType = 'id') => {
+  const findResource = (resource, value, idType = 'id') => {
     const url = urls[resource](value, idType);
 
-    return await ky.get(url).json();
-  }
+    return ky.get(url).json();
+  };
 
   const handleSubmit = (data) => {
     const requestData = cloneDeep(data);

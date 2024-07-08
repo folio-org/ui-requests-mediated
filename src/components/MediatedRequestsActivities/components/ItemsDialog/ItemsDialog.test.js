@@ -34,7 +34,7 @@ const labelIds = {
   resultCount: 'ui-requests-mediated.itemsDialog.resultCount',
   instanceItemsNotFound: 'ui-requests-mediated.itemsDialog.noItems',
 };
-const defaultProps = {
+const basicProps = {
   open: true,
   onClose: jest.fn(),
   onRowClick: jest.fn(),
@@ -55,15 +55,15 @@ describe('ItemsDialog', () => {
       });
       render(
         <ItemsDialog
-          {...defaultProps}
+          {...basicProps}
         />
       );
     });
 
     it('should trigger modal window with correct props', () => {
       const expectedProps = {
-        open: defaultProps.open,
-        onClose: defaultProps.onClose,
+        open: basicProps.open,
+        onClose: basicProps.onClose,
         dismissible: true,
       };
 
@@ -121,7 +121,7 @@ describe('ItemsDialog', () => {
       });
       render(
         <ItemsDialog
-          {...defaultProps}
+          {...basicProps}
         />
       );
     });
@@ -148,9 +148,9 @@ describe('ItemsDialog', () => {
         visibleColumns: COLUMN_NAMES,
         columnMapping: COLUMN_MAP,
         columnWidths: COLUMN_WIDTHS,
-        formatter: formatter,
+        formatter,
         maxHeight: MAX_HEIGHT,
-        onRowClick: defaultProps.onRowClick,
+        onRowClick: basicProps.onRowClick,
         interactive: true,
       };
 

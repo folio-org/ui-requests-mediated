@@ -13,5 +13,16 @@
     "app.sendItemInTransit.navigation": "发送转运中单件",
     "app.confirmItemArrival.paneTitle": "确认单件到达",
     "app.mediatedRequestsActivities.paneTitle": "中介请求",
-    "app.sendItemInTransit.paneTitle": "发送转运中单件"
+    "app.sendItemInTransit.paneTitle": "发送转运中单件",
+    "filters.mediatedRequestStatus.accordionTitle": "中介请求状态",
+    "filters.mediatedRequestStatus.closedDeclined": "已关闭 - 已拒绝",
+    "filters.mediatedRequestStatus.closedFilled": "已关闭 - 已满足",
+    "filters.mediatedRequestStatus.newAwaitingConfirmation": "新建 - 等待确认",
+    "filters.mediatedRequestStatus.openAwaitingPickup": "开放 - 等待取件",
+    "filters.mediatedRequestStatus.openInProgress": "开放 - 进行中",
+    "filters.mediatedRequestStatus.openInTransit": "开放 - 转运中",
+    "filters.mediatedRequestStatus.openItemArrived": "开放 - 单件已抵达",
+    "filters.mediatedRequestLevel.accordionTitle": "中介请求级别",
+    "filters.mediatedRequestLevel.item": "单件",
+    "filters.mediatedRequestLevel.title": "题名"
 }

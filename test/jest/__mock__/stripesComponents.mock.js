@@ -68,7 +68,7 @@ jest.mock('@folio/stripes/components', () => ({
   )),
   expandAllSections: jest.fn(),
   FormattedDate: jest.fn(({ value }) => <div>{value}</div>),
-  HasCommand: jest.fn(({ children }) => <div>{ children }</div>),
+  HasCommand: jest.fn(({ children }) => <div>{children}</div>),
   Headline: jest.fn(({ children }) => <div>{ children }</div>),
   Icon: jest.fn((props) => (props && props.children ? props.children : <span />)),
   IconButton: jest.fn(({
@@ -82,11 +82,11 @@ jest.mock('@folio/stripes/components', () => ({
     </button>
   )),
   KeyValue: jest.fn(({
-     label,
-     children,
-     value,
-     'data-testid': testId,
-   }) => (
+    label,
+    children,
+    value,
+    'data-testid': testId,
+  }) => (
     <div data-testid={testId}>
       <div>
         {label}
@@ -145,7 +145,7 @@ jest.mock('@folio/stripes/components', () => ({
       {children}
     </div>
   )),
-  MultiColumnList: jest.fn(() => <div/>),
+  MultiColumnList: jest.fn(() => <div />),
   NavList: jest.fn(({ children, className, ...rest }) => (
     <div className={className} {...rest}>{children}</div>
   )),
@@ -155,7 +155,7 @@ jest.mock('@folio/stripes/components', () => ({
   NavListSection: jest.fn(({ children, className, ...rest }) => (
     <div className={className} {...rest}>{children}</div>
   )),
-  NoValue: jest.fn(() => <span>No value</span>),
+  NoValue: jest.fn(() => <div />),
   Pane: jest.fn(({
     children,
     className,

@@ -6,7 +6,7 @@ import {
 
 import RequestFormFooter from './RequestFormFooter';
 
-const defaultProps = {
+const basicProps = {
   onCancel: jest.fn(),
   isSubmittingDisabled: false,
   footerClass: 'footerClass',
@@ -21,7 +21,7 @@ describe('RequestFormFooter', () => {
   beforeEach(() => {
     render(
       <RequestFormFooter
-        {...defaultProps}
+        {...basicProps}
       />
     );
   });
@@ -49,6 +49,6 @@ describe('RequestFormFooter', () => {
 
     fireEvent.click(cancelButton);
 
-    expect(defaultProps.onCancel).toHaveBeenCalled();
+    expect(basicProps.onCancel).toHaveBeenCalled();
   });
 });

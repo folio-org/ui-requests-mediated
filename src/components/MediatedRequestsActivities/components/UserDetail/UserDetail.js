@@ -12,7 +12,7 @@ import UserHighlightBox from '../UserHighlightBox';
 
 const UserDetail = ({
   user,
-  patronGroup,
+  patronGroup = '',
   request,
 }) => {
   const id = user?.id ?? request.requesterId;
@@ -42,10 +42,6 @@ UserDetail.propTypes = {
   patronGroup: PropTypes.string,
   user: PropTypes.object.isRequired,
   request: PropTypes.object,
-};
-
-UserDetail.defaultProps = {
-  patronGroup: '',
 };
 
 export default UserDetail;

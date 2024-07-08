@@ -1,4 +1,4 @@
-import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
 
 import {
   PaneHeaderIconButton,
@@ -10,17 +10,16 @@ import { ICON_TYPES } from '../../../../constants';
 const RequestFormFirstMenu = ({ onCancel }) => {
   return (
     <PaneMenu>
-      <FormattedMessage id="ui-requests-mediated.form.closeRequest">
-        {title => (
-          <PaneHeaderIconButton
-            onClick={onCancel}
-            ariaLabel={title}
-            icon={ICON_TYPES.TIMES}
-          />
-        )}
-      </FormattedMessage>
+      <PaneHeaderIconButton
+        onClick={onCancel}
+        icon={ICON_TYPES.TIMES}
+      />
     </PaneMenu>
   );
+};
+
+RequestFormFirstMenu.propTypes = {
+  onCancel: PropTypes.func.isRequired,
 };
 
 export default RequestFormFirstMenu;

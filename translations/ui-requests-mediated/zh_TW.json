@@ -13,5 +13,16 @@
     "app.sendItemInTransit.navigation": "寄出館藏傳送中",
     "app.confirmItemArrival.paneTitle": "確認館藏到館",
     "app.mediatedRequestsActivities.paneTitle": "預約請求",
-    "app.sendItemInTransit.paneTitle": "寄出館藏傳送中"
+    "app.sendItemInTransit.paneTitle": "寄出館藏傳送中",
+    "filters.mediatedRequestStatus.accordionTitle": "Mediated request status",
+    "filters.mediatedRequestStatus.closedDeclined": "Closed - Declined",
+    "filters.mediatedRequestStatus.closedFilled": "Closed - Filled",
+    "filters.mediatedRequestStatus.newAwaitingConfirmation": "New - Awaiting confirmation",
+    "filters.mediatedRequestStatus.openAwaitingPickup": "Open - Awaiting pickup",
+    "filters.mediatedRequestStatus.openInProgress": "Open - In progress",
+    "filters.mediatedRequestStatus.openInTransit": "Open - In transits",
+    "filters.mediatedRequestStatus.openItemArrived": "Open - Item arrived",
+    "filters.mediatedRequestLevel.accordionTitle": "Mediated request level",
+    "filters.mediatedRequestLevel.item": "Item",
+    "filters.mediatedRequestLevel.title": "Title"
 }

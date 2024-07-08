@@ -5,19 +5,14 @@ import {
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
-jest.mock('react-router-dom', () => ({
-  Link: jest.fn(({ to, children }) => <a href={to}>{children}</a>),
-}));
-
-import TitleInformation, {
-  REQUEST_DATE,
-} from './TitleInformation';
+import TitleInformation from './TitleInformation';
 import {
   OPEN_REQUEST_STATUS_FILTERS,
   REQUEST_LEVEL_TYPES,
+  REQUEST_DATE_SORT_PARAM,
 } from '../../../../constants';
 
-const defaultProps = {
+const basicProps = {
   instanceId: 'instanceId',
   titleLevelRequestsCount: 2,
   title: 'title',
@@ -35,6 +30,10 @@ const labelIds = {
   identifiers: 'ui-requests-mediated.instanceDetails.identifiers',
 };
 
+jest.mock('react-router-dom', () => ({
+  Link: jest.fn(({ to, children }) => <a href={to}>{children}</a>),
+}));
+
 describe('TitleInformation', () => {
   afterEach(() => {
     jest.clearAllMocks();
@@ -44,7 +43,7 @@ describe('TitleInformation', () => {
     beforeEach(() => {
       render(
         <TitleInformation
-          {...defaultProps}
+          {...basicProps}
         />
       );
     });
@@ -56,7 +55,7 @@ describe('TitleInformation', () => {
     });
 
     it('should render tlr value', () => {
-      const tlrValue = screen.queryByText(defaultProps.titleLevelRequestsCount);
+      const tlrValue = screen.queryByText(basicProps.titleLevelRequestsCount);
 
       expect(tlrValue).toBeInTheDocument();
     });
@@ -68,7 +67,7 @@ describe('TitleInformation', () => {
     });
 
     it('should render instance title value', () => {
-      const instanceTitleValue = screen.getByText(defaultProps.title);
+      const instanceTitleValue = screen.getByText(basicProps.title);
 
       expect(instanceTitleValue).toBeInTheDocument();
     });
@@ -80,7 +79,7 @@ describe('TitleInformation', () => {
     });
 
     it('should render contributor value', () => {
-      const contributorValue = screen.getByText(defaultProps.contributors[0].name);
+      const contributorValue = screen.getByText(basicProps.contributors[0].name);
 
       expect(contributorValue).toBeInTheDocument();
     });
@@ -92,7 +91,7 @@ describe('TitleInformation', () => {
     });
 
     it('should render publications date value', () => {
-      const publicationsDateValue = screen.getByText(defaultProps.publications[0].dateOfPublication);
+      const publicationsDateValue = screen.getByText(basicProps.publications[0].dateOfPublication);
 
       expect(publicationsDateValue).toBeInTheDocument();
     });
@@ -104,7 +103,7 @@ describe('TitleInformation', () => {
     });
 
     it('should render edition value', () => {
-      const editionValue = screen.getByText(defaultProps.editions[0].name);
+      const editionValue = screen.getByText(basicProps.editions[0].name);
 
       expect(editionValue).toBeInTheDocument();
     });
@@ -116,7 +115,7 @@ describe('TitleInformation', () => {
     });
 
     it('should render identifiers value', () => {
-      const identifiersValue = screen.getByText(defaultProps.identifiers[0].value);
+      const identifiersValue = screen.getByText(basicProps.identifiers[0].value);
 
       expect(identifiersValue).toBeInTheDocument();
     });
@@ -124,7 +123,7 @@ describe('TitleInformation', () => {
 
   describe('When tlr amount is not a link', () => {
     const props = {
-      ...defaultProps,
+      ...basicProps,
       titleLevelRequestsLink: false,
     };
 
@@ -138,10 +137,10 @@ describe('TitleInformation', () => {
 
     it('should not trigger Link with inventory url', () => {
       const expectedProps = {
-        to: `/mediated-requests-activities?filters=${OPEN_REQUEST_STATUS_FILTERS},requestLevels.${REQUEST_LEVEL_TYPES.TITLE}&query=${defaultProps.instanceId}&sort=${REQUEST_DATE}`,
+        to: `/mediated-requests-activities?filters=${OPEN_REQUEST_STATUS_FILTERS},requestLevels.${REQUEST_LEVEL_TYPES.TITLE}&query=${basicProps.instanceId}&sort=${REQUEST_DATE_SORT_PARAM}`,
       };
 
-      expect(Link).not.toHaveBeenCalledWith(expect.objectContaining(expectedProps) ,{});
+      expect(Link).not.toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
     });
   });
 });

@@ -5,9 +5,9 @@ import {
   useOkapiKy,
 } from '@folio/stripes/core';
 
-import { MAX_RECORDS } from '../constants';
+import { MAX_RECORDS } from '../../constants';
 
-const usePatronGroups = () => {
+const usePatronGroups = (enabled) => {
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: 'patronGroups' });
   const searchParams = {
@@ -17,10 +17,10 @@ const usePatronGroups = () => {
   const { data } = useQuery(
     [namespace],
     () => ky.get('groups', { searchParams }).json(),
-    { enabled: true },
+    { enabled },
   );
 
-  return ({ patronGroups: data?.usergroups });
+  return { patronGroups: data };
 };
 
 export default usePatronGroups;

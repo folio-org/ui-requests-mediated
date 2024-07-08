@@ -13,25 +13,29 @@ import {
   DEFAULT_DISPLAYED_YEARS_AMOUNT,
   REQUEST_LEVEL_TYPES,
   OPEN_REQUEST_STATUS_FILTERS,
+  REQUEST_DATE_SORT_PARAM,
 } from '../../../../constants';
 
 export const TEXT_SEPARATOR = ', ';
 export const CONTRIBUTOR_SEPARATOR = '; ';
 export const MAX_IDENTIFIERS_COUNT = 4;
-export const REQUEST_DATE = 'Request Date';
 
 const TitleInformation = (props) => {
   const {
-    titleLevelRequestsLink,
     instanceId,
     titleLevelRequestsCount,
     title,
-    contributors,
-    publications,
-    editions,
-    identifiers,
+    titleLevelRequestsLink = true,
+    contributors = [],
+    publications = [],
+    editions = [],
+    identifiers = [],
   } = props;
-  const getRequestsURL = (id, count) => <Link to={`/mediated-requests-activities?filters=${OPEN_REQUEST_STATUS_FILTERS},requestLevels.${REQUEST_LEVEL_TYPES.TITLE}&query=${id}&sort=${REQUEST_DATE}`}>{count}</Link>;
+  const getRequestsURL = (id, count) => (
+    <Link to={`/mediated-requests-activities?filters=${OPEN_REQUEST_STATUS_FILTERS},requestLevels.${REQUEST_LEVEL_TYPES.TITLE}&query=${id}&sort=${REQUEST_DATE_SORT_PARAM}`}>
+      {count}
+    </Link>
+  );
   const titleLevelRequestsAmount = titleLevelRequestsLink ? getRequestsURL(instanceId, titleLevelRequestsCount) : titleLevelRequestsCount;
   const instanceTitle = <Link to={`/inventory/view/${instanceId}`}>{title}</Link>;
   const instanceContributors = contributors.map(({ name }) => name).join(CONTRIBUTOR_SEPARATOR);
@@ -100,14 +104,6 @@ TitleInformation.propTypes = {
   identifiers: PropTypes.arrayOf(PropTypes.shape({
     value: PropTypes.string,
   })),
-};
-
-TitleInformation.defaultProps = {
-  contributors: [],
-  publications: [],
-  editions: [],
-  identifiers: [],
-  titleLevelRequestsLink: true,
 };
 
 export default TitleInformation;

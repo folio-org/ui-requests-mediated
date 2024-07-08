@@ -23,6 +23,7 @@ export const RESOURCE_TYPES = {
 
 export const ICON_TYPES = {
   TIMES: 'times',
+  SPINNER: 'spinner-ellipsis',
 };
 
 export const RESOURCE_KEYS = {
@@ -44,8 +45,6 @@ export const REQUEST_FORM_FIELD_NAMES = {
   KEY_OF_USER_BARCODE_FIELD: 'keyOfUserBarcodeField',
 };
 
-export const DCB_INSTANCE_ID = '9d1b77e4-f02e-4b7f-b296-3f2042ddac54';
-export const DCB_HOLDINGS_RECORD_ID = '10cd3a5a-d36f-4c7a-bc4f-e1ae3cf820c9';
 export const INVALID_REQUEST_HARDCODED_ID = '00000000-0000-4000-8000-000000000000';
 
 export const REQUEST_STATUSES = {
@@ -125,7 +124,7 @@ export const ITEM_STATUS_TRANSLATIONS = {
 export const ENTER_EVENT_KEY = 'Enter';
 
 export const BASE_SPINNER_PROPS = {
-  icon: 'spinner-ellipsis',
+  icon: ICON_TYPES.SPINNER,
   width: '10px',
 };
 
@@ -137,3 +136,5 @@ export const ITEM_QUERIES = {
 export const MAX_RECORDS = '10000';
 
 export const DEFAULT_DISPLAYED_YEARS_AMOUNT = 3;
+
+export const REQUEST_DATE_SORT_PARAM = 'Request Date';

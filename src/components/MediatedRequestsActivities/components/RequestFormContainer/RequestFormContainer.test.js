@@ -15,6 +15,7 @@ import {
   MEDIATED_REQUESTS_ACTIVITIES,
   MODULE_ROUTE,
   ITEM_QUERIES,
+  RESOURCE_KEYS,
 } from '../../../../constants';
 
 const basicProps = {
@@ -60,12 +61,16 @@ jest.mock('../RequestForm', () => jest.fn(({
         type="button"
         data-testid={testIds.cancelButton}
         onClick={onCancel}
-      >Cancel</button>
+      >
+        Cancel
+      </button>
       <button
         type="button"
         data-testid={testIds.findDataButton}
         onClick={findItem}
-      >Find Data</button>
+      >
+        Find Data
+      </button>
     </>
   );
 }));
@@ -116,7 +121,7 @@ describe('RequestFormContainer', () => {
 
     it('should find item data', () => {
       const findDataButton = screen.getByTestId(testIds.findDataButton);
-      const itemUrl = `circulation/items-by-instance?query=(${ITEM_QUERIES['id']}=="test")`;
+      const itemUrl = `circulation/items-by-instance?query=(${ITEM_QUERIES[RESOURCE_KEYS.ID]}=="test")`;
 
       fireEvent.click(findDataButton);
 

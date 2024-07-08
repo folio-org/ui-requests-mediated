@@ -61,11 +61,9 @@ class ItemInformation extends Component {
     const { shouldValidate } = this.state;
 
     if (!barcode) {
-      if (isItemIdRequest) {
-        return undefined;
-      } else {
-        return <FormattedMessage id="ui-requests-mediated.form.errors.selectItem" />;
-      }
+      return isItemIdRequest
+        ? undefined
+        : <FormattedMessage id="ui-requests-mediated.form.errors.selectItem" />;
     }
 
     if (barcode && shouldValidate) {
@@ -73,9 +71,9 @@ class ItemInformation extends Component {
 
       const item = await getItemValidationData(RESOURCE_KEYS.BARCODE, barcode);
 
-      return !item
-        ? <FormattedMessage id="ui-requests-mediated.form.errors.itemDoesNotExist" />
-        : undefined;
+      return item
+        ? undefined
+        : <FormattedMessage id="ui-requests-mediated.form.errors.itemDoesNotExist" />;
     }
 
     return undefined;
@@ -211,7 +209,7 @@ class ItemInformation extends Component {
               </Col>
               <Col xs={3}>
                 <Button
-                  id="clickable-select-item"
+                  id="selectItemButton"
                   buttonStyle="primary noRadius"
                   buttonClass={enterButtonClass}
                   fullWidth

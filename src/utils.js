@@ -3,11 +3,7 @@ import {
   isObject,
 } from 'lodash';
 
-import {
-  INVALID_REQUEST_HARDCODED_ID,
-  DCB_HOLDINGS_RECORD_ID,
-  DCB_INSTANCE_ID,
-} from './constants';
+import { INVALID_REQUEST_HARDCODED_ID } from './constants';
 
 export const transformRequestFilterOptions = (formatMessage, source = []) => (
   source.map(({ label, value }) => ({
@@ -63,17 +59,6 @@ export const isValidRequest = ({
   holdingsRecordId,
 }) => instanceId !== INVALID_REQUEST_HARDCODED_ID && holdingsRecordId !== INVALID_REQUEST_HARDCODED_ID;
 
-/*
-  DCB Transactions where FOLIO plays a borrowing role, work with virtual items,
-  whose instance and holding record id are hardcoded
-*/
-export const isVirtualItem = (
-  instanceId,
-  holdingsRecordId,
-) => {
-  return instanceId === DCB_INSTANCE_ID && holdingsRecordId === DCB_HOLDINGS_RECORD_ID;
-};
-
 export const getInstanceQueryString = (hrid, id) => `("hrid"=="${hrid}" or "id"=="${id || hrid}")`;
 
 export const getStatusQuery = (statuses = []) => statuses.reduce((acc, val) => `${acc ? acc + ' or ' : acc}status=="${val}"`, '');
@@ -89,16 +74,17 @@ export const getPatronGroup = (patron, patronGroups) => {
 
   const id = isObject(patronGroup) ? patronGroup.id : patronGroup;
 
+  // eslint-disable-next-line consistent-return
   return patronGroups.find(group => group.id === id);
-}
+};
 
 export const isSubmittingButtonDisabled = (pristine, submitting) => pristine || submitting;
 
 const isYear = (value) => {
-  const YEAR_REGEX = /^([1-9][0-9]{0,3})$/;
+  const YEAR_REGEX = /^([1-9]\d{0,3})$/;
 
   return YEAR_REGEX.test(value);
-}
+};
 
 export const getFormattedYears = (publications, limit) => {
   const years = publications
@@ -123,4 +109,4 @@ export const getFullName = (user) => {
   const displayedFirstName = preferredFirstName || firstName;
 
   return `${lastName}${displayedFirstName ? ', ' : ''}${displayedFirstName} ${middleName}`;
-}
+};

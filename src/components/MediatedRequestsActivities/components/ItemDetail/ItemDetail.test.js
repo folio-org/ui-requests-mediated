@@ -10,7 +10,7 @@ jest.mock('react-router-dom', () => ({
   Link: jest.fn(({ to, children }) => <a href={to}>{children}</a>),
 }));
 
-const defaultProps = {
+const basicProps = {
   item: {
     barcode: 'itemBarcode',
     id: 'itemId',
@@ -68,7 +68,7 @@ describe('ItemDetail', () => {
     beforeEach(() => {
       render(
         <ItemDetail
-          {...defaultProps}
+          {...basicProps}
         />
       );
     });
@@ -80,7 +80,7 @@ describe('ItemDetail', () => {
     });
 
     it('should render barcode value', () => {
-      const barcodeValue = screen.getByText(defaultProps.item.barcode, {
+      const barcodeValue = screen.getByText(basicProps.item.barcode, {
         exact: false,
       });
 
@@ -94,7 +94,7 @@ describe('ItemDetail', () => {
     });
 
     it('should render title value', () => {
-      const titleValue = screen.getByText(defaultProps.item.title);
+      const titleValue = screen.getByText(basicProps.item.title);
 
       expect(titleValue).toBeInTheDocument();
     });
@@ -106,7 +106,7 @@ describe('ItemDetail', () => {
     });
 
     it('should render contributor value', () => {
-      const contributorValue = screen.getByText(defaultProps.item.contributors[0].name);
+      const contributorValue = screen.getByText(basicProps.item.contributors[0].name);
 
       expect(contributorValue).toBeInTheDocument();
     });
@@ -118,7 +118,7 @@ describe('ItemDetail', () => {
     });
 
     it('should render effective location value', () => {
-      const effectiveLocationValue = screen.getByText(defaultProps.item.location.name);
+      const effectiveLocationValue = screen.getByText(basicProps.item.location.name);
 
       expect(effectiveLocationValue).toBeInTheDocument();
     });
@@ -154,7 +154,7 @@ describe('ItemDetail', () => {
     });
 
     it('should render due date value', () => {
-      const dueDateValue = screen.getByText(defaultProps.loan.dueDate);
+      const dueDateValue = screen.getByText(basicProps.loan.dueDate);
 
       expect(dueDateValue).toBeInTheDocument();
     });
@@ -166,7 +166,7 @@ describe('ItemDetail', () => {
     });
 
     it('should render requests on item value', () => {
-      const requestsOnItemValue = screen.getByText(defaultProps.requestCount);
+      const requestsOnItemValue = screen.getByText(basicProps.requestCount);
 
       expect(requestsOnItemValue).toBeInTheDocument();
     });

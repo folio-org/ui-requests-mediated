@@ -80,9 +80,9 @@ class RequesterInformation extends Component {
 
       const user = await getUserValidationData(RESOURCE_KEYS.BARCODE, barcode);
 
-      return !user
-        ? <FormattedMessage id="ui-requests-mediated.form.errors.userDoesNotExist" />
-        : undefined;
+      return user
+        ? undefined
+        : <FormattedMessage id="ui-requests-mediated.form.errors.userDoesNotExist" />;
     }
 
     return undefined;

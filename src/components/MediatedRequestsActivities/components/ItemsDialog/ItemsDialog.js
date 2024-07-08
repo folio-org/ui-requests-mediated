@@ -59,7 +59,7 @@ const ItemsDialog = ({
   onClose,
   open,
   onRowClick,
-  title,
+  title = '',
   instanceId,
 }) => {
   const {
@@ -136,10 +136,6 @@ const ItemsDialog = ({
       </Paneset>
     </Modal>
   );
-};
-
-ItemsDialog.defaultProps = {
-  title: '',
 };
 
 ItemsDialog.propTypes = {

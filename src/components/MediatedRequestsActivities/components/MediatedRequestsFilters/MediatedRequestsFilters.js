@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import {
   MediatedRequestLevelFilter,
   MediatedRequestStatusFilter,
@@ -28,6 +30,10 @@ const MediatedRequestsFilters = ({ settings }) => {
       )}
     </form>
   );
+};
+
+MediatedRequestsFilters.propTypes = {
+  settings: PropTypes.object.isRequired,
 };
 
 export default MediatedRequestsFilters;

@@ -4,7 +4,6 @@ import {
   isFormEditing,
   memoizeValidation,
   isValidRequest,
-  isVirtualItem,
   getTlrSettings,
   getPatronGroup,
   isSubmittingButtonDisabled,
@@ -13,11 +12,7 @@ import {
   getInstanceQueryString,
   getFullName,
 } from './utils';
-import {
-  DCB_HOLDINGS_RECORD_ID,
-  DCB_INSTANCE_ID,
-  INVALID_REQUEST_HARDCODED_ID,
-} from './constants';
+import { INVALID_REQUEST_HARDCODED_ID } from './constants';
 
 describe('utils', () => {
   describe('transformRequestFilterOptions', () => {
@@ -163,32 +158,6 @@ describe('utils', () => {
 
         expect(isValidRequest(request)).toBe(false);
       });
-    });
-  });
-
-  describe('isVirtualItem', () => {
-    describe('When item is virtual', () => {
-      it('should return true', () => {
-        expect(isVirtualItem(DCB_INSTANCE_ID, DCB_HOLDINGS_RECORD_ID)).toBe(true);
-      });
-    });
-
-    describe('When item is not virtual', () => {
-      it('should return false', () => {
-        const instanceId = 'instanceId';
-        const holdingRecordId = 'holdingRecordId';
-
-        expect(isVirtualItem(instanceId, holdingRecordId)).toBe(false);
-      });
-    });
-
-
-    it('should return false if "holdingsRecordId" in request have hardcoded invalid value', () => {
-      expect(isVirtualItem(DCB_INSTANCE_ID, 'testHoldingRecordId')).toBe(false);
-    });
-
-    it('should return false if "instanceId" in request have hardcoded invalid value', () => {
-      expect(isVirtualItem('testInstanceId', DCB_HOLDINGS_RECORD_ID)).toBe(false);
     });
   });
 

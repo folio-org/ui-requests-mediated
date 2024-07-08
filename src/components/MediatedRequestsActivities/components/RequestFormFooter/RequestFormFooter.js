@@ -1,4 +1,5 @@
 import { FormattedMessage } from 'react-intl';
+import PropTypes from 'prop-types';
 
 import {
   Button,
@@ -42,6 +43,12 @@ const RequestFormFooter = ({
       </div>
     </PaneFooter>
   );
+};
+
+RequestFormFooter.propTypes = {
+  onCancel: PropTypes.func.isRequired,
+  isSubmittingDisabled: PropTypes.bool.isRequired,
+  footerClass: PropTypes.string.isRequired,
 };
 
 export default RequestFormFooter;

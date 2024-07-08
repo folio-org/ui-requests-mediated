@@ -1,5 +1,6 @@
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 import {
   Col,
@@ -16,8 +17,8 @@ const UserHighlightBox = ({
   id,
   barcode,
 }) => {
-  const getHighlightBoxLink = (text, id) => {
-    return text ? <Link to={`/users/view/${id}`}>{text}</Link> : '';
+  const getHighlightBoxLink = (text, userId) => {
+    return text ? <Link to={`/users/view/${userId}`}>{text}</Link> : <></>;
   };
   const recordLink = getHighlightBoxLink(name, id);
   const barcodeLink = getHighlightBoxLink(barcode, id);
@@ -43,6 +44,13 @@ const UserHighlightBox = ({
       </Col>
     </Row>
   );
+};
+
+UserHighlightBox.propTypes = {
+  title: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
+  barcode: PropTypes.string.isRequired,
 };
 
 export default UserHighlightBox;

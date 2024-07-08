@@ -6,6 +6,7 @@ import {
   Route,
   Switch,
   Redirect,
+  useStripes,
 } from '@folio/stripes/core';
 
 import ConfirmItemArrival from './components/ConfirmItemArrival';
@@ -25,27 +26,33 @@ import {
 } from './hooks';
 
 const RequestsMediated = (props) => {
+  const stripes = useStripes();
+  const { settings } = useGeneralTlrSettings(!props.showSettings);
+  const { patronGroups } = usePatronGroups(!props.showSettings);
+
   if (props.showSettings) {
-    return <Settings {...props}/>;
+    return <Settings {...props} />;
   }
 
-  const { settings } = useGeneralTlrSettings();
-  const { patronGroups } = usePatronGroups();
   const {
     match: {
       path,
     },
   } = props;
+  const isRequestCreationAvailable = stripes.hasPerm('ui-requests-mediated.all') || stripes.hasPerm('ui-requests-mediated.view-create-edit');
 
   return (
     <Switch>
-      <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}/create`}>
-        <RequestFormContainer
-          settings={settings}
-          patronGroups={patronGroups}
-        />
-      </Route>
-      <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}`} >
+      {
+        isRequestCreationAvailable &&
+          <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}/create`}>
+            <RequestFormContainer
+              settings={settings}
+              patronGroups={patronGroups?.usergroups}
+            />
+          </Route>
+      }
+      <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}`}>
         <MediatedRequestsActivities settings={settings} />
       </Route>
       <Route

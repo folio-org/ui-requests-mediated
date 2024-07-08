@@ -32,7 +32,7 @@ jest.mock('../../../../utils', () => ({
   isFormEditing: jest.fn(() => false),
   memoizeValidation: (fn) => () => fn,
 }));
-jest.mock('../UserDetail', () => jest.fn(() => <div/>));
+jest.mock('../UserDetail', () => jest.fn(() => <div />));
 
 const basicProps = {
   triggerUserBarcodeValidation: jest.fn(),

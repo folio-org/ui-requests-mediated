@@ -16,7 +16,7 @@ jest.mock('../../../../utils', () => ({
 }));
 
 const basicProps = {
-  children: <div/>,
+  children: <div />,
   onSubmit: jest.fn(),
   onCancel: jest.fn(),
   accordionStatusRef: {},

@@ -5,12 +5,11 @@ import {
 
 import {
   renderHook,
-  act,
+  waitFor,
 } from '@folio/jest-config-stripes/testing-library/react';
-
 import { useOkapiKy } from '@folio/stripes/core';
 
-import useGeneralTlrSettings from './useGeneralTlrSettings';
+import usePatronGroups from './usePatronGroups';
 
 const queryClient = new QueryClient();
 
@@ -21,24 +20,22 @@ const wrapper = ({ children }) => (
   </QueryClientProvider>
 );
 
-const data = 'data';
+const data = {
+  usergroups: ['test'],
+};
 
-describe('useGeneralTlrSettings', () => {
+describe('usePatronGroups', () => {
   it('should fetch data', async () => {
     useOkapiKy.mockClear().mockReturnValue({
       get: () => ({
-        json: () => ({
-          data,
-        }),
+        json: () => ({ data }),
       }),
     });
 
-    const { result } = renderHook(() => useGeneralTlrSettings(true), { wrapper });
+    const { result } = renderHook(() => usePatronGroups(true), { wrapper });
 
-    await act(() => {
-      return !result.current.isLoading;
+    await waitFor(() => {
+      expect(result.current.patronGroups.data).toEqual(data);
     });
-
-    expect(result.current.settings.data).toBe(data);
   });
 });

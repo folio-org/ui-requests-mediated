@@ -209,6 +209,7 @@ class InstanceInformation extends Component {
                 </Col>
                 <Col xs={3}>
                   <Button
+                    id="selectInstanceButton"
                     buttonStyle="primary noRadius"
                     buttonClass={enterButtonClass}
                     fullWidth
@@ -245,7 +246,7 @@ class InstanceInformation extends Component {
                 instanceId={request?.instanceId || selectedInstance.id}
                 titleLevelRequestsCount={titleLevelRequestsCount}
                 title={selectedInstance.title}
-                contributors={selectedInstance.contributors || selectedInstance.contributorNames}
+                contributors={selectedInstance.contributors}
                 publications={selectedInstance.publication}
                 editions={selectedInstance.editions}
                 identifiers={selectedInstance.identifiers}
