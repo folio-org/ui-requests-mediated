@@ -4,7 +4,6 @@
     "settings.general": "一般",
     "settings.general.message": "這是您的一般功能設定。",
     "permission.view": "中介請求：檢視",
-    "permission.view-create": "中介請求：檢視、建立",
     "permission.view-create-edit": "中介請求：檢視、編輯、取消",
     "permission.all": "中介請求：所有權限",
     "app.filterPane.selectActivity": "選擇活動",
@@ -24,5 +23,7 @@
     "filters.mediatedRequestStatus.openItemArrived": "Open - Item arrived",
     "filters.mediatedRequestLevel.accordionTitle": "Mediated request level",
     "filters.mediatedRequestLevel.item": "Item",
-    "filters.mediatedRequestLevel.title": "Title"
+    "filters.mediatedRequestLevel.title": "Title",
+    "permission.view-decline": "Mediated requests: View, decline",
+    "permission.view-edit-decline": "Mediated requests: View, edit, decline"
 }

@@ -4,8 +4,7 @@
     "settings.general": "Ogólne",
     "settings.general.message": "To są Twoje ogólne ustawienia aplikacji.",
     "permission.view": "Mediated requests: View",
-    "permission.view-create": "Mediated requests: View, create",
-    "permission.view-create-edit": "Mediated requests: View, edit, cancel",
+    "permission.view-create-edit": "Mediated requests: View, create, edit",
     "permission.all": "Mediated requests: All permissions",
     "app.filterPane.selectActivity": "Select activity",
     "app.confirmItemArrival.navigation": "Potwierdź przybycie egzemplarza",
@@ -24,5 +23,7 @@
     "filters.mediatedRequestStatus.openItemArrived": "Open - Item arrived",
     "filters.mediatedRequestLevel.accordionTitle": "Mediated request level",
     "filters.mediatedRequestLevel.item": "Item",
-    "filters.mediatedRequestLevel.title": "Title"
+    "filters.mediatedRequestLevel.title": "Title",
+    "permission.view-decline": "Mediated requests: View, decline",
+    "permission.view-edit-decline": "Mediated requests: View, edit, decline"
 }
