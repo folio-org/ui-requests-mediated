@@ -99,7 +99,7 @@ describe('NavigationMenu', () => {
   describe('handleChangeMenu', () => {
     const push = jest.fn();
 
-    it('should handel correct when pathname equal mediated requests activities', () => {
+    it('should handle correct when pathname equal mediated requests activities', () => {
       const event = {
         target: {
           value: getMediatedRequestsActivitiesUrl(),
@@ -122,7 +122,7 @@ describe('NavigationMenu', () => {
       }));
     });
 
-    it('should handel correct when pathname not equal mediated requests activities', () => {
+    it('should handle correct when pathname not equal mediated requests activities', () => {
       const event = {
         target: {
           value: getConfirmItemArrivalUrl(),

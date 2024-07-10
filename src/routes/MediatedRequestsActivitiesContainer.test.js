@@ -11,6 +11,10 @@ import {
   MEDIATED_REQUESTS_RECORDS_NAME,
 } from '../constants';
 
+jest.mock('@folio/stripes/smart-components', () => ({
+  ...jest.requireActual('@folio/stripes/smart-components'),
+}));
+
 jest.mock('../components/MediatedRequestsActivities', () => jest.fn((props) => (<div {...props} />)));
 
 const logger = {

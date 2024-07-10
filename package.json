@@ -61,7 +61,6 @@
     "queryResource": "query",
     "displayName": "ui-requests-mediated.meta.title",
     "route": "/requests-mediated",
-    "queryResource": "query",
     "icons": [
       {
         "name": "app",

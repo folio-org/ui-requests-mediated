@@ -105,17 +105,7 @@ class MediatedRequestsActivitiesContainer extends React.Component {
       logger: PropTypes.object.isRequired,
       hasPerm: PropTypes.func.isRequired,
     }).isRequired,
-  }
-
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      mediatedRequestsLocation: {
-        pathname: props.location.state?.pathname,
-        search: props.location.state?.search,
-      },
-    };
+    settings: PropTypes.object.isRequired,
   }
 
   componentDidMount() {
@@ -125,20 +115,6 @@ class MediatedRequestsActivitiesContainer extends React.Component {
   componentDidUpdate() {
     this.source.update(this.props, MEDIATED_REQUESTS_RECORDS_NAME);
   }
-
-  onNeedMoreData = (askAmount, index) => {
-    const {
-      resultOffset,
-    } = this.props.mutator;
-
-    if (this.source) {
-      if (resultOffset && index >= 0) {
-        this.source.fetchOffset(index);
-      } else {
-        this.source.fetchMore(PAGE_AMOUNT);
-      }
-    }
-  };
 
   querySetter = ({ nsValues, state }) => {
     const {
@@ -172,19 +148,6 @@ class MediatedRequestsActivitiesContainer extends React.Component {
     return this.props?.resources?.query ?? {};
   }
 
-  onClose = () => {
-    const {
-      history,
-    } = this.props;
-    const {
-      mediatedRequestsLocation,
-    } = this.state;
-
-    if (mediatedRequestsLocation.pathname) {
-      history.push(`${mediatedRequestsLocation.pathname}${mediatedRequestsLocation.search}`);
-    }
-  }
-
   render() {
     if (this.source) {
       this.source.update(this.props, MEDIATED_REQUESTS_RECORDS_NAME);
@@ -193,12 +156,11 @@ class MediatedRequestsActivitiesContainer extends React.Component {
     return (
       <MediatedRequestsActivities
         source={this.source}
-        onNeedMoreData={this.onNeedMoreData}
         queryGetter={this.queryGetter}
         querySetter={this.querySetter}
         resources={this.props.resources}
         mutator={this.props.mutator}
-        onClose={this.onClose}
+        settings={this.props.settings}
       />
     );
   }

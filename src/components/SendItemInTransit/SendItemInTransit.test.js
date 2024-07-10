@@ -35,7 +35,7 @@ describe('SendItemInTransit', () => {
     expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
   });
 
-  it('should render navigation menu with correct props', () => {
+  it('should trigger navigation menu with correct props', () => {
     expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
       value: getSendItemInTransitUrl(),
     }), {});

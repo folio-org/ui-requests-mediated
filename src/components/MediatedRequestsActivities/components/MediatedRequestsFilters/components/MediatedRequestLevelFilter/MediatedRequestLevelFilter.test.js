@@ -1,4 +1,6 @@
-import { useIntl } from 'react-intl';
+import {
+  useIntl,
+} from 'react-intl';
 
 import {
   Accordion,
@@ -25,6 +27,9 @@ const testIds = {
   accordion: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS,
   checkboxFilter: `${MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS}Filter`,
   checkboxFilterButton: `${MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS}FilterButton`,
+};
+const labelIds = {
+  accordionLabel: 'ui-requests-mediated.filters.mediatedRequestLevel.accordionTitle',
 };
 
 describe('MediatedRequestLevelFilter', () => {
@@ -64,13 +69,19 @@ describe('MediatedRequestLevelFilter', () => {
 
   it('should render accordion with correct props', () => {
     const expectedProps = {
+      id: 'requestLevel',
       'data-testid': testIds.accordion,
+      label: labelIds.accordionLabel,
+      name: 'requestLevel',
+      separator: false,
+      displayClearButton: true,
+      onClearFilter: expect.any(Function),
     };
 
     expect(Accordion).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
   });
 
-  it('should handle clear filters', () => {
+  it('should handle accordion clear filters', () => {
     expect(clearGroup).not.toHaveBeenCalled();
 
     fireEvent.click(screen.getByTestId(`${testIds.accordion}Button`));

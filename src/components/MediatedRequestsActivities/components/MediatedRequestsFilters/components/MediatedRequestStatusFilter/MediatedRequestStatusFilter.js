@@ -41,6 +41,7 @@ const MediatedRequestStatusFilter = ({
       [filter.name]: filter.values
     });
   };
+  const onClearFilter = () => clearGroup(filterPath);
 
   return (
     <AccordionSet
@@ -54,7 +55,7 @@ const MediatedRequestStatusFilter = ({
         name={filterPath}
         separator={false}
         displayClearButton={!isEmpty(activeValues)}
-        onClearFilter={() => clearGroup(filterPath)}
+        onClearFilter={onClearFilter}
       >
         <CheckboxFilter
           data-testid={`${MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_STATUS}Filter`}

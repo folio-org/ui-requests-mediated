@@ -48,7 +48,7 @@ const MediatedRequestsActivities = ({
       return null;
     }
 
-    const filterCount = filters.string !== '' ? filters.string.split(',').length : 0;
+    const filterCount = filters.string === '' ? 0 : filters.string.split(',').length;
 
     return (
       <PaneMenu>
@@ -99,7 +99,7 @@ const MediatedRequestsActivities = ({
                 separator
               />
               <MediatedRequestsFilters
-                activeFilters={activeFilters.state}
+                activeFilters={activeFilters?.state}
                 getSearchHandlers={getSearchHandlers}
                 searchValue={searchValue}
                 onSubmitSearch={onSubmitSearch}

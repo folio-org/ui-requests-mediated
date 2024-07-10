@@ -53,7 +53,10 @@ const RequestsMediated = (props) => {
           </Route>
       }
       <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}`}>
-        <MediatedRequestsActivitiesContainer settings={settings} />
+        <MediatedRequestsActivitiesContainer
+          {...props}
+          settings={settings}
+        />
       </Route>
       <Route
         path={`${path}/${CONFIRM_ITEM_ARRIVAL}`}
