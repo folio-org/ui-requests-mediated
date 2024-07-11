@@ -1,6 +1,7 @@
 import React from 'react';
 
 jest.mock('@folio/stripes/smart-components', () => ({
+  ClipCopy: jest.fn(() => <div />),
   CollapseFilterPaneButton: jest.fn(({
     onClick,
     'data-testid': testId,

@@ -1,5 +1,3 @@
-import React from 'react';
-
 jest.mock('@folio/stripes/components', () => ({
   Accordion: jest.fn(({
     children,
@@ -32,25 +30,45 @@ jest.mock('@folio/stripes/components', () => ({
       {children}
     </div>
   )),
+  AccordionStatus: jest.fn(({ children }) => <div>{children}</div>),
   Badge: jest.fn((props) => (
     <span>
       <span>{props.children}</span>
     </span>
   )),
-  Button: jest.fn(({ children }) => (
-    <button data-test-button type="button">
+  Button: jest.fn(({
+    children,
+    buttonStyle,
+    ...rest
+  }) => (
+    <button
+      type="button"
+      data-button-type={buttonStyle}
+      {...rest}
+    >
       <span>
         {children}
       </span>
     </button>
   )),
+  Checkbox: jest.fn((props) => (
+    <input
+      type="checkbox"
+      {...props}
+    />
+  )),
+  checkScope: jest.fn(),
   Col: jest.fn(({ children }) => <div className="col">{ children }</div>),
+  collapseAllSections: jest.fn(),
   Datepicker: jest.fn(({ ref, children, ...rest }) => (
     <div ref={ref} {...rest}>
       {children}
       <input type="text" />
     </div>
   )),
+  expandAllSections: jest.fn(),
+  FormattedDate: jest.fn(({ value }) => <div>{value}</div>),
+  HasCommand: jest.fn(({ children }) => <div>{children}</div>),
   Headline: jest.fn(({ children }) => <div>{ children }</div>),
   Icon: jest.fn((props) => (props && props.children ? props.children : <span />)),
   IconButton: jest.fn(({
@@ -63,9 +81,29 @@ jest.mock('@folio/stripes/components', () => ({
       <span {...rest} />
     </button>
   )),
+  KeyValue: jest.fn(({
+    label,
+    children,
+    value,
+    'data-testid': testId,
+  }) => (
+    <div data-testid={testId}>
+      <div>
+        {label}
+      </div>
+      <div>
+        {children || value}
+      </div>
+    </div>
+  )),
   Label: jest.fn(({ children, ...rest }) => (
     <span {...rest}>{children}</span>
   )),
+  Layout: jest.fn(({
+    children,
+    ...rest
+  }) => <div {...rest}>{children}</div>),
+  Loading: jest.fn(() => <div />),
   // oy, dismissible. we need to pull it out of props so it doesn't
   // get applied to the div as an attribute, which must have a string-value,
   // which will shame you in the console:
@@ -107,6 +145,7 @@ jest.mock('@folio/stripes/components', () => ({
       {children}
     </div>
   )),
+  MultiColumnList: jest.fn(() => <div />),
   NavList: jest.fn(({ children, className, ...rest }) => (
     <div className={className} {...rest}>{children}</div>
   )),
@@ -116,12 +155,24 @@ jest.mock('@folio/stripes/components', () => ({
   NavListSection: jest.fn(({ children, className, ...rest }) => (
     <div className={className} {...rest}>{children}</div>
   )),
-  Pane: jest.fn(({ children, className, defaultWidth, paneTitle, firstMenu, lastMenu, fluidContentWidth, ...rest }) => {
+  NoValue: jest.fn(() => <div />),
+  Pane: jest.fn(({
+    children,
+    className,
+    defaultWidth,
+    paneTitle,
+    paneSub,
+    firstMenu,
+    lastMenu,
+    fluidContentWidth,
+    ...rest
+  }) => {
     return (
       <div className={className} {...rest} style={!fluidContentWidth ? { width: '960px' } : { width: defaultWidth }}>
         <div>
           {firstMenu ?? null}
-          {paneTitle}
+          <span>{paneTitle}</span>
+          <span>{paneSub}</span>
           {lastMenu ?? null}
         </div>
         {children}
@@ -147,6 +198,7 @@ jest.mock('@folio/stripes/components', () => ({
   )),
   PaneBackLink: jest.fn(() => <span />),
   PaneMenu: jest.fn((props) => <div>{props.children}</div>),
+  PaneHeaderIconButton: jest.fn(() => <div />),
   RadioButton: jest.fn(({ label, name, ...rest }) => (
     <div>
       <label htmlFor="male">{label}</label>
@@ -185,6 +237,28 @@ jest.mock('@folio/stripes/components', () => ({
             </option>))}
         </select>
         {children}
+      </div>
+    );
+  }),
+  TextField: jest.fn(({
+    label,
+    onChange,
+    validate = jest.fn(),
+    ...rest
+  }) => {
+    const handleChange = (e) => {
+      validate(e.target.value);
+      onChange(e);
+    };
+
+    return (
+      <div>
+        <label htmlFor="textField">{label}</label>
+        <input
+          id="textField"
+          onChange={handleChange}
+          {...rest}
+        />
       </div>
     );
   }),

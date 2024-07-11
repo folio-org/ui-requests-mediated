@@ -23,8 +23,12 @@ const labelIds = {
 };
 
 describe('MediatedRequestsActivities', () => {
+  const props = {
+    settings: {},
+  };
+
   beforeEach(() => {
-    render(<MediatedRequestsActivities />);
+    render(<MediatedRequestsActivities {...props} />);
   });
 
   it('should render search and sort query', () => {
@@ -50,7 +54,9 @@ describe('MediatedRequestsActivities', () => {
   });
 
   it('should trigger MediatedRequestsFilters with correct props', () => {
-    expect(MediatedRequestsFilters).toHaveBeenCalledWith(expect.objectContaining({}), {});
+    expect(MediatedRequestsFilters).toHaveBeenCalledWith(expect.objectContaining({
+      settings: props.settings,
+    }), {});
   });
 
   it('should render CollapseFilterPaneButton', () => {

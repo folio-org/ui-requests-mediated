@@ -1,3 +1,5 @@
+import PropTypes from 'prop-types';
+
 import {
   MediatedRequestLevelFilter,
   MediatedRequestStatusFilter,
@@ -7,13 +9,9 @@ import {
 import {
   getIsTitleLevelRequestsFeatureEnabled,
 } from '../../../../utils';
-import {
-  useGeneralTlrSettings
-} from '../../../../hooks';
 
-const MediatedRequestsFilters = () => {
-  const { data } = useGeneralTlrSettings();
-  const isTitleLevelRequestsFeatureEnabled = getIsTitleLevelRequestsFeatureEnabled(data);
+const MediatedRequestsFilters = ({ settings }) => {
+  const isTitleLevelRequestsFeatureEnabled = getIsTitleLevelRequestsFeatureEnabled(settings);
 
   return (
     <form
@@ -32,6 +30,10 @@ const MediatedRequestsFilters = () => {
       )}
     </form>
   );
+};
+
+MediatedRequestsFilters.propTypes = {
+  settings: PropTypes.object.isRequired,
 };
 
 export default MediatedRequestsFilters;

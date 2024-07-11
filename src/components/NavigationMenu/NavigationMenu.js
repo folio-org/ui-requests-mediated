@@ -48,7 +48,7 @@ export const handleChangeMenu = (event, location, history) => {
 
 const NavigationMenu = ({
   value,
-  separator,
+  separator = false,
 }) => {
   const intl = useIntl();
   const history = useHistory();
@@ -72,10 +72,6 @@ const NavigationMenu = ({
 NavigationMenu.propTypes = {
   value: PropTypes.string.isRequired,
   separator: PropTypes.bool,
-};
-
-NavigationMenu.defaultProps = {
-  separator: false,
 };
 
 export default NavigationMenu;

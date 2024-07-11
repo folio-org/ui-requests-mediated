@@ -9,7 +9,7 @@ const SETTINGS_KEYS = {
   GENERAL_TLR: 'generalTlr',
 };
 
-const useGeneralTlrSettings = () => {
+const useGeneralTlrSettings = (enabled) => {
   const ky = useOkapiKy();
   const [namespace] = useNamespace({ key: 'generalTlrSettings' });
   const searchParams = {
@@ -19,13 +19,13 @@ const useGeneralTlrSettings = () => {
   const { isLoading, data, refetch, isFetching } = useQuery(
     [namespace],
     () => ky.get('settings/entries', { searchParams }).json(),
-    { enabled: true },
+    { enabled },
   );
 
   return ({
+    settings: data,
     isLoading,
     isFetching,
-    data,
     refetch,
   });
 };

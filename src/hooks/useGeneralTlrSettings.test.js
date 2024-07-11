@@ -33,12 +33,12 @@ describe('useGeneralTlrSettings', () => {
       }),
     });
 
-    const { result } = renderHook(() => useGeneralTlrSettings(), { wrapper });
+    const { result } = renderHook(() => useGeneralTlrSettings(true), { wrapper });
 
     await act(() => {
       return !result.current.isLoading;
     });
 
-    expect(result.current.data.data).toBe(data);
+    expect(result.current.settings.data).toBe(data);
   });
 });

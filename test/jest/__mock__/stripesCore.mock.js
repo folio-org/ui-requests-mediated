@@ -14,5 +14,26 @@ jest.mock('@folio/stripes/core', () => ({
   IfPermission: jest.fn(({ perm, children }) => {
     return perm === 'permission' ? children : null;
   }),
-  Pluggable: jest.fn(({ children }) => [children]),
+  Pluggable: jest.fn(({
+    searchLabel,
+    selectInstance = () => {},
+    selectUser = () => {},
+  }) => {
+    const handleClick = () => {
+      selectInstance({ hrid: 'hrid' });
+      selectUser();
+    };
+
+    return (
+      <>
+        <div>{searchLabel}</div>
+        <button
+          type="button"
+          onClick={handleClick}
+        >
+          Search
+        </button>
+      </>
+    );
+  }),
 }));
