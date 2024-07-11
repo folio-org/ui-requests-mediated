@@ -4,7 +4,6 @@
     "settings.general": "通用",
     "settings.general.message": "这些是常规应用设置。",
     "permission.view": "中介请求：查看",
-    "permission.view-create": "中介请求：查看、创建",
     "permission.view-create-edit": "中介请求：查看、编辑、取消",
     "permission.all": "中介请求：所有权限",
     "app.filterPane.selectActivity": "选择活动",
@@ -24,5 +23,7 @@
     "filters.mediatedRequestStatus.openItemArrived": "开放 - 单件已抵达",
     "filters.mediatedRequestLevel.accordionTitle": "中介请求级别",
     "filters.mediatedRequestLevel.item": "单件",
-    "filters.mediatedRequestLevel.title": "题名"
+    "filters.mediatedRequestLevel.title": "题名",
+    "permission.view-decline": "Mediated requests: View, decline",
+    "permission.view-edit-decline": "Mediated requests: View, edit, decline"
 }

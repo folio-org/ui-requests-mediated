@@ -12,7 +12,6 @@ import {
 import { effectiveCallNumber } from '@folio/stripes/util';
 import { ClipCopy } from '@folio/stripes/smart-components';
 
-import { isValidRequest } from '../../../../utils';
 import {
   ITEM_STATUS_TRANSLATIONS,
   OPEN_REQUEST_STATUS_FILTERS,
@@ -51,16 +50,7 @@ const ItemDetail = ({
     )
     : count;
   const itemLabel = item.barcode ? 'ui-requests-mediated.itemDetails.barcode' : 'ui-requests-mediated.itemDetails.id';
-  const isRequestValid = isValidRequest({ instanceId, holdingsRecordId });
-  const getRecordLink = () => {
-    if (itemId) {
-      return isRequestValid
-        ? <Link to={`/inventory/view/${instanceId}/${holdingsRecordId}/${itemId}`}>{item.barcode || itemId}</Link>
-        : (item.barcode || itemId);
-    }
-
-    return <NoValue />;
-  };
+  const recordLink = itemId ? <Link to={`/inventory/view/${instanceId}/${holdingsRecordId}/${itemId}`}>{item.barcode || itemId}</Link> : <NoValue />;
 
   return (
     <>
@@ -71,7 +61,7 @@ const ItemDetail = ({
             label={<FormattedMessage id={itemLabel} />}
             value={
               <>
-                {getRecordLink()}
+                {recordLink}
                 {
                   Boolean(item.barcode) && (
                     <ClipCopy text={item.barcode} />

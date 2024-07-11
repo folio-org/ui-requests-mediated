@@ -3,8 +3,6 @@ import {
   isObject,
 } from 'lodash';
 
-import { INVALID_REQUEST_HARDCODED_ID } from './constants';
-
 export const transformRequestFilterOptions = (formatMessage, source = []) => (
   source.map(({ label, value }) => ({
     label: formatMessage({ id: label }),
@@ -53,11 +51,6 @@ export const memoizeValidation = (fn) => {
     return lastResults[fieldName];
   };
 };
-
-export const isValidRequest = ({
-  instanceId,
-  holdingsRecordId,
-}) => instanceId !== INVALID_REQUEST_HARDCODED_ID && holdingsRecordId !== INVALID_REQUEST_HARDCODED_ID;
 
 export const getInstanceQueryString = (hrid, id) => `("hrid"=="${hrid}" or "id"=="${id || hrid}")`;
 

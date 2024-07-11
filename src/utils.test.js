@@ -3,7 +3,6 @@ import {
   handleKeyCommand,
   isFormEditing,
   memoizeValidation,
-  isValidRequest,
   getTlrSettings,
   getPatronGroup,
   isSubmittingButtonDisabled,
@@ -12,7 +11,6 @@ import {
   getInstanceQueryString,
   getFullName,
 } from './utils';
-import { INVALID_REQUEST_HARDCODED_ID } from './constants';
 
 describe('utils', () => {
   describe('transformRequestFilterOptions', () => {
@@ -133,30 +131,6 @@ describe('utils', () => {
         it('should return cashed result', () => {
           expect(result).toBe(functionResult);
         });
-      });
-    });
-  });
-
-  describe('isValidRequest', () => {
-    describe('When request is valid', () => {
-      it('should return true', () => {
-        const request = {
-          instanceId: 'instanceId',
-          holdingsRecordId: 'holdingRecordId',
-        };
-
-        expect(isValidRequest(request)).toBe(true);
-      });
-    });
-
-    describe('When request is not valid', () => {
-      it('should return false', () => {
-        const request = {
-          instanceId: INVALID_REQUEST_HARDCODED_ID,
-          holdingsRecordId: INVALID_REQUEST_HARDCODED_ID,
-        };
-
-        expect(isValidRequest(request)).toBe(false);
       });
     });
   });

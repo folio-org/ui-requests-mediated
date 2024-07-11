@@ -45,8 +45,6 @@ export const REQUEST_FORM_FIELD_NAMES = {
   KEY_OF_USER_BARCODE_FIELD: 'keyOfUserBarcodeField',
 };
 
-export const INVALID_REQUEST_HARDCODED_ID = '00000000-0000-4000-8000-000000000000';
-
 export const REQUEST_STATUSES = {
   AWAITING_DELIVERY: 'Open - Awaiting delivery',
   AWAITING_PICKUP: 'Open - Awaiting pickup',
