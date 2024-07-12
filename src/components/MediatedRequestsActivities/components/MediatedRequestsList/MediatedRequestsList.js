@@ -1,8 +1,5 @@
 import PropTypes from 'prop-types';
 import {
-  FormattedMessage,
-} from 'react-intl';
-import {
   get,
   noop,
 } from 'lodash';
@@ -29,18 +26,9 @@ import {
   DEFAULT_VIEW_VALUE,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
   MEDIATED_REQUESTS_RECORD_FIELD_PATH,
+  MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
 } from '../../../../constants';
 
-
-export const MEDIATED_REQUEST_COLUMNS_NAME = [
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE,
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE,
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE,
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER,
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS,
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER,
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE,
-];
 export const COLUMN_WIDTHS = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: { max: 150 },
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]: { max: 150 },
@@ -49,15 +37,6 @@ export const COLUMN_WIDTHS = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]: { max: 150 },
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: { max: 150 },
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: { max: 150 },
-};
-export const COLUMN_MAPPING = {
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.title" />,
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.itemBarcode" />,
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.mediatedRequestDate" />,
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.effectiveCallNumber" />,
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.mediatedRequestStatus" />,
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.requester" />,
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.requesterBarcode" />,
 };
 export const mediatedRequestsListFormatter = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: (mediatedRequest) => (
@@ -104,6 +83,7 @@ export const emptyMessage = (source, query) => (
 );
 
 const MediatedRequestsList = ({
+  visibleColumns,
   contentData,
   source,
   query,
@@ -112,9 +92,9 @@ const MediatedRequestsList = ({
     <MultiColumnList
       id="mediatedRequestsList"
       data-testid="mediatedRequestsList"
-      visibleColumns={MEDIATED_REQUEST_COLUMNS_NAME}
+      visibleColumns={visibleColumns}
       columnWidths={COLUMN_WIDTHS}
-      columnMapping={COLUMN_MAPPING}
+      columnMapping={MEDIATED_REQUESTS_RECORD_TRANSLATIONS}
       contentData={contentData}
       formatter={mediatedRequestsListFormatter}
       isEmptyMessage={emptyMessage(source, query)}
@@ -123,6 +103,7 @@ const MediatedRequestsList = ({
 };
 
 MediatedRequestsList.propTypes = {
+  visibleColumns: PropTypes.object,
   contentData: PropTypes.arrayOf(PropTypes.object).isRequired,
   source: PropTypes.object,
   query: PropTypes.shape({

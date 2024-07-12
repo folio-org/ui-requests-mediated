@@ -3,7 +3,9 @@ import {
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
-import MediatedRequestsActivities from './MediatedRequestsActivities';
+import MediatedRequestsActivities, {
+  getActionMenu,
+} from './MediatedRequestsActivities';
 import NavigationMenu from '../NavigationMenu';
 import MediatedRequestsFilters from './components/MediatedRequestsFilters';
 
@@ -19,6 +21,7 @@ const testIds = {
 };
 const labelIds = {
   paneTitle: 'ui-requests-mediated.app.mediatedRequestsActivities.paneTitle',
+  newMediatedRequestButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.newMediatedRequest',
 };
 
 jest.mock('@folio/stripes/smart-components', () => ({
@@ -93,5 +96,20 @@ describe('MediatedRequestsActivities', () => {
     expect(MediatedRequestsFilters).toHaveBeenCalledWith(expect.objectContaining({
       settings,
     }), {});
+  });
+});
+describe('getActionMenu', () => {
+  const renderColumnsMenu = 'renderColumnsMenu';
+
+  beforeEach(() => {
+    render(getActionMenu(renderColumnsMenu)());
+  });
+
+  it('should render new mediated request button', () => {
+    expect(screen.getByText(labelIds.newMediatedRequestButton)).toBeInTheDocument();
+  });
+
+  it('should render columns menu', async () => {
+    expect(await screen.findByText(renderColumnsMenu)).toBeInTheDocument();
   });
 });

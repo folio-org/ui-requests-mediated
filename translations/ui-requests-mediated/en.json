@@ -37,6 +37,8 @@
   "mediatedRequestList.columnName.requester": "Requester",
   "mediatedRequestList.columnName.requesterBarcode": "Requester barcode",
 
+  "mediatedRequestList.actionMenu.newMediatedRequest": "New mediated request",
+
   "settings.index.paneTitle": "Mediated requests",
   "settings.general": "General",
   "settings.general.message": "These are your general app settings.",
