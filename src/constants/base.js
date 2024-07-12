@@ -8,6 +8,7 @@ export const DEFAULT_VIEW_VALUE = '';
 
 export const ICONS = {
   TIMES_CIRCLE_SOLID: 'times-circle-solid',
+  PLUS_SIGN: 'plus-sign',
 };
 
 export const REQUEST_LEVEL_TYPES = {

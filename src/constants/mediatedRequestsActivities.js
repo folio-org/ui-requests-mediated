@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { FormattedMessage } from 'react-intl';
 
 export const MEDIATED_REQUESTS_RECORDS_NAME = 'mediatedRequestsRecords';
 
@@ -31,6 +32,16 @@ export const MEDIATED_REQUESTS_RECORD_FIELD_PATH = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]: 'searchIndex.callNumberComponents.callNumber',
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]: 'status',
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.LEVEL]: 'requestLevel',
+};
+
+export const MEDIATED_REQUESTS_RECORD_TRANSLATIONS = {
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.mediatedRequestDate" />,
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.title" />,
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.itemBarcode" />,
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.effectiveCallNumber" />,
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.mediatedRequestStatus" />,
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.requester" />,
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: <FormattedMessage id="ui-requests-mediated.mediatedRequestList.columnName.requesterBarcode" />,
 };
 
 export const MEDIATED_REQUEST_FILTER_TYPES = {

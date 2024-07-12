@@ -2,8 +2,13 @@ import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
 
-import { AppIcon } from '@folio/stripes/core';
 import {
+  IfPermission,
+  AppIcon,
+} from '@folio/stripes/core';
+import {
+  Button,
+  Icon,
   Pane,
   PaneMenu,
   Paneset,
@@ -12,6 +17,7 @@ import {
   SearchAndSortQuery,
   ExpandFilterPaneButton,
   CollapseFilterPaneButton,
+  ColumnManager,
 } from '@folio/stripes/smart-components';
 
 import NavigationMenu from '../NavigationMenu';
@@ -24,8 +30,29 @@ import {
   APP_ICON_NAME,
   FILTER_PANE_WIDTH,
   MEDIATED_REQUESTS_RECORDS_NAME,
+  MEDIATED_REQUESTS_RECORD_FIELD_NAME,
+  MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
+  ICONS,
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
+
+export const getActionMenu = (renderColumnsMenu) => () => {
+  return (
+    <>
+      <IfPermission perm="ui-requests-mediated.view-create-edit">
+        <Button
+          buttonStyle="dropdownItem"
+          marginBottom0
+        >
+          <Icon icon={ICONS.PLUS_SIGN}>
+            <FormattedMessage id="ui-requests-mediated.mediatedRequestList.actionMenu.newMediatedRequest" />
+          </Icon>
+        </Button>
+      </IfPermission>
+      {renderColumnsMenu}
+    </>
+  );
+};
 
 const MediatedRequestsActivities = ({
   querySetter,
@@ -110,18 +137,28 @@ const MediatedRequestsActivities = ({
               />
             </Pane>
           }
-          <Pane
-            defaultWidth="fill"
-            appIcon={<AppIcon app={APP_ICON_NAME} />}
-            paneTitle={<FormattedMessage id="ui-requests-mediated.app.mediatedRequestsActivities.paneTitle" />}
-            firstMenu={renderResultsFirstMenu(activeFilters)}
+          <ColumnManager
+            id="mediatedRequestsActivitiesColumnManager"
+            columnMapping={MEDIATED_REQUESTS_RECORD_TRANSLATIONS}
+            excludeKeys={[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]}
           >
-            <MediatedRequestsList
-              contentData={mediatedRequests}
-              source={source}
-              query={query}
-            />
-          </Pane>
+            {({ renderColumnsMenu, visibleColumns }) => (
+              <Pane
+                defaultWidth="fill"
+                appIcon={<AppIcon app={APP_ICON_NAME} />}
+                paneTitle={<FormattedMessage id="ui-requests-mediated.app.mediatedRequestsActivities.paneTitle" />}
+                firstMenu={renderResultsFirstMenu(activeFilters)}
+                actionMenu={getActionMenu(renderColumnsMenu)}
+              >
+                <MediatedRequestsList
+                  visibleColumns={visibleColumns}
+                  contentData={mediatedRequests}
+                  source={source}
+                  query={query}
+                />
+              </Pane>
+            )}
+          </ColumnManager>
         </Paneset>
       )}
     </SearchAndSortQuery>

@@ -17,9 +17,7 @@ import {
 } from '@folio/stripes/util';
 
 import MediatedRequestsList, {
-  COLUMN_MAPPING,
   COLUMN_WIDTHS,
-  MEDIATED_REQUEST_COLUMNS_NAME,
   mediatedRequestsListFormatter,
   emptyMessage,
 } from './MediatedRequestsList';
@@ -28,6 +26,7 @@ import {
   APP_ICON_NAME,
   DEFAULT_VIEW_VALUE,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
+  MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
 } from '../../../../constants';
 
 const source = {};
@@ -36,8 +35,18 @@ const query = {
 };
 
 describe('MediatedRequestsList', () => {
+  const MEDIATED_REQUEST_COLUMNS_NAME = [
+    MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE,
+    MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE,
+    MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE,
+    MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER,
+    MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS,
+    MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER,
+    MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE,
+  ];
   const contentData = [{}];
   const props = {
+    visibleColumns: MEDIATED_REQUEST_COLUMNS_NAME,
     contentData,
     source,
     query,
@@ -53,7 +62,7 @@ describe('MediatedRequestsList', () => {
     const expectedProps = {
       visibleColumns: MEDIATED_REQUEST_COLUMNS_NAME,
       columnWidths: COLUMN_WIDTHS,
-      columnMapping: COLUMN_MAPPING,
+      columnMapping: MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
       contentData,
       formatter: mediatedRequestsListFormatter,
     };
