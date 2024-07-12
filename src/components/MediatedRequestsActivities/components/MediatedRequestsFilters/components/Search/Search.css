@@ -1,8 +1,7 @@
 .searchField {
   margin-bottom: calc(var(--control-margin-bottom) / 2);
 }
-
-.searchForm {
+.searchFieldContainer {
   & .resetButton {
     padding: 0 6px 0 3px;
     margin-left: 0;

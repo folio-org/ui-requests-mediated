@@ -16,19 +16,55 @@ const testIds = {
   mediatedRequestsActivitiesSearchAndSortQuery: 'mediatedRequestsActivitiesSearchAndSortQuery',
   mediatedRequestsActivitiesPaneSet: 'mediatedRequestsActivitiesPaneSet',
   mediatedRequestsActivitiesPane: 'mediatedRequestsActivitiesPane',
-  mediatedRequestsActivitiesCollapseFilterPaneButton: 'mediatedRequestsActivitiesCollapseFilterPaneButton',
 };
 const labelIds = {
   paneTitle: 'ui-requests-mediated.app.mediatedRequestsActivities.paneTitle',
 };
 
+jest.mock('@folio/stripes/smart-components', () => ({
+  ...jest.requireActual('@folio/stripes/smart-components'),
+  SearchAndSortQuery:  jest.fn(({
+    children,
+    'data-testid': testId,
+  }) => (
+    <div data-testid={testId}>
+      {children({
+        getFilterHandlers: () => {}
+      })}
+    </div>
+  )),
+}));
+
 describe('MediatedRequestsActivities', () => {
-  const props = {
-    settings: {},
+  const mutator = {
+    resultOffset: {
+      replace: jest.fn(),
+      update: jest.fn(),
+    },
   };
+  const querySetter = jest.fn();
+  const queryGetter = jest.fn(() => ({}));
+  const resources = {
+    query: {},
+    resultCount: 100,
+    resultOffset: 0,
+  };
+  const source = {
+    resources,
+  };
+  const settings = {};
 
   beforeEach(() => {
-    render(<MediatedRequestsActivities {...props} />);
+    render(
+      <MediatedRequestsActivities
+        querySetter={querySetter}
+        queryGetter={queryGetter}
+        source={source}
+        resources={resources}
+        mutator={mutator}
+        settings={settings}
+      />
+    );
   });
 
   it('should render search and sort query', () => {
@@ -47,19 +83,15 @@ describe('MediatedRequestsActivities', () => {
     expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
   });
 
-  it('should trigger NavigationMenu with correct props', () => {
+  it('should trigger navigation menu with correct props', () => {
     expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
       value: getMediatedRequestsActivitiesUrl(),
     }), {});
   });
 
-  it('should trigger MediatedRequestsFilters with correct props', () => {
+  it('should trigger mediated requests filters with correct props', () => {
     expect(MediatedRequestsFilters).toHaveBeenCalledWith(expect.objectContaining({
-      settings: props.settings,
+      settings,
     }), {});
-  });
-
-  it('should render CollapseFilterPaneButton', () => {
-    expect(screen.getByTestId(testIds.mediatedRequestsActivitiesCollapseFilterPaneButton)).toBeInTheDocument();
   });
 });

@@ -10,7 +10,7 @@ import {
 } from '@folio/stripes/core';
 
 import ConfirmItemArrival from './components/ConfirmItemArrival';
-import MediatedRequestsActivities from './components/MediatedRequestsActivities';
+import MediatedRequestsActivitiesContainer from './routes/MediatedRequestsActivitiesContainer';
 import SendItemInTransit from './components/SendItemInTransit';
 import RequestFormContainer from './components/MediatedRequestsActivities/components/RequestFormContainer';
 import Settings from './settings';
@@ -53,7 +53,10 @@ const RequestsMediated = (props) => {
           </Route>
       }
       <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}`}>
-        <MediatedRequestsActivities settings={settings} />
+        <MediatedRequestsActivitiesContainer
+          {...props}
+          settings={settings}
+        />
       </Route>
       <Route
         path={`${path}/${CONFIRM_ITEM_ARRIVAL}`}

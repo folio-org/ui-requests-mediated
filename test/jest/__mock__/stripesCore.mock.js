@@ -1,4 +1,5 @@
 jest.mock('@folio/stripes/core', () => ({
+  AppIcon: jest.fn(({ children, ...rest }) => <div {...rest}>{children}</div>),
   useOkapiKy: jest.fn().mockReturnValue({
     get: jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({}) }),
     post: jest.fn(),

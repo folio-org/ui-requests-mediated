@@ -61,7 +61,7 @@ describe('NavigationMenu', () => {
       );
     });
 
-    it('should render "Select" with correct props', () => {
+    it('should render select with correct props', () => {
       expect(Select).toHaveBeenCalledWith(expect.objectContaining({
         value: getMediatedRequestsActivitiesUrl(),
         dataOptions,
@@ -99,7 +99,7 @@ describe('NavigationMenu', () => {
   describe('handleChangeMenu', () => {
     const push = jest.fn();
 
-    it('should handel correct when pathname equal MediatedRequestsActivities', () => {
+    it('should handle correct when pathname equal mediated requests activities', () => {
       const event = {
         target: {
           value: getMediatedRequestsActivitiesUrl(),
@@ -122,7 +122,7 @@ describe('NavigationMenu', () => {
       }));
     });
 
-    it('should handel correct when pathname not equal MediatedRequestsActivities', () => {
+    it('should handle correct when pathname not equal mediated requests activities', () => {
       const event = {
         target: {
           value: getConfirmItemArrivalUrl(),

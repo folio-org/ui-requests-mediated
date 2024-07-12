@@ -1,5 +1,7 @@
 import {
   transformRequestFilterOptions,
+  getIsTitleLevelRequestsFeatureEnabled,
+  getRequesterName,
   handleKeyCommand,
   isFormEditing,
   memoizeValidation,
@@ -26,6 +28,76 @@ describe('utils', () => {
 
     it('should not return data options', () => {
       expect(transformRequestFilterOptions(formatMessage)).toEqual([]);
+    });
+  });
+
+  describe('getIsTitleLevelRequestsFeatureEnabled', () => {
+    it('should return true', () => {
+      const data = {
+        items: [{
+          value: {
+            titleLevelRequestsFeatureEnabled: true,
+          },
+        }],
+      };
+
+      expect(getIsTitleLevelRequestsFeatureEnabled(data)).toEqual(true);
+    });
+
+    it('should return false', () => {
+      const data = {
+        items: [{
+          value: {
+            titleLevelRequestsFeatureEnabled: false,
+          },
+        }],
+      };
+
+      expect(getIsTitleLevelRequestsFeatureEnabled(data)).toEqual(false);
+    });
+
+    it('should return default value (false)', () => {
+      expect(getIsTitleLevelRequestsFeatureEnabled()).toEqual(false);
+    });
+  });
+
+  describe('getRequesterName', () => {
+    it('should return requester name when last name present', () => {
+      expect(getRequesterName({
+        requester: {
+          lastName: 'Do',
+        },
+      })).toEqual('Do');
+    });
+
+    it('should return requester name when first name and lastName are present', () => {
+      expect(getRequesterName({
+        requester: {
+          firstName: 'Jo',
+          lastName: 'Do',
+        },
+      })).toEqual('Do, Jo');
+    });
+
+    it('should return requester name when first name, last name and middle name are present', () => {
+      expect(getRequesterName({
+        requester: {
+          firstName: 'Jo',
+          lastName: 'Do',
+          middleName: 'Re',
+        },
+      })).toEqual('Do, Jo Re');
+    });
+
+    it('should return requester preferred first name when preferred first name are present', () => {
+      expect(getRequesterName({
+        requester: {
+          firstName: 'Jo',
+          lastName: 'Do',
+          middleName: 'Re',
+          preferredFirstName: 'Pe',
+        },
+      })).toEqual('Do, Pe Re');
     });
   });
 
