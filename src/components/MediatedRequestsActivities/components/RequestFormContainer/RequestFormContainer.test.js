@@ -4,8 +4,12 @@ import {
   render,
   screen,
   fireEvent,
+  waitFor,
 } from '@folio/jest-config-stripes/testing-library/react';
-import { useOkapiKy } from '@folio/stripes/core';
+import {
+  useOkapiKy,
+  useCallout,
+} from '@folio/stripes/core';
 
 import RequestFormContainer, {
   urls,
@@ -16,6 +20,10 @@ import {
   MODULE_ROUTE,
   ITEM_QUERIES,
   RESOURCE_KEYS,
+  RESOURCE_TYPES,
+  DEFAULT_REQUEST_TYPE_VALUE,
+  FULFILMENT_TYPES,
+  REQUEST_LEVEL_TYPES,
 } from '../../../../constants';
 
 const basicProps = {
@@ -34,7 +42,9 @@ const basicProps = {
 const testIds = {
   cancelButton: 'cancelButton',
   findDataButton: 'findDataButton',
+  submitButton: 'submitButton',
 };
+const addressTypes = [];
 
 jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(),
@@ -42,6 +52,9 @@ jest.mock('react-router-dom', () => ({
 jest.mock('query-string', () => ({
   stringify: jest.fn(({ query }) => `query=${query}`),
 }));
+jest.mock('../../../../hooks/useAddressTypes', () => jest.fn(() => ({
+  addressTypes,
+})));
 jest.mock('../../../../utils', () => ({
   ...jest.requireActual('../../../../utils'),
   getInstanceQueryString: jest.fn(query => query),
@@ -75,57 +88,210 @@ jest.mock('../RequestForm', () => jest.fn(({
   );
 }));
 
+const mockSubmitFunctionality = (dataToSubmit) => {
+  RequestForm.mockImplementationOnce(({
+    onSubmit,
+  }) => {
+    const submitData = () => {
+      onSubmit(dataToSubmit);
+    }
+
+    return (
+      <form>
+        <button
+          type="button"
+          data-testid={testIds.submitButton}
+          onClick={submitData}
+        >
+          Submit
+        </button>
+      </form>
+    );
+  });
+
+  render(
+    <RequestFormContainer
+      {...basicProps}
+    />
+  );
+
+  const submitButton = screen.getByTestId(testIds.submitButton);
+
+  fireEvent.click(submitButton);
+};
+
 describe('RequestFormContainer', () => {
   describe('Component', () => {
-    const history = {
-      push: jest.fn(),
-    };
-
-    beforeEach(() => {
-      useHistory.mockReturnValue(history);
-
-      render(
-        <RequestFormContainer
-          {...basicProps}
-        />
-      );
-    });
-
-    it('should trigger RequestForm with correct props', () => {
-      const expectedProps = {
-        request: basicProps.request,
-        settings: basicProps.settings,
-        patronGroups: basicProps.patronGroups,
-        initialValues: {
-          createTitleLevelRequest: basicProps.settings.items[0].value.createTitleLevelRequestsByDefault,
-        },
-        onSetSelectedItem: expect.any(Function),
-        onSetSelectedUser: expect.any(Function),
-        onSetSelectedInstance: expect.any(Function),
-        findResource: expect.any(Function),
-        onSubmit: expect.any(Function),
-        onCancel: expect.any(Function),
+    describe('Initial render', () => {
+      const history = {
+        push: jest.fn(),
       };
 
-      expect(RequestForm).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+      beforeEach(() => {
+        useHistory.mockReturnValue(history);
+
+        render(
+          <RequestFormContainer
+            {...basicProps}
+          />
+        );
+      });
+
+      it('should trigger RequestForm with correct props', () => {
+        const expectedProps = {
+          request: basicProps.request,
+          settings: basicProps.settings,
+          patronGroups: basicProps.patronGroups,
+          initialValues: {
+            requestType: DEFAULT_REQUEST_TYPE_VALUE,
+            fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
+            createTitleLevelRequest: basicProps.settings.items[0].value.createTitleLevelRequestsByDefault,
+          },
+          onSetSelectedItem: expect.any(Function),
+          onSetSelectedUser: expect.any(Function),
+          onSetSelectedInstance: expect.any(Function),
+          findResource: expect.any(Function),
+          onSubmit: expect.any(Function),
+          onCancel: expect.any(Function),
+          onSetSubmitInitiator: expect.any(Function),
+          addressTypes,
+        };
+
+        expect(RequestForm).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+      });
+
+      it('should cancel request creation', () => {
+        const cancelButton = screen.getByTestId(testIds.cancelButton);
+        const homeUrl = `/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}`;
+
+        fireEvent.click(cancelButton);
+
+        expect(history.push).toHaveBeenCalledWith(homeUrl);
+      });
+
+      it('should find item data', () => {
+        const findDataButton = screen.getByTestId(testIds.findDataButton);
+        const itemUrl = `circulation/items-by-instance?query=(${ITEM_QUERIES[RESOURCE_KEYS.ID]}=="test")`;
+
+        fireEvent.click(findDataButton);
+
+        expect(useOkapiKy().get).toHaveBeenCalledWith(itemUrl);
+      });
     });
 
-    it('should cancel request creation', () => {
-      const cancelButton = screen.getByTestId(testIds.cancelButton);
-      const homeUrl = `/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}`;
+    describe('Data submitting', () => {
+      const basicDataToSend = {
+        itemId: 'itemId',
+        item: {},
+        itemRequestCount: 2,
+        createTitleLevelRequest: false,
+        keyOfItemBarcodeField: 1,
+        keyOfUserBarcodeField: 1,
+        keyOfRequestTypeField: 1,
+        pickupServicePointId: 'pickupServicePointId',
+        deliveryAddressTypeId: '',
+        requester: {
+          personal: {
+            firstName: 'firstName',
+            lastName: 'lastName',
+          },
+        },
+      };
 
-      fireEvent.click(cancelButton);
+      describe('When fulfilment preference is hold shelf', () => {
+        const dataToSubmit = {
+          ...basicDataToSend,
+          fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
+          requestLevel: REQUEST_LEVEL_TYPES.ITEM,
+        };
 
-      expect(history.push).toHaveBeenCalledWith(homeUrl);
-    });
+        beforeEach(() => {
+          mockSubmitFunctionality(dataToSubmit);
+        });
 
-    it('should find item data', () => {
-      const findDataButton = screen.getByTestId(testIds.findDataButton);
-      const itemUrl = `circulation/items-by-instance?query=(${ITEM_QUERIES[RESOURCE_KEYS.ID]}=="test")`;
+        it('should send correct data to save', () => {
+          const expectedArguments = [
+            'circulation/requests',
+            {
+              json: expect.objectContaining({
+                itemId: basicDataToSend.itemId,
+                item: basicDataToSend.item,
+                pickupServicePointId: basicDataToSend.pickupServicePointId,
+                requestDate: expect.any(String),
+                requestLevel: REQUEST_LEVEL_TYPES.ITEM,
+                fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
+              }),
+            }
+          ];
 
-      fireEvent.click(findDataButton);
+          expect(useOkapiKy().post).toHaveBeenCalledWith(...expectedArguments);
+        });
 
-      expect(useOkapiKy().get).toHaveBeenCalledWith(itemUrl);
+        it('should send callout', async () => {
+          await waitFor(() => {
+            expect(useCallout().sendCallout).toHaveBeenCalled();
+          });
+        });
+      });
+
+      describe('When fulfilment preference is delivery', () => {
+        const dataToSubmit = {
+          ...basicDataToSend,
+          fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
+          requestLevel: REQUEST_LEVEL_TYPES.TITLE,
+          createTitleLevelRequest: true,
+          deliveryAddressTypeId: 'deliveryAddressTypeId',
+          pickupServicePointId: '',
+        };
+
+        beforeEach(() => {
+          mockSubmitFunctionality(dataToSubmit);
+        });
+
+        it('should send correct data to save', () => {
+          const expectedArguments = [
+            'circulation/requests',
+            {
+              json: expect.objectContaining({
+                deliveryAddressTypeId: dataToSubmit.deliveryAddressTypeId,
+                requestDate: expect.any(String),
+                requestLevel: REQUEST_LEVEL_TYPES.TITLE,
+                fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
+              }),
+            }
+          ];
+
+          expect(useOkapiKy().post).toHaveBeenCalledWith(...expectedArguments);
+        });
+
+        it('should send callout', async () => {
+          await waitFor(() => {
+            expect(useCallout().sendCallout).toHaveBeenCalled();
+          });
+        });
+      });
+
+      describe('When error saving issue', () => {
+        const dataToSubmit = {
+          ...basicDataToSend,
+          fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
+          requestLevel: REQUEST_LEVEL_TYPES.TITLE,
+          createTitleLevelRequest: true,
+          deliveryAddressTypeId: 'deliveryAddressTypeId',
+          pickupServicePointId: '',
+        };
+
+        beforeEach(() => {
+          useOkapiKy().post().json.mockRejectedValueOnce({});
+          mockSubmitFunctionality(dataToSubmit);
+        });
+
+        it('should send error callout', async () => {
+          await waitFor(() => {
+            expect(useCallout().sendCallout).toHaveBeenCalledWith(expect.objectContaining({ type: 'error' }));
+          });
+        });
+      });
     });
   });
 
@@ -136,37 +302,75 @@ describe('RequestFormContainer', () => {
     it('should return url to get user data', () => {
       const expectedUrl = `users?query=(${idType}=="${value}")`;
 
-      expect(urls.user(value, idType)).toBe(expectedUrl);
+      expect(urls[RESOURCE_TYPES.USER](value, idType)).toBe(expectedUrl);
     });
 
     it('should return url to get item data', () => {
       const expectedUrl = `circulation/items-by-instance?query=(${ITEM_QUERIES[idType]}=="${value}")`;
 
-      expect(urls.item(value, idType)).toBe(expectedUrl);
+      expect(urls[RESOURCE_TYPES.ITEM](value, idType)).toBe(expectedUrl);
     });
 
     it('should return url to get instance data', () => {
       const expectedUrl = `circulation/items-by-instance?query=${value}`;
 
-      expect(urls.instance(value)).toBe(expectedUrl);
+      expect(urls[RESOURCE_TYPES.INSTANCE](value)).toBe(expectedUrl);
     });
 
     it('should return url to get loan data', () => {
       const expectedUrl = `circulation/loans?query=(itemId=="${value}") and status.name==Open`;
 
-      expect(urls.loan(value)).toBe(expectedUrl);
+      expect(urls[RESOURCE_TYPES.LOAN](value)).toBe(expectedUrl);
     });
 
     it('should return url to get requests for item data', () => {
       const expectedUrl = `circulation/requests?query=(itemId=="${value}" and (status))`;
 
-      expect(urls.requestsForItem(value)).toBe(expectedUrl);
+      expect(urls[RESOURCE_TYPES.REQUESTS_FOR_ITEM](value)).toBe(expectedUrl);
     });
 
     it('should return url to get requests for instance data', () => {
       const expectedUrl = `circulation/requests?query=(instanceId=="${value}" and (status))`;
 
-      expect(urls.requestsForInstance(value)).toBe(expectedUrl);
+      expect(urls[RESOURCE_TYPES.REQUESTS_FOR_INSTANCE](value)).toBe(expectedUrl);
+    });
+
+    it('should return url to get request types when requestId provided', () => {
+      const params = {
+        requestId: 'requestId',
+        operation: 'operation',
+      };
+      const expectedUrl = `circulation/requests/allowed-service-points?operation=${params.operation}&requestId=${params.requestId}`;
+
+      expect(urls[RESOURCE_TYPES.REQUEST_TYPES](params)).toBe(expectedUrl);
+    });
+
+    it('should return url to get request types when itemId provided', () => {
+      const params = {
+        itemId: 'itemId',
+        requesterId: 'requesterId',
+        operation: 'operation',
+      };
+      const expectedUrl = `circulation/requests/allowed-service-points?requesterId=${params.requesterId}&operation=${params.operation}&itemId=${params.itemId}`;
+
+      expect(urls[RESOURCE_TYPES.REQUEST_TYPES](params)).toBe(expectedUrl);
+    });
+
+    it('should return url to get request types when instanceId provided', () => {
+      const params = {
+        instanceId: 'instanceId',
+        requesterId: 'requesterId',
+        operation: 'operation',
+      };
+      const expectedUrl = `circulation/requests/allowed-service-points?requesterId=${params.requesterId}&operation=${params.operation}&instanceId=${params.instanceId}`;
+
+      expect(urls[RESOURCE_TYPES.REQUEST_TYPES](params)).toBe(expectedUrl);
+    });
+
+    it('should return url to get requests for request preferences', () => {
+      const expectedUrl = `request-preference-storage/request-preference?query=(userId=="${value}")`;
+
+      expect(urls[RESOURCE_TYPES.REQUEST_PREFERENCES](value)).toBe(expectedUrl);
     });
   });
 });

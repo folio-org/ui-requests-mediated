@@ -3,7 +3,12 @@ import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { FormattedMessage } from 'react-intl';
 import { parse } from 'query-string';
-import { isEqual } from 'lodash';
+import {
+  isEqual,
+  isEmpty,
+  pick,
+  get,
+} from 'lodash';
 
 import {
   Accordion,
@@ -24,17 +29,37 @@ import RequesterInformation from '../RequesterInformation';
 import ItemsDialog from '../ItemsDialog';
 import RequestFormFirstMenu from '../RequestFormFirstMenu';
 import RequestFormFooter from '../RequestFormFooter';
+import RequestInformation from '../RequestInformation';
+import FulfilmentPreference from '../FulfilmentPreference';
+import AddressDetails from '../AddressDetails';
 import {
   REQUEST_LEVEL_TYPES,
   RESOURCE_TYPES,
   RESOURCE_KEYS,
   REQUEST_FORM_FIELD_NAMES,
+  REQUEST_OPERATIONS,
+  DEFAULT_REQUEST_TYPE_VALUE,
+  FULFILMENT_TYPES_MAP,
+  FULFILMENT_TYPES,
+  SAVE_BUTTON_ID,
+  ID_TYPE_MAP,
 } from '../../../../constants';
 import {
   handleKeyCommand,
   getPatronGroup,
   getTlrSettings,
   isSubmittingButtonDisabled,
+  isFormEditing,
+  resetFieldState,
+  getFulfillmentTypeOptions,
+  getDefaultRequestPreferences,
+  getFulfillmentPreference,
+  getSelectedAddressTypeId,
+  isDeliverySelected,
+  getRequestTypesOptions,
+  getDeliveryInformation,
+  getResourceTypeId,
+  getRequestInformation,
 } from '../../../../utils';
 
 import css from './RequestForm.css';
@@ -43,6 +68,11 @@ class RequestForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     findResource: PropTypes.func.isRequired,
+    onSetSubmitInitiator: PropTypes.func.isRequired,
+    addressTypes: PropTypes.arrayOf({
+      addressType: PropTypes.string,
+      id: PropTypes.string,
+    }).isRequired,
     request: PropTypes.object.isRequired,
     settings: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.object),
@@ -76,6 +106,7 @@ class RequestForm extends React.Component {
     const {
       request,
       settings,
+      initialValues,
     } = props;
     const { loan } = (request || {});
     const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.items[0]?.value);
@@ -85,7 +116,12 @@ class RequestForm extends React.Component {
       isItemOrInstanceLoading: false,
       isItemsDialogOpen: false,
       isItemIdRequest: this.isItemIdProvided(),
+      requestTypes: {},
+      isRequestTypesReceived: false,
+      isRequestTypeLoading: false,
+      shouldValidate: false,
       titleLevelRequestsFeatureEnabled,
+      ...getDefaultRequestPreferences(initialValues),
     };
     this.accordionStatusRef = React.createRef();
   }
@@ -160,6 +196,24 @@ class RequestForm extends React.Component {
     }
   }
 
+  getAvailableRequestTypes = (user) => {
+    const {
+      selectedItem,
+      selectedInstance,
+      values,
+    } = this.props;
+    const {
+      selectedResource,
+      isTitleLevelRequest,
+    } = getRequestInformation(values, selectedInstance, selectedItem);
+
+    if (selectedResource?.id && user?.id) {
+      const resourceTypeId = getResourceTypeId(isTitleLevelRequest);
+
+      this.findRequestTypes(selectedResource.id, user.id, resourceTypeId);
+    }
+  }
+
   getUserValidationData = (key, value) => {
     const { findResource } = this.props;
 
@@ -180,6 +234,15 @@ class RequestForm extends React.Component {
       onSetSelectedUser,
     } = this.props;
 
+    this.setState({
+      isUserLoading: true,
+      requestTypes: {},
+      isRequestTypesReceived: false,
+    });
+
+    form.change(REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
+    form.change(REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
+
     return findResource(RESOURCE_TYPES.USER, value, fieldName)
       .then((result) => {
         if (result.totalRecords === 1) {
@@ -193,6 +256,8 @@ class RequestForm extends React.Component {
             this.triggerUserBarcodeValidation();
           }
 
+          this.findRequestPreferences(selectedUser.id);
+
           return selectedUser;
         }
 
@@ -202,6 +267,11 @@ class RequestForm extends React.Component {
         onSetSelectedUser(null);
 
         return null;
+      })
+      .then(user => {
+        this.getAvailableRequestTypes(user);
+
+        return user;
       })
       .finally(() => {
         this.setState({ isUserLoading: false });
@@ -262,9 +332,14 @@ class RequestForm extends React.Component {
       findResource,
       form,
       onSetSelectedItem,
+      selectedUser,
     } = this.props;
 
-    this.setState({ isItemOrInstanceLoading: true });
+    this.setState({
+      isItemOrInstanceLoading: true,
+      requestTypes: {},
+      isRequestTypesReceived: false,
+    });
 
     return findResource(RESOURCE_TYPES.ITEM, value, key)
       .then((result) => {
@@ -278,6 +353,7 @@ class RequestForm extends React.Component {
 
         form.change(REQUEST_FORM_FIELD_NAMES.ITEM_ID, foundItem.id);
         form.change(REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, foundItem.barcode);
+        resetFieldState(form, REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
         onSetSelectedItem(foundItem);
         this.setState({ isItemOrInstanceLoading: false });
 
@@ -287,6 +363,13 @@ class RequestForm extends React.Component {
         onSetSelectedItem(null);
 
         return null;
+      })
+      .then(item => {
+        if (item && selectedUser?.id) {
+          this.findRequestTypes(item.id, selectedUser.id, ID_TYPE_MAP.ITEM_ID);
+        }
+
+        return item;
       })
       .then(item => this.findItemRelatedResources(item))
       .finally(() => {
@@ -332,9 +415,14 @@ class RequestForm extends React.Component {
       findResource,
       form,
       onSetSelectedInstance,
+      selectedUser,
     } = this.props;
 
-    this.setState({ isItemOrInstanceLoading: true });
+    this.setState({
+      isItemOrInstanceLoading: true,
+      requestTypes: {},
+      isRequestTypesReceived: false,
+    });
 
     return findResource(RESOURCE_TYPES.INSTANCE, instanceId)
       .then((instance) => {
@@ -344,6 +432,7 @@ class RequestForm extends React.Component {
 
         form.change(REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, instance.id);
         form.change(REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, instance.hrid);
+        resetFieldState(form, REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
         onSetSelectedInstance(instance);
         this.setState({ isItemOrInstanceLoading: false });
 
@@ -353,6 +442,13 @@ class RequestForm extends React.Component {
         onSetSelectedInstance(null);
 
         return null;
+      })
+      .then(instance => {
+        if (instance && selectedUser?.id) {
+          this.findRequestTypes(instance.id, selectedUser.id, ID_TYPE_MAP.INSTANCE_ID);
+        }
+
+        return instance;
       })
       .then(instance => {
         this.findInstanceRelatedResources(instance);
@@ -393,6 +489,15 @@ class RequestForm extends React.Component {
     form.change(REQUEST_FORM_FIELD_NAMES.KEY_OF_INSTANCE_ID_FIELD, values.keyOfInstanceIdField ? 0 : 1);
   };
 
+  triggerRequestTypeValidation = () => {
+    const {
+      form,
+      values,
+    } = this.props;
+
+    form.change(REQUEST_FORM_FIELD_NAMES.KEY_OF_REQUEST_TYPE_FIELD, values.keyOfRequestTypeField ? 0 : 1);
+  };
+
   handleTlrCheckboxChange = (event) => {
     const isCreateTlr = event.target.checked;
     const {
@@ -409,15 +514,26 @@ class RequestForm extends React.Component {
     form.change(REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, null);
 
     if (isCreateTlr) {
+      this.setState({
+        requestTypes: {},
+        isRequestTypesReceived: false,
+      });
+
       if (selectedItem) {
         this.findInstance(selectedItem.instanceId);
       }
 
       onSetSelectedItem(undefined);
     } else if (selectedInstance) {
+      form.change(REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
+      resetFieldState(form, REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
       this.setState({ isItemsDialogOpen: true });
     } else {
       onSetSelectedInstance(undefined);
+      this.setState({
+        requestTypes: {},
+        isRequestTypesReceived: false,
+      });
     }
   };
 
@@ -428,6 +544,8 @@ class RequestForm extends React.Component {
     this.setState({
       isItemsDialogOpen: false,
       isItemIdRequest: false,
+      requestTypes: {},
+      isRequestTypesReceived: false,
     }, this.triggerItemBarcodeValidation);
   }
 
@@ -436,7 +554,10 @@ class RequestForm extends React.Component {
     let isBarcodeRequired = false;
 
     onSetSelectedInstance(undefined);
-    this.setState({ isItemsDialogOpen: false });
+    this.setState({
+      isItemsDialogOpen: false,
+      requestTypes: {},
+    });
 
     if (item?.barcode) {
       isBarcodeRequired = true;
@@ -460,6 +581,153 @@ class RequestForm extends React.Component {
     }
   };
 
+  findRequestPreferences = async (userId) => {
+    const {
+      findResource,
+      form,
+      initialValues,
+    } = this.props;
+
+    try {
+      const { requestPreferences } = await findResource(RESOURCE_TYPES.REQUEST_PREFERENCES, userId, 'userId');
+      const preferences = requestPreferences[0];
+      const defaultPreferences = getDefaultRequestPreferences(initialValues);
+      const requestPreference = {
+        ...defaultPreferences,
+        ...pick(preferences, ['defaultDeliveryAddressTypeId', 'defaultServicePointId']),
+      };
+
+      requestPreference.hasDelivery = get(preferences, 'delivery');
+
+      const fulfillmentPreference = getFulfillmentPreference(preferences, initialValues);
+      const deliverySelected = isDeliverySelected(fulfillmentPreference);
+      const selectedAddress = requestPreference.selectedAddressTypeId || requestPreference.defaultDeliveryAddressTypeId;
+      const selectedAddressTypeId = getSelectedAddressTypeId(deliverySelected, selectedAddress);
+
+      this.setState({
+        ...requestPreference,
+        deliverySelected,
+        selectedAddressTypeId,
+      }, () => {
+        form.change(REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, fulfillmentPreference);
+
+        this.updateRequestPreferencesFields();
+      });
+    } catch (e) {
+      this.setState({
+        ...getDefaultRequestPreferences(initialValues),
+        deliverySelected: false,
+      }, () => {
+        form.change(REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF);
+      });
+    }
+  }
+
+  updateRequestPreferencesFields = () => {
+    const {
+      defaultDeliveryAddressTypeId,
+      defaultServicePointId,
+      deliverySelected,
+      selectedAddressTypeId,
+    } = this.state;
+    const { form } = this.props;
+
+    if (deliverySelected) {
+      const deliveryAddressTypeId = selectedAddressTypeId || defaultDeliveryAddressTypeId;
+
+      form.change(REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, deliveryAddressTypeId);
+      form.change(REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, '');
+    } else {
+      form.change(REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, defaultServicePointId);
+      form.change(REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, '');
+    }
+  }
+
+  findRequestTypes = (resourceId, requesterId, resourceType) => {
+    const {
+      findResource,
+      form,
+      request,
+    } = this.props;
+    const isEditForm = isFormEditing(request);
+    let requestParams;
+
+    if (isEditForm) {
+      requestParams = {
+        operation: REQUEST_OPERATIONS.REPLACE,
+        requestId: request.id,
+      };
+    } else {
+      requestParams = {
+        operation: REQUEST_OPERATIONS.CREATE,
+        [resourceType]: resourceId,
+        requesterId,
+      };
+      form.change(REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
+    }
+
+    this.setState({ isRequestTypeLoading: true });
+
+    findResource(RESOURCE_TYPES.REQUEST_TYPES, requestParams)
+      .then(requestTypes => {
+        if (!isEmpty(requestTypes)) {
+          this.setState({
+            requestTypes,
+            isRequestTypesReceived: true,
+          }, this.triggerRequestTypeValidation);
+        } else {
+          this.setState({ isRequestTypesReceived: true }, this.triggerRequestTypeValidation);
+        }
+      })
+      .finally(() => {
+        this.setState({ isRequestTypeLoading: false });
+      });
+  }
+
+  onChangeAddress = (e) => {
+    const { form } = this.props;
+    const selectedAddressTypeId = e.target.value;
+
+    form.change(REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, selectedAddressTypeId);
+    this.setState({ selectedAddressTypeId });
+  }
+
+  setDeliveryAddress = (deliverySelected, selectedAddressTypeId) => {
+    this.setState({
+      deliverySelected,
+      selectedAddressTypeId,
+    }, () => {
+      this.updateRequestPreferencesFields();
+    });
+  }
+
+  sendData = (isValidationRequired) => {
+    const {
+      form,
+      values,
+      handleSubmit,
+    } = this.props;
+
+    this.setState({ shouldValidate: isValidationRequired }, async () => {
+      await form.change(REQUEST_FORM_FIELD_NAMES.KEY_OF_REQUEST_TYPE_FIELD, values.keyOfRequestTypeField ? 0 : 1);
+      handleSubmit();
+    });
+  }
+
+  handleDataSubmit = (e) => {
+    e.preventDefault();
+
+    const { onSetSubmitInitiator } = this.props;
+
+    if (e.nativeEvent?.submitter?.id === SAVE_BUTTON_ID) {
+      onSetSubmitInitiator(SAVE_BUTTON_ID);
+      this.sendData(false);
+    } else {
+      onSetSubmitInitiator(null);
+      this.sendData(true);
+    }
+  }
+
   render() {
     const {
       selectedLoan,
@@ -470,6 +738,14 @@ class RequestForm extends React.Component {
       isItemsDialogOpen,
       isItemIdRequest,
       titleLevelRequestsFeatureEnabled,
+      isRequestTypesReceived,
+      isRequestTypeLoading,
+      requestTypes,
+      deliverySelected,
+      selectedAddressTypeId,
+      hasDelivery,
+      defaultDeliveryAddressTypeId,
+      shouldValidate,
     } = this.state;
     const {
       handleSubmit,
@@ -486,12 +762,26 @@ class RequestForm extends React.Component {
       onSetSelectedItem,
       onSetSelectedInstance,
       onSetSelectedUser,
+      addressTypes,
     } = this.props;
+    let addressDetail;
+    const isEditForm = isFormEditing(request);
     const { createTitleLevelRequest } = values;
     const patronGroup = getPatronGroup(selectedUser, patronGroups);
     const isSubmittingDisabled = isSubmittingButtonDisabled(pristine, submitting);
     const isTitleLevelRequest = createTitleLevelRequest || request?.requestLevel === REQUEST_LEVEL_TYPES.TITLE;
     const isTlrCheckboxDisabled = !titleLevelRequestsFeatureEnabled || isItemOrInstanceLoading;
+    const requestTypeOptions = getRequestTypesOptions(requestTypes);
+    const fulfillmentTypeOptions = getFulfillmentTypeOptions(hasDelivery, FULFILMENT_TYPES_MAP);
+    const isFulfilmentPreferenceVisible = (values.requestType || isEditForm) && !isRequestTypeLoading && isRequestTypesReceived;
+    const {
+      deliveryLocations,
+      deliveryLocationsDetail,
+    } = getDeliveryInformation(selectedUser, addressTypes);
+
+    if (selectedAddressTypeId) {
+      addressDetail = <AddressDetails address={deliveryLocationsDetail[selectedAddressTypeId]} />;
+    }
 
     return (
       <Paneset isRoot>
@@ -504,7 +794,7 @@ class RequestForm extends React.Component {
           <form
             id="requestsMediatedForm"
             className={css.requestForm}
-            onSubmit={handleSubmit}
+            onSubmit={this.handleDataSubmit}
             noValidate
           >
             <Pane
@@ -607,6 +897,42 @@ class RequestForm extends React.Component {
                       triggerUserBarcodeValidation={this.triggerUserBarcodeValidation}
                       enterButtonClass={css.enterButton}
                     />
+                  </Accordion>
+                  <Accordion
+                    id="requestInformationAccordion"
+                    label={<FormattedMessage id="ui-requests-mediated.form.request.accordionLabel" />}
+                  >
+                    <RequestInformation
+                      updateRequestPreferencesFields={this.updateRequestPreferencesFields}
+                      request={request}
+                      requestTypeOptions={requestTypeOptions}
+                      isTitleLevelRequest={isTitleLevelRequest}
+                      isRequestTypesReceived={isRequestTypesReceived}
+                      isRequestTypeLoading={isRequestTypeLoading}
+                      isSelectedInstance={Boolean(selectedInstance?.id)}
+                      isSelectedItem={Boolean(selectedItem?.id)}
+                      isSelectedUser={Boolean(selectedUser?.id)}
+                      values={values}
+                      form={form}
+                      shouldValidate={shouldValidate}
+                    />
+                    {isFulfilmentPreferenceVisible &&
+                      <FulfilmentPreference
+                        isEditForm={isEditForm}
+                        requestTypes={requestTypes}
+                        deliverySelected={deliverySelected}
+                        deliveryAddress={addressDetail}
+                        onChangeAddress={this.onChangeAddress}
+                        setDeliveryAddress={this.setDeliveryAddress}
+                        deliveryLocations={deliveryLocations}
+                        fulfillmentTypeOptions={fulfillmentTypeOptions}
+                        defaultDeliveryAddressTypeId={defaultDeliveryAddressTypeId}
+                        request={request}
+                        form={form}
+                        values={values}
+                        shouldValidate={shouldValidate}
+                      />
+                    }
                   </Accordion>
                 </AccordionSet>
               </AccordionStatus>

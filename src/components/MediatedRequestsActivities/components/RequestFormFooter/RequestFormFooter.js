@@ -6,6 +6,8 @@ import {
   PaneFooter,
 } from '@folio/stripes/components';
 
+import { SAVE_BUTTON_ID } from '../../../../constants';
+
 const RequestFormFooter = ({
   onCancel,
   isSubmittingDisabled,
@@ -23,7 +25,7 @@ const RequestFormFooter = ({
           <FormattedMessage id="ui-requests-mediated.form.cancelButton" />
         </Button>
         <Button
-          id="saveRequestButton"
+          id={SAVE_BUTTON_ID}
           type="submit"
           buttonStyle="primary mega"
           disabled={isSubmittingDisabled}

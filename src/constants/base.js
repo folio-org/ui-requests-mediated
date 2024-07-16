@@ -23,6 +23,8 @@ export const RESOURCE_TYPES = {
   LOAN: 'loan',
   REQUESTS_FOR_ITEM: 'requestsForItem',
   REQUESTS_FOR_INSTANCE: 'requestsForInstance',
+  REQUEST_TYPES: 'requestTypes',
+  REQUEST_PREFERENCES: 'requestPreferences',
 };
 
 export const ICON_TYPES = {
@@ -44,16 +46,91 @@ export const REQUEST_FORM_FIELD_NAMES = {
   ITEM_BARCODE: 'item.barcode',
   INSTANCE_ID: 'instanceId',
   INSTANCE_HRID: 'instance.hrid',
+  DELIVERY_ADDRESS_TYPE_ID: 'deliveryAddressTypeId',
+  PICKUP_SERVICE_POINT_ID: 'pickupServicePointId',
+  REQUEST_TYPE: 'requestType',
+  FULFILLMENT_PREFERENCE: 'fulfillmentPreference',
   KEY_OF_ITEM_BARCODE_FIELD: 'keyOfItemBarcodeField',
   KEY_OF_INSTANCE_ID_FIELD: 'keyOfInstanceIdField',
   KEY_OF_USER_BARCODE_FIELD: 'keyOfUserBarcodeField',
+  KEY_OF_REQUEST_TYPE_FIELD: 'keyOfRequestTypeField',
 };
+
+export const REQUEST_OPERATIONS = {
+  CREATE: 'create',
+  REPLACE: 'replace',
+};
+
+export const REQUEST_TYPES = {
+  RECALL: 'Recall',
+  HOLD: 'Hold',
+  PAGE: 'Page',
+};
+
+export const ID_TYPE_MAP = {
+  ITEM_ID: 'itemId',
+  INSTANCE_ID: 'instanceId',
+};
+
+export const REQUEST_TYPE_TRANSLATIONS = {
+  [REQUEST_TYPES.RECALL]: 'ui-requests-mediated.form.request.type.recall',
+  [REQUEST_TYPES.HOLD]: 'ui-requests-mediated.form.request.type.hold',
+  [REQUEST_TYPES.PAGE]: 'ui-requests-mediated.form.request.type.page',
+};
+
+export const REQUEST_TYPE_ERRORS = {
+  TITLE_LEVEL_ERROR: 'title',
+  ITEM_LEVEL_ERROR: 'item',
+};
+
+export const REQUEST_TYPE_ERROR_TRANSLATIONS = {
+  [REQUEST_TYPE_ERRORS.TITLE_LEVEL_ERROR]: 'ui-requests-mediated.form.errors.requestType.titleLevelRequest',
+  [REQUEST_TYPE_ERRORS.ITEM_LEVEL_ERROR]: 'ui-requests-mediated.form.errors.requestType.itemLevelRequest',
+}
+
+export const FULFILMENT_TYPES = {
+  DELIVERY: 'Delivery',
+  HOLD_SHELF: 'Hold Shelf',
+};
+
+export const FULFILMENT_TYPES_TRANSLATIONS = {
+  [FULFILMENT_TYPES.DELIVERY]: 'ui-requests-mediated.form.request.fulfillment.delivery',
+  [FULFILMENT_TYPES.HOLD_SHELF]: 'ui-requests-mediated.form.request.fulfillment.holdShelf',
+};
+
+export const FULFILMENT_TYPES_MAP = [
+  {
+    id: FULFILMENT_TYPES.HOLD_SHELF,
+    label: FULFILMENT_TYPES_TRANSLATIONS[FULFILMENT_TYPES.HOLD_SHELF],
+  },
+  {
+    id: FULFILMENT_TYPES.DELIVERY,
+    label: FULFILMENT_TYPES_TRANSLATIONS[FULFILMENT_TYPES.DELIVERY],
+  },
+];
+
+export const DEFAULT_REQUEST_TYPE_VALUE = '';
+
+export const SAVE_BUTTON_ID = 'saveRequestButton';
 
 export const REQUEST_STATUSES = {
   AWAITING_DELIVERY: 'Open - Awaiting delivery',
   AWAITING_PICKUP: 'Open - Awaiting pickup',
   IN_TRANSIT: 'Open - In transit',
   NOT_YET_FILLED: 'Open - Not yet filled',
+  CLOSED_DECLINED: 'Closed - Declined',
+  CLOSED_FILLED: 'Closed - Filled',
+  NEW_AWAITING_CONFIRMATION: 'New - Awaiting confirmation',
+};
+
+export const REQUEST_STATUSES_TRANSLATIONS = {
+  [REQUEST_STATUSES.AWAITING_DELIVERY]: 'ui-requests-mediated.request.status.awaitingDelivery',
+  [REQUEST_STATUSES.AWAITING_PICKUP]: 'ui-requests-mediated.request.status.awaitingPickup',
+  [REQUEST_STATUSES.IN_TRANSIT]: 'ui-requests-mediated.request.status.inTransit',
+  [REQUEST_STATUSES.NOT_YET_FILLED]: 'ui-requests-mediated.request.status.notYetFilled',
+  [REQUEST_STATUSES.CLOSED_DECLINED]: 'ui-requests-mediated.request.status.closedDeclined',
+  [REQUEST_STATUSES.CLOSED_FILLED]: 'ui-requests-mediated.request.status.closedFilled',
+  [REQUEST_STATUSES.NEW_AWAITING_CONFIRMATION]: 'ui-requests-mediated.request.status.newAwaitingConfirmation',
 };
 
 export const OPEN_REQUESTS_STATUSES = [

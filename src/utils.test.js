@@ -12,7 +12,20 @@ import {
   getStatusQuery,
   getInstanceQueryString,
   getFullName,
+  getFulfillmentTypeOptions,
+  getSelectedAddressTypeId,
+  isDeliverySelected,
+  resetFieldState,
+  getDefaultRequestPreferences,
+  getFulfillmentPreference,
+  getRequestTypesOptions,
 } from './utils';
+import {
+  FULFILMENT_TYPES,
+  REQUEST_TYPE_TRANSLATIONS,
+  REQUEST_TYPES,
+  DEFAULT_VIEW_VALUE,
+} from './constants';
 
 describe('utils', () => {
   describe('transformRequestFilterOptions', () => {
@@ -375,6 +388,154 @@ describe('utils', () => {
 
         expect(getFullName(user)).toBe(expectedResult);
       });
+    });
+  });
+
+  describe('resetFieldState', () => {
+    const form = {
+      getRegisteredFields: jest.fn(),
+      resetFieldState: jest.fn(),
+    };
+    const fieldName = 'test';
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    describe('When field exists', () => {
+      beforeEach(() => {
+        form.getRegisteredFields.mockReturnValue([fieldName]);
+        resetFieldState(form, fieldName);
+      });
+
+      it('should trigger get registered fields', () => {
+        expect(form.getRegisteredFields).toHaveBeenCalled();
+      });
+
+      it('should trigger reset field state', () => {
+        expect(form.resetFieldState).toHaveBeenCalledWith(fieldName);
+      });
+    });
+
+    describe('When field does not exist', () => {
+      beforeEach(() => {
+        form.getRegisteredFields.mockReturnValue([]);
+        resetFieldState(form, fieldName);
+      });
+
+      it('should not reset field state', () => {
+        expect(form.resetFieldState).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('getSelectedAddressTypeId', () => {
+    it('should return default delivery address type id"', () => {
+      const defaultDeliveryAddressTypeId = 'id';
+
+      expect(getSelectedAddressTypeId(true, defaultDeliveryAddressTypeId)).toBe(defaultDeliveryAddressTypeId);
+    });
+
+    it('should return empty string', () => {
+      expect(getSelectedAddressTypeId(false)).toBe('');
+    });
+  });
+
+  describe('isDeliverySelected', () => {
+    it('should return true', () => {
+      expect(isDeliverySelected(FULFILMENT_TYPES.DELIVERY)).toBe(true);
+    });
+
+    it('should return false', () => {
+      expect(isDeliverySelected('test')).toBe(false);
+    });
+  });
+
+  describe('getFulfillmentTypeOptions', () => {
+    const fulfillmentTypes = [
+      {
+        label: 'label_1',
+        id: 'id',
+      },
+      {
+        label: 'label_2',
+        id: FULFILMENT_TYPES.DELIVERY,
+      },
+    ];
+
+    describe('When hasDelivery is true', () => {
+      it('should return not filtered "fulfillmentTypeOptions"', () => {
+        const expectedResult = [
+          {
+            label: fulfillmentTypes[0].label,
+            value: fulfillmentTypes[0].id,
+          },
+          {
+            label: fulfillmentTypes[1].label,
+            value: fulfillmentTypes[1].id,
+          }
+        ];
+
+        expect(getFulfillmentTypeOptions(true, fulfillmentTypes)).toEqual(expectedResult);
+      });
+    });
+
+    describe('When hasDelivery is false', () => {
+      it('should return filtered fulfillment type Ootions', () => {
+        const expectedResult = [
+          {
+            label: fulfillmentTypes[0].label,
+            value: fulfillmentTypes[0].id,
+          }
+        ];
+
+        expect(getFulfillmentTypeOptions(false, fulfillmentTypes)).toEqual(expectedResult);
+      });
+    });
+  });
+
+  describe('getDefaultRequestPreferences', () => {
+    it('should return correct data', () => {
+      const initialValues = {
+        fulfillmentPreference:  FULFILMENT_TYPES.DELIVERY,
+      };
+      const expectedResult = {
+        hasDelivery: false,
+        defaultDeliveryAddressTypeId: DEFAULT_VIEW_VALUE,
+        defaultServicePointId: DEFAULT_VIEW_VALUE,
+        deliverySelected: true,
+        selectedAddressTypeId: DEFAULT_VIEW_VALUE,
+      };
+
+      expect(getDefaultRequestPreferences(initialValues)).toEqual(expectedResult);
+    });
+  });
+
+  describe('getFulfillmentPreference', () => {
+    it('should return correct fulfillment preference', () => {
+      const preferences = {};
+      const fulfillmentPreference = 'fulfillmentPreference';
+      const initialValues = {
+        fulfillmentPreference,
+      };
+
+      expect(getFulfillmentPreference(preferences, initialValues)).toBe(fulfillmentPreference);
+    });
+  });
+
+  describe('getRequestTypesOptions', () => {
+    it('should return array of options', () => {
+      const requestTypes = {
+        [REQUEST_TYPES.HOLD]: [],
+      };
+      const expectedResult = [
+        {
+          id: REQUEST_TYPE_TRANSLATIONS[REQUEST_TYPES.HOLD],
+          value: REQUEST_TYPES.HOLD,
+        }
+      ];
+
+      expect(getRequestTypesOptions(requestTypes)).toEqual(expectedResult);
     });
   });
 });

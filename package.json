@@ -44,7 +44,8 @@
   "dependencies": {
     "prop-types": "^15.6.0",
     "query-string": "^5.1.0",
-    "react-final-form": "^6.5.9"
+    "react-final-form": "^6.5.9",
+    "moment-timezone": "^0.5.14"
   },
   "peerDependencies": {
     "@folio/stripes": "^9.1.0",

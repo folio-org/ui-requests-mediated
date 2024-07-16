@@ -1,12 +1,21 @@
 import {
   get,
+  includes,
   isObject,
+  keyBy,
+  sortBy,
 } from 'lodash';
 
 import {
   DEFAULT_VIEW_VALUE,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
-  MEDIATED_REQUESTS_RECORD_FIELD_PATH
+  MEDIATED_REQUESTS_RECORD_FIELD_PATH,
+  FULFILMENT_TYPES,
+  REQUEST_TYPE_TRANSLATIONS,
+  ID_TYPE_MAP,
+  REQUEST_LEVEL_TYPES,
+  REQUEST_TYPE_ERROR_TRANSLATIONS,
+  REQUEST_TYPE_ERRORS,
 } from './constants';
 
 export const transformRequestFilterOptions = (formatMessage, source = []) => (
@@ -132,3 +141,103 @@ export const getRequesterName = (mediatedRequest) => {
 
   return requesterName;
 };
+
+export const resetFieldState = (form, fieldName) => {
+  const registeredFields = form.getRegisteredFields();
+
+  if (includes(registeredFields, fieldName)) {
+    form.resetFieldState(fieldName);
+  }
+};
+
+export const getSelectedAddressTypeId = (deliverySelected, defaultDeliveryAddressTypeId) => {
+  return deliverySelected ? defaultDeliveryAddressTypeId : DEFAULT_VIEW_VALUE;
+};
+
+export const isDeliverySelected = (fulfillmentPreference) => {
+  return fulfillmentPreference === FULFILMENT_TYPES.DELIVERY;
+};
+
+export const getFulfillmentTypeOptions = (hasDelivery, fulfillmentTypes) => {
+  const sortedFulfillmentTypes = sortBy(fulfillmentTypes, ['label']);
+  const fulfillmentTypeOptions = sortedFulfillmentTypes.map(({
+    label,
+    id,
+  }) => ({
+    label,
+    value: id,
+  }));
+
+  return hasDelivery
+    ? fulfillmentTypeOptions
+    : fulfillmentTypeOptions.filter(option => option.value !== FULFILMENT_TYPES.DELIVERY);
+};
+
+export const getRequestTypesOptions = (requestTypes) => {
+  return Object.keys(requestTypes).map(requestType => {
+    return {
+      id: REQUEST_TYPE_TRANSLATIONS[requestType],
+      value: requestType,
+    };
+  });
+};
+
+export const getDeliveryInformation = (selectedUser, addressTypes) => {
+  let deliveryLocations;
+  let deliveryLocationsDetail = [];
+
+  if (selectedUser?.personal?.addresses && addressTypes) {
+    deliveryLocations = selectedUser.personal.addresses.map((address) => {
+      const label = addressTypes.addressTypes.find(({ id }) => id === address.addressTypeId).addressType;
+
+      return {
+        label,
+        value: address.addressTypeId,
+      };
+    });
+    deliveryLocations = sortBy(deliveryLocations, ['label']);
+    deliveryLocationsDetail = keyBy(selectedUser.personal.addresses, address => address.addressTypeId);
+  }
+
+  return {
+    deliveryLocations,
+    deliveryLocationsDetail,
+  };
+};
+
+export const getDefaultRequestPreferences = (initialValues) => {
+  return {
+    hasDelivery: false,
+    defaultDeliveryAddressTypeId: DEFAULT_VIEW_VALUE,
+    defaultServicePointId: DEFAULT_VIEW_VALUE,
+    deliverySelected: isDeliverySelected(initialValues?.fulfillmentPreference),
+    selectedAddressTypeId: DEFAULT_VIEW_VALUE,
+  };
+};
+
+export const getFulfillmentPreference = (preferences, initialValues) => {
+  return get(preferences, 'fulfillment') || get(initialValues, 'fulfillmentPreference', FULFILMENT_TYPES.HOLD_SHELF);
+};
+
+export const getRequestLevelValue = (value) => {
+  return value
+    ? REQUEST_LEVEL_TYPES.TITLE
+    : REQUEST_LEVEL_TYPES.ITEM;
+};
+
+export const getResourceTypeId = (isTitleLevelRequest) => (isTitleLevelRequest ? ID_TYPE_MAP.INSTANCE_ID : ID_TYPE_MAP.ITEM_ID);
+
+export const getRequestInformation = (values, selectedInstance, selectedItem) => {
+  const selectedResource = values.createTitleLevelRequest ? selectedInstance : selectedItem;
+
+  return {
+    isTitleLevelRequest: values.createTitleLevelRequest,
+    selectedResource,
+  };
+};
+
+export const getNoRequestTypeErrorMessageId = (isTitleLevelRequest) => (
+  isTitleLevelRequest ?
+    REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.TITLE_LEVEL_ERROR] :
+    REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.ITEM_LEVEL_ERROR]
+);
