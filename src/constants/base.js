@@ -7,6 +7,8 @@ export const FILTER_PANE_WIDTH = '22%';
 export const DEFAULT_VIEW_VALUE = '';
 
 export const ICONS = {
+  EDIT: 'edit',
+  TIMES_CIRCLE: 'times-circle',
   TIMES_CIRCLE_SOLID: 'times-circle-solid',
   PLUS_SIGN: 'plus-sign',
 };

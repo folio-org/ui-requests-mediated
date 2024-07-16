@@ -1,5 +1,9 @@
 import PropTypes from 'prop-types';
 import {
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
+import {
   get,
   noop,
 } from 'lodash';
@@ -24,9 +28,11 @@ import {
 import {
   APP_ICON_NAME,
   DEFAULT_VIEW_VALUE,
+  MEDIATED_REQUESTS_ACTIVITIES,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
   MEDIATED_REQUESTS_RECORD_FIELD_PATH,
   MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
+  MODULE_ROUTE,
 } from '../../../../constants';
 
 export const COLUMN_WIDTHS = {
@@ -88,6 +94,13 @@ const MediatedRequestsList = ({
   source,
   query,
 }) => {
+  const history = useHistory();
+  const location = useLocation();
+
+  const onRowClick = (e, row) => {
+    history.push(`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/preview/${row.id}${location.search}`);
+  };
+
   return (
     <MultiColumnList
       id="mediatedRequestsList"
@@ -98,6 +111,7 @@ const MediatedRequestsList = ({
       contentData={contentData}
       formatter={mediatedRequestsListFormatter}
       isEmptyMessage={emptyMessage(source, query)}
+      onRowClick={onRowClick}
     />
   );
 };

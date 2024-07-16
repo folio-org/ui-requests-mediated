@@ -11,6 +11,7 @@ import {
 
 import ConfirmItemArrival from './components/ConfirmItemArrival';
 import MediatedRequestsActivitiesContainer from './routes/MediatedRequestsActivitiesContainer';
+import MediatedRequestsDetail from './components/MediatedRequestsActivities/components/MediatedRequestsDetail';
 import SendItemInTransit from './components/SendItemInTransit';
 import RequestFormContainer from './components/MediatedRequestsActivities/components/RequestFormContainer';
 import Settings from './settings';
@@ -52,6 +53,14 @@ const RequestsMediated = (props) => {
             />
           </Route>
       }
+      <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}/preview/:id`}>
+        <MediatedRequestsActivitiesContainer
+          {...props}
+          settings={settings}
+        >
+          <MediatedRequestsDetail {...props} />
+        </MediatedRequestsActivitiesContainer>
+      </Route>
       <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}`}>
         <MediatedRequestsActivitiesContainer
           {...props}
