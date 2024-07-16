@@ -39,6 +39,10 @@
 
   "mediatedRequestList.actionMenu.newMediatedRequest": "New mediated request",
 
+  "mediatedRequestDetails.paneTitle": "Mediated request details",
+  "mediatedRequestDetails.actionMenu.editAndConfirm": "Edit & confirm",
+  "mediatedRequestDetails.actionMenu.decline": "Decline",
+
   "settings.index.paneTitle": "Mediated requests",
   "settings.general": "General",
   "settings.general.message": "These are your general app settings.",

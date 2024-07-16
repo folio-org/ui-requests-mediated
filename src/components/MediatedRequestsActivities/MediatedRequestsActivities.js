@@ -63,6 +63,7 @@ const MediatedRequestsActivities = ({
     resultOffset,
   },
   settings,
+  children,
 }) => {
   const [filterPaneIsVisible, setFilterPaneIsVisible] = useState(true);
 
@@ -159,6 +160,7 @@ const MediatedRequestsActivities = ({
               </Pane>
             )}
           </ColumnManager>
+          { children }
         </Paneset>
       )}
     </SearchAndSortQuery>
@@ -180,6 +182,7 @@ MediatedRequestsActivities.propTypes = {
   }).isRequired,
   source: PropTypes.object,
   settings: PropTypes.object.isRequired,
+  children: PropTypes.node,
 };
 
 export default MediatedRequestsActivities;
