@@ -47,7 +47,6 @@ const basicProps = {
   request: {
     id: '',
   },
-  instanceRequestCount: 1,
   isLoading: false,
   submitting: false,
 };
@@ -557,7 +556,6 @@ describe('InstanceInformation', () => {
         );
 
         const expectedProps = {
-          titleLevelRequestsCount: props.instanceRequestCount,
           title: selectedInstance.title,
           contributors: selectedInstance.contributors,
           publications: selectedInstance.publication,

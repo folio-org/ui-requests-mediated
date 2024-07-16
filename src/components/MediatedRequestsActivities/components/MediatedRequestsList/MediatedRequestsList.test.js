@@ -1,4 +1,8 @@
 import {
+  MemoryRouter,
+} from 'react-router-dom';
+
+import {
   render,
 } from '@folio/jest-config-stripes/testing-library/react';
 
@@ -34,6 +38,12 @@ const query = {
   query: '',
 };
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(),
+  useHistory: jest.fn(),
+}));
+
 describe('MediatedRequestsList', () => {
   const MEDIATED_REQUEST_COLUMNS_NAME = [
     MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE,
@@ -54,7 +64,9 @@ describe('MediatedRequestsList', () => {
 
   beforeEach(() => {
     render(
-      <MediatedRequestsList {...props} />
+      <MemoryRouter>
+        <MediatedRequestsList {...props} />
+      </MemoryRouter>
     );
   });
 

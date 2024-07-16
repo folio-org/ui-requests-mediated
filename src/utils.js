@@ -5,6 +5,7 @@ import {
   keyBy,
   sortBy,
 } from 'lodash';
+import { FormattedMessage } from 'react-intl';
 
 import {
   DEFAULT_VIEW_VALUE,
@@ -68,8 +69,6 @@ export const memoizeValidation = (fn) => {
 };
 
 export const getInstanceQueryString = (hrid, id) => `("hrid"=="${hrid}" or "id"=="${id || hrid}")`;
-
-export const getStatusQuery = (statuses = []) => statuses.reduce((acc, val) => `${acc ? acc + ' or ' : acc}status=="${val}"`, '');
 
 export const getTlrSettings = (settings) => settings || {};
 
@@ -184,7 +183,7 @@ export const getRequestTypesOptions = (requestTypes) => {
 
 export const getDeliveryInformation = (selectedUser, addressTypes) => {
   let deliveryLocations;
-  let deliveryLocationsDetail = [];
+  let deliveryLocationsDetail = {};
 
   if (selectedUser?.personal?.addresses && addressTypes) {
     deliveryLocations = selectedUser.personal.addresses.map((address) => {
@@ -241,3 +240,11 @@ export const getNoRequestTypeErrorMessageId = (isTitleLevelRequest) => (
     REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.TITLE_LEVEL_ERROR] :
     REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.ITEM_LEVEL_ERROR]
 );
+
+export const validateDropDownValue = (shouldValidate) => (value) => {
+  if (shouldValidate) {
+    return value ? undefined : <FormattedMessage id="ui-requests-mediated.form.errors.requiredToConfirm" />;
+  }
+
+  return undefined;
+};

@@ -58,7 +58,6 @@ jest.mock('../../../../hooks/useAddressTypes', () => jest.fn(() => ({
 jest.mock('../../../../utils', () => ({
   ...jest.requireActual('../../../../utils'),
   getInstanceQueryString: jest.fn(query => query),
-  getStatusQuery: jest.fn(() => 'status'),
 }));
 jest.mock('../RequestForm', () => jest.fn(({
   onCancel,
@@ -94,7 +93,7 @@ const mockSubmitFunctionality = (dataToSubmit) => {
   }) => {
     const submitData = () => {
       onSubmit(dataToSubmit);
-    }
+    };
 
     return (
       <form>
@@ -183,7 +182,6 @@ describe('RequestFormContainer', () => {
       const basicDataToSend = {
         itemId: 'itemId',
         item: {},
-        itemRequestCount: 2,
         createTitleLevelRequest: false,
         keyOfItemBarcodeField: 1,
         keyOfUserBarcodeField: 1,
@@ -321,18 +319,6 @@ describe('RequestFormContainer', () => {
       const expectedUrl = `circulation/loans?query=(itemId=="${value}") and status.name==Open`;
 
       expect(urls[RESOURCE_TYPES.LOAN](value)).toBe(expectedUrl);
-    });
-
-    it('should return url to get requests for item data', () => {
-      const expectedUrl = `circulation/requests?query=(itemId=="${value}" and (status))`;
-
-      expect(urls[RESOURCE_TYPES.REQUESTS_FOR_ITEM](value)).toBe(expectedUrl);
-    });
-
-    it('should return url to get requests for instance data', () => {
-      const expectedUrl = `circulation/requests?query=(instanceId=="${value}" and (status))`;
-
-      expect(urls[RESOURCE_TYPES.REQUESTS_FOR_INSTANCE](value)).toBe(expectedUrl);
     });
 
     it('should return url to get request types when requestId provided', () => {

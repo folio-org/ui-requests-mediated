@@ -19,10 +19,10 @@ import ItemsDialog, {
   formatter,
   MAX_HEIGHT,
 } from './ItemsDialog';
-import { useCirculationRequests } from '../../../../hooks';
+import { useAvailableItems } from '../../../../hooks';
 
 jest.mock('../../../../hooks', () => ({
-  useCirculationRequests: jest.fn(),
+  useAvailableItems: jest.fn(),
 }));
 
 const testIds = {
@@ -49,7 +49,7 @@ describe('ItemsDialog', () => {
 
   describe('When data loading', () => {
     beforeEach(() => {
-      useCirculationRequests.mockReturnValueOnce({
+      useAvailableItems.mockReturnValueOnce({
         data: {},
         isFetching: true,
       });
@@ -97,7 +97,7 @@ describe('ItemsDialog', () => {
 
   describe('When data loaded', () => {
     const data = {
-      itemsList: [
+      items: [
         {
           id: 'itemId',
           status: {
@@ -115,7 +115,7 @@ describe('ItemsDialog', () => {
     };
 
     beforeEach(() => {
-      useCirculationRequests.mockReturnValueOnce({
+      useAvailableItems.mockReturnValueOnce({
         isFetching: false,
         data,
       });
@@ -135,14 +135,12 @@ describe('ItemsDialog', () => {
             status: {
               name: ITEM_STATUSES.AVAILABLE,
             },
-            requestQueue: 1,
           },
           {
             id: 'itemId_2',
             status: {
               name: ITEM_STATUSES.AGED_TO_LOST,
             },
-            requestQueue: 0,
           }
         ],
         visibleColumns: COLUMN_NAMES,

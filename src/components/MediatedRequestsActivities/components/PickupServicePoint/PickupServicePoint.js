@@ -4,12 +4,14 @@ import { FormattedMessage } from 'react-intl';
 
 import { Select } from '@folio/stripes/components';
 
+import { validateDropDownValue } from '../../../../utils';
+
 const PickupServicePoint = ({
   isEditForm,
   request,
   values,
   requestTypes,
-  validate,
+  shouldValidate,
 }) => {
   const selectedRequestType = isEditForm ? request.requestType : values.requestType;
   const allowedServicePoints = requestTypes[selectedRequestType] || [];
@@ -19,13 +21,13 @@ const PickupServicePoint = ({
       data-testid="pickupServicePoint"
       name="pickupServicePointId"
       validateFields={[]}
-      validate={validate}
+      validate={validateDropDownValue(shouldValidate)}
     >
       {
         ({
-           input,
-           meta
-         }) => {
+          input,
+          meta
+        }) => {
           const error = meta.touched && meta.error;
 
           return (
@@ -61,7 +63,7 @@ PickupServicePoint.propTypes = {
   isEditForm: PropTypes.bool.isRequired,
   requestTypes: PropTypes.object.isRequired,
   values: PropTypes.object.isRequired,
-  validate: PropTypes.func.isRequired,
+  shouldValidate: PropTypes.bool.isRequired,
   request: PropTypes.object.isRequired,
 };
 

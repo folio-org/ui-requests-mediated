@@ -1,9 +1,6 @@
 import { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import {
-  get,
-  countBy,
-} from 'lodash';
+import { get } from 'lodash';
 import { FormattedMessage } from 'react-intl';
 
 import {
@@ -19,30 +16,27 @@ import {
   ITEM_STATUSES,
   ITEM_STATUS_TRANSLATIONS,
 } from '../../../../constants';
-import { useCirculationRequests } from '../../../../hooks';
+import { useAvailableItems } from '../../../../hooks';
 
 import css from './ItemsDialog.css';
 
 export const COLUMN_NAMES = [
   'barcode',
   'itemStatus',
-  'requestQueue',
   'location',
   'materialType',
   'loanType',
 ];
 export const COLUMN_WIDTHS = {
-  barcode: '16%',
-  itemStatus: '16%',
-  requestQueue: '16%',
-  location: '16%',
-  materialType: '16%',
-  loanType: '16%',
+  barcode: '20%',
+  itemStatus: '20%',
+  location: '20%',
+  materialType: '20%',
+  loanType: '20%',
 };
 export const COLUMN_MAP = {
   barcode: <FormattedMessage id="ui-requests-mediated.itemsDialog.barcode" />,
   itemStatus: <FormattedMessage id="ui-requests-mediated.itemsDialog.status" />,
-  requestQueue: <FormattedMessage id="ui-requests-mediated.itemsDialog.requestQueue" />,
   location: <FormattedMessage id="ui-requests-mediated.itemsDialog.location" />,
   materialType: <FormattedMessage id="ui-requests-mediated.itemsDialog.materialType" />,
   loanType: <FormattedMessage id="ui-requests-mediated.itemsDialog.loanType" />,
@@ -63,24 +57,17 @@ const ItemsDialog = ({
   instanceId,
 }) => {
   const {
-    data,
+    data: itemsList,
     isFetching,
-  } = useCirculationRequests(instanceId, open);
+  } = useAvailableItems(instanceId, open);
   const contentData = useMemo(() => {
-    if (data?.itemsList) {
-      const requestMap = countBy(data.requests, 'itemId');
-
+    if (itemsList?.items) {
       // items with status available must go first
-      return data.itemsList
-        .sort((item) => (item.status.name === ITEM_STATUSES.AVAILABLE ? -1 : 1))
-        .map(item => ({
-          ...item,
-          requestQueue: requestMap[item.id] || 0,
-        }));
+      return itemsList?.items.sort((item) => (item.status.name === ITEM_STATUSES.AVAILABLE ? -1 : 1));
     }
 
     return [];
-  }, [data]);
+  }, [itemsList]);
 
   const itemsAmount = contentData.length;
 

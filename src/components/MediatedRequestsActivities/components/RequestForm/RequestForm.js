@@ -285,22 +285,14 @@ class RequestForm extends React.Component {
       return null;
     }
 
-    return Promise.all(
-      [
-        findResource(RESOURCE_TYPES.LOAN, item.id),
-        findResource(RESOURCE_TYPES.REQUESTS_FOR_ITEM, item.id)
-      ],
-    ).then((results) => {
-      const selectedLoan = results[0]?.loans?.[0];
-      const itemRequestCount = results[1]?.requests?.length;
+    return Promise.all([findResource(RESOURCE_TYPES.LOAN, item.id)])
+      .then((results) => {
+        const selectedLoan = results[0]?.loans?.[0];
 
-      this.setState({
-        itemRequestCount,
-        selectedLoan,
+        this.setState({ selectedLoan });
+
+        return item;
       });
-
-      return item;
-    });
   }
 
   setItemIdRequest = (key, isBarcodeRequired) => {
@@ -379,23 +371,6 @@ class RequestForm extends React.Component {
       });
   }
 
-  findInstanceRelatedResources = (instance) => {
-    if (!instance?.id) {
-      return null;
-    }
-
-    const { findResource } = this.props;
-
-    return findResource(RESOURCE_TYPES.REQUESTS_FOR_INSTANCE, instance.id)
-      .then((result) => {
-        const instanceRequestCount = result.requests.filter(r => r.requestLevel === REQUEST_LEVEL_TYPES.TITLE).length || 0;
-
-        this.setState({ instanceRequestCount });
-
-        return instance;
-      });
-  }
-
   getInstanceValidationData = async (instanceId) => {
     const { findResource } = this.props;
 
@@ -447,11 +422,6 @@ class RequestForm extends React.Component {
         if (instance && selectedUser?.id) {
           this.findRequestTypes(instance.id, selectedUser.id, ID_TYPE_MAP.INSTANCE_ID);
         }
-
-        return instance;
-      })
-      .then(instance => {
-        this.findInstanceRelatedResources(instance);
 
         return instance;
       })
@@ -679,6 +649,9 @@ class RequestForm extends React.Component {
           this.setState({ isRequestTypesReceived: true }, this.triggerRequestTypeValidation);
         }
       })
+      .catch(() => {
+        this.setState({ requestTypes: {} });
+      })
       .finally(() => {
         this.setState({ isRequestTypeLoading: false });
       });
@@ -731,8 +704,6 @@ class RequestForm extends React.Component {
   render() {
     const {
       selectedLoan,
-      itemRequestCount,
-      instanceRequestCount,
       isUserLoading,
       isItemOrInstanceLoading,
       isItemsDialogOpen,
@@ -850,7 +821,6 @@ class RequestForm extends React.Component {
                             values={values}
                             onSetSelectedInstance={onSetSelectedInstance}
                             isLoading={isItemOrInstanceLoading}
-                            instanceRequestCount={instanceRequestCount}
                             enterButtonClass={css.enterButton}
                           />
                         </Accordion>
@@ -871,7 +841,6 @@ class RequestForm extends React.Component {
                             submitting={submitting}
                             onSetSelectedItem={onSetSelectedItem}
                             values={values}
-                            itemRequestCount={itemRequestCount}
                             selectedLoan={selectedLoan}
                             isLoading={isItemOrInstanceLoading}
                             enterButtonClass={css.enterButton}

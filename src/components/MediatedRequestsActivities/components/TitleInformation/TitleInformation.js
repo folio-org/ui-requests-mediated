@@ -9,12 +9,7 @@ import {
 } from '@folio/stripes/components';
 
 import { getFormattedYears } from '../../../../utils';
-import {
-  DEFAULT_DISPLAYED_YEARS_AMOUNT,
-  REQUEST_LEVEL_TYPES,
-  OPEN_REQUEST_STATUS_FILTERS,
-  REQUEST_DATE_SORT_PARAM,
-} from '../../../../constants';
+import { DEFAULT_DISPLAYED_YEARS_AMOUNT } from '../../../../constants';
 
 export const TEXT_SEPARATOR = ', ';
 export const CONTRIBUTOR_SEPARATOR = '; ';
@@ -23,20 +18,12 @@ export const MAX_IDENTIFIERS_COUNT = 4;
 const TitleInformation = (props) => {
   const {
     instanceId,
-    titleLevelRequestsCount,
     title,
-    titleLevelRequestsLink = true,
     contributors = [],
     publications = [],
     editions = [],
     identifiers = [],
   } = props;
-  const getRequestsURL = (id, count) => (
-    <Link to={`/mediated-requests-activities?filters=${OPEN_REQUEST_STATUS_FILTERS},requestLevels.${REQUEST_LEVEL_TYPES.TITLE}&query=${id}&sort=${REQUEST_DATE_SORT_PARAM}`}>
-      {count}
-    </Link>
-  );
-  const titleLevelRequestsAmount = titleLevelRequestsLink ? getRequestsURL(instanceId, titleLevelRequestsCount) : titleLevelRequestsCount;
   const instanceTitle = <Link to={`/inventory/view/${instanceId}`}>{title}</Link>;
   const instanceContributors = contributors.map(({ name }) => name).join(CONTRIBUTOR_SEPARATOR);
   const instanceEditions = editions.map(({ name }) => name).join(TEXT_SEPARATOR);
@@ -46,12 +33,6 @@ const TitleInformation = (props) => {
   return (
     <>
       <Row>
-        <Col xs={4}>
-          <KeyValue
-            label={<FormattedMessage id="ui-requests-mediated.instanceDetails.tlr" />}
-            value={titleLevelRequestsAmount}
-          />
-        </Col>
         <Col xs={4}>
           <KeyValue
             label={<FormattedMessage id="ui-requests-mediated.instanceDetails.title" />}
@@ -64,14 +45,14 @@ const TitleInformation = (props) => {
             value={instanceContributors}
           />
         </Col>
-      </Row>
-      <Row>
         <Col xs={4}>
           <KeyValue
             label={<FormattedMessage id="ui-requests-mediated.instanceDetails.publicationDate" />}
             value={formattedYears}
           />
         </Col>
+      </Row>
+      <Row>
         <Col xs={4}>
           <KeyValue
             label={<FormattedMessage id="ui-requests-mediated.instanceDetails.edition" />}
@@ -90,8 +71,6 @@ const TitleInformation = (props) => {
 };
 
 TitleInformation.propTypes = {
-  titleLevelRequestsLink: PropTypes.bool,
-  titleLevelRequestsCount: PropTypes.number.isRequired,
   instanceId: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   contributors: PropTypes.arrayOf(PropTypes.shape({

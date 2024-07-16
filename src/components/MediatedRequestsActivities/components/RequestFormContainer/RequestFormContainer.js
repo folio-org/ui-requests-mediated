@@ -21,14 +21,11 @@ import {
 import RequestForm from '../RequestForm';
 import {
   getInstanceQueryString,
-  getStatusQuery,
   getTlrSettings,
   getRequestLevelValue,
 } from '../../../../utils';
 import {
   ITEM_QUERIES,
-  MAX_RECORDS,
-  OPEN_REQUESTS_STATUSES,
   DEFAULT_REQUEST_TYPE_VALUE,
   FULFILMENT_TYPES,
   RESOURCE_TYPES,
@@ -66,24 +63,6 @@ export const urls = {
     });
 
     return `circulation/loans?${query}`;
-  },
-  [RESOURCE_TYPES.REQUESTS_FOR_ITEM]: (value) => {
-    const statusQuery = getStatusQuery(OPEN_REQUESTS_STATUSES);
-    const query = stringify({
-      query: `(itemId=="${value}" and (${statusQuery}))`,
-      limit: MAX_RECORDS,
-    });
-
-    return `circulation/requests?${query}`;
-  },
-  [RESOURCE_TYPES.REQUESTS_FOR_INSTANCE]: (value) => {
-    const statusQuery = getStatusQuery(OPEN_REQUESTS_STATUSES);
-    const query = stringify({
-      query: `(instanceId=="${value}" and (${statusQuery}))`,
-      limit: MAX_RECORDS,
-    });
-
-    return `circulation/requests?${query}`;
   },
   [RESOURCE_TYPES.REQUEST_TYPES]: ({
     requesterId,
@@ -205,12 +184,12 @@ const RequestFormContainer = ({
             firstName,
             lastName,
           } = requestData.requester.personal;
-          const requester = `${lastName}${firstName ? ', ' + firstName : ''}`;
+          const user = `${lastName}${firstName ? ', ' + firstName : ''}`;
 
           callout.sendCallout({
             message: <FormattedMessage
               id="ui-requests-mediated.form.createRequest.success"
-              values={{ requester }}
+              values={{ requester: user }}
             />,
           });
         }

@@ -10,10 +10,7 @@ import {
 
 import DeliveryAddress from '../DeliveryAddress';
 import PickupServicePoint from '../PickupServicePoint';
-import {
-  REQUEST_FORM_FIELD_NAMES,
-  REQUEST_STATUSES,
-} from '../../../../constants';
+import { REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
 import {
   getSelectedAddressTypeId,
   isDeliverySelected,
@@ -34,13 +31,6 @@ const FulfilmentPreference = ({
   values,
   shouldValidate,
 }) => {
-  const validate = (value) => {
-    if (shouldValidate) {
-      return value ? undefined : <FormattedMessage id="ui-requests-mediated.form.errors.requiredToConfirm" />;
-    }
-
-    return undefined;
-  };
   const { fulfillmentPreference } = request || {};
   const onChangeFulfillment = (e) => {
     const selectedFulfillmentPreference = e.target.value;
@@ -50,7 +40,6 @@ const FulfilmentPreference = ({
     form.change(REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, selectedFulfillmentPreference);
     setDeliveryAddress(isDelivery, selectedAddressTypeId);
   };
-  const isDisabledFulfillmentPreference = !!request && (request.status === REQUEST_STATUSES.AWAITING_PICKUP || request.status === REQUEST_STATUSES.AWAITING_DELIVERY);
 
   return (
     <>
@@ -66,7 +55,6 @@ const FulfilmentPreference = ({
             component={Select}
             value={fulfillmentPreference}
             onChange={onChangeFulfillment}
-            disabled={isDisabledFulfillmentPreference}
             fullWidth
           >
             {fulfillmentTypeOptions.map(({
@@ -94,14 +82,14 @@ const FulfilmentPreference = ({
                 request={request}
                 values={values}
                 requestTypes={requestTypes}
-                validate={validate}
+                shouldValidate={shouldValidate}
               />
             ) ||
             (deliveryLocations &&
               <DeliveryAddress
                 onChangeAddress={onChangeAddress}
                 deliveryLocations={deliveryLocations}
-                validate={validate}
+                shouldValidate={shouldValidate}
               />
             )
           }

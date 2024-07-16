@@ -38,7 +38,6 @@ class InstanceInformation extends Component {
     isLoading: PropTypes.bool.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
     request: PropTypes.object,
-    instanceRequestCount: PropTypes.number,
     selectedInstance: PropTypes.object,
   };
 
@@ -153,7 +152,6 @@ class InstanceInformation extends Component {
       submitting,
       values,
       isLoading,
-      instanceRequestCount,
       enterButtonClass,
     } = this.props;
     const {
@@ -161,7 +159,6 @@ class InstanceInformation extends Component {
       isInstanceBlurred,
     } = this.state;
     const isEditForm = isFormEditing(request);
-    const titleLevelRequestsCount = request?.titleRequestCount || instanceRequestCount;
     const isTitleInfoVisible = selectedInstance && !isLoading;
 
     return (
@@ -244,7 +241,6 @@ class InstanceInformation extends Component {
             isTitleInfoVisible &&
               <TitleInformation
                 instanceId={request?.instanceId || selectedInstance.id}
-                titleLevelRequestsCount={titleLevelRequestsCount}
                 title={selectedInstance.title}
                 contributors={selectedInstance.contributors}
                 publications={selectedInstance.publication}

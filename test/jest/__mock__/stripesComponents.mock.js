@@ -225,14 +225,20 @@ jest.mock('@folio/stripes/components', () => ({
   Select: jest.fn(({
     children,
     'data-testid': testId,
-    dataOptions,
+    dataOptions = [],
+    label,
+    onChange,
   }) => {
     const selectTestId = testId || 'selectTestId';
     const selectOptionTestId = `${selectTestId}selectOption`;
 
     return (
       <div>
-        <select data-testid={selectTestId}>
+        <span>{label}</span>
+        <select
+          data-testid={selectTestId}
+          onChange={onChange}
+        >
           {dataOptions.map((option, i) => (
             <option
               data-testid={selectOptionTestId}
@@ -241,8 +247,24 @@ jest.mock('@folio/stripes/components', () => ({
             >
               {option.label}
             </option>))}
+          {children}
         </select>
-        {children}
+      </div>
+    );
+  }),
+  TextArea: jest.fn(({
+    label,
+    onChange,
+    ...rest
+  }) => {
+    return (
+      <div>
+        <label htmlFor="textField">{label}</label>
+        <textarea
+          id="textField"
+          onChange={onChange}
+          {...rest}
+        />
       </div>
     );
   }),

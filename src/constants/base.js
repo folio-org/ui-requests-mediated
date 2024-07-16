@@ -7,6 +7,10 @@ export const FILTER_PANE_WIDTH = '22%';
 export const DEFAULT_VIEW_VALUE = '';
 
 export const ICONS = {
+  TIMES: 'times',
+  SPINNER: 'spinner-ellipsis',
+  EDIT: 'edit',
+  TIMES_CIRCLE: 'times-circle',
   TIMES_CIRCLE_SOLID: 'times-circle-solid',
   PLUS_SIGN: 'plus-sign',
 };
@@ -21,15 +25,8 @@ export const RESOURCE_TYPES = {
   INSTANCE: 'instance',
   USER: 'user',
   LOAN: 'loan',
-  REQUESTS_FOR_ITEM: 'requestsForItem',
-  REQUESTS_FOR_INSTANCE: 'requestsForInstance',
   REQUEST_TYPES: 'requestTypes',
   REQUEST_PREFERENCES: 'requestPreferences',
-};
-
-export const ICON_TYPES = {
-  TIMES: 'times',
-  SPINNER: 'spinner-ellipsis',
 };
 
 export const RESOURCE_KEYS = {
@@ -86,7 +83,7 @@ export const REQUEST_TYPE_ERRORS = {
 export const REQUEST_TYPE_ERROR_TRANSLATIONS = {
   [REQUEST_TYPE_ERRORS.TITLE_LEVEL_ERROR]: 'ui-requests-mediated.form.errors.requestType.titleLevelRequest',
   [REQUEST_TYPE_ERRORS.ITEM_LEVEL_ERROR]: 'ui-requests-mediated.form.errors.requestType.itemLevelRequest',
-}
+};
 
 export const FULFILMENT_TYPES = {
   DELIVERY: 'Delivery',
@@ -120,6 +117,7 @@ export const REQUEST_STATUSES = {
   NOT_YET_FILLED: 'Open - Not yet filled',
   CLOSED_DECLINED: 'Closed - Declined',
   CLOSED_FILLED: 'Closed - Filled',
+  CLOSED_CANCELLED: 'Closed - Cancelled',
   NEW_AWAITING_CONFIRMATION: 'New - Awaiting confirmation',
 };
 
@@ -130,6 +128,7 @@ export const REQUEST_STATUSES_TRANSLATIONS = {
   [REQUEST_STATUSES.NOT_YET_FILLED]: 'ui-requests-mediated.request.status.notYetFilled',
   [REQUEST_STATUSES.CLOSED_DECLINED]: 'ui-requests-mediated.request.status.closedDeclined',
   [REQUEST_STATUSES.CLOSED_FILLED]: 'ui-requests-mediated.request.status.closedFilled',
+  [REQUEST_STATUSES.CLOSED_CANCELLED]: 'ui-requests-mediated.request.status.closedCancelled',
   [REQUEST_STATUSES.NEW_AWAITING_CONFIRMATION]: 'ui-requests-mediated.request.status.newAwaitingConfirmation',
 };
 
@@ -203,7 +202,7 @@ export const ITEM_STATUS_TRANSLATIONS = {
 export const ENTER_EVENT_KEY = 'Enter';
 
 export const BASE_SPINNER_PROPS = {
-  icon: ICON_TYPES.SPINNER,
+  icon: ICONS.SPINNER,
   width: '10px',
 };
 

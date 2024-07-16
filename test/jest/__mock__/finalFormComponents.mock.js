@@ -15,7 +15,9 @@ jest.mock('react-final-form', () => ({
           label={label}
           validate={validate}
           data-testid={testId}
-        />
+        >
+          {children || undefined}
+        </Component>
       );
     } else {
       return children({

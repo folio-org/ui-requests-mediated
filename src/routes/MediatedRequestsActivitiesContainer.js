@@ -106,6 +106,7 @@ class MediatedRequestsActivitiesContainer extends React.Component {
       hasPerm: PropTypes.func.isRequired,
     }).isRequired,
     settings: PropTypes.object.isRequired,
+    children: PropTypes.node,
   }
 
   componentDidMount() {
@@ -161,7 +162,9 @@ class MediatedRequestsActivitiesContainer extends React.Component {
         resources={this.props.resources}
         mutator={this.props.mutator}
         settings={this.props.settings}
-      />
+      >
+        {this.props.children}
+      </MediatedRequestsActivities>
     );
   }
 }

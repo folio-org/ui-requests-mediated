@@ -1,4 +1,8 @@
 import {
+  MemoryRouter,
+} from 'react-router-dom';
+
+import {
   render,
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
@@ -38,6 +42,12 @@ jest.mock('@folio/stripes/smart-components', () => ({
   )),
 }));
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useLocation: jest.fn(),
+  useHistory: jest.fn(),
+}));
+
 describe('MediatedRequestsActivities', () => {
   const mutator = {
     resultOffset: {
@@ -59,14 +69,16 @@ describe('MediatedRequestsActivities', () => {
 
   beforeEach(() => {
     render(
-      <MediatedRequestsActivities
-        querySetter={querySetter}
-        queryGetter={queryGetter}
-        source={source}
-        resources={resources}
-        mutator={mutator}
-        settings={settings}
-      />
+      <MemoryRouter>
+        <MediatedRequestsActivities
+          querySetter={querySetter}
+          queryGetter={queryGetter}
+          source={source}
+          resources={resources}
+          mutator={mutator}
+          settings={settings}
+        />
+      </MemoryRouter>
     );
   });
 

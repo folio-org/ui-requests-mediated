@@ -53,7 +53,7 @@ const RequestInformation = ({
     }
 
     return undefined;
-  }, [isItemOrTitleSelected, isSelectedUser, requestTypeOptions, isTitleLevelRequest, isRequestTypesReceived]);
+  }, [isItemOrTitleSelected, isSelectedUser, requestTypeOptions, isTitleLevelRequest, isRequestTypesReceived, shouldValidate]);
   const changeRequestType = (input) => (e) => {
     form.change(REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
     resetFieldState(form, REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID);

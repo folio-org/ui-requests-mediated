@@ -4,19 +4,22 @@ import { FormattedMessage } from 'react-intl';
 
 import { Select } from '@folio/stripes/components';
 
+import { validateDropDownValue } from '../../../../utils';
+
 const DeliveryAddress = ({
   onChangeAddress,
   deliveryLocations,
-  validate,
+  shouldValidate,
 }) => {
   return (
     <Field
       name="deliveryAddressTypeId"
-      label={<FormattedMessage id="ui-requests.deliveryAddress" />}
+      data-testid="deliveryAddress"
+      label={<FormattedMessage id="ui-requests-mediated.form.request.deliveryAddress" />}
       component={Select}
       fullWidth
       onChange={onChangeAddress}
-      validate={validate}
+      validate={validateDropDownValue(shouldValidate)}
     >
       {deliveryLocations.map(({
         value,
@@ -35,7 +38,7 @@ const DeliveryAddress = ({
 
 DeliveryAddress.propTypes = {
   onChangeAddress: PropTypes.func.isRequired,
-  validate: PropTypes.func.isRequired,
+  shouldValidate: PropTypes.bool.isRequired,
   deliveryLocations: PropTypes.arrayOf({
     value: PropTypes.string,
     label: PropTypes.string,

@@ -12,6 +12,7 @@
 * Add Mediated request status and Mediated request level filters for Mediated requests actions page. Refs UIREQMED-25.
 * Add Search for Mediated requests actions page. Refs UIREQMED-26.
 * Add Actions button and dropdown in Mediated requests UI. Refs UIREQMED-6.
+* Add Actions for Mediated requests details. Refs UIREQMED-11.
 * Implement Request information accordion and save functionality on request form. UIREQMED-30.
 
 ## 1.0.0

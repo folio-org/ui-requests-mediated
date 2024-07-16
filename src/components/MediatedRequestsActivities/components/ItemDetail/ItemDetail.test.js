@@ -28,7 +28,6 @@ const basicProps = {
   loan: {
     dueDate: 'dueDate',
   },
-  requestCount: 2,
 };
 const labelIds = {
   itemBarcode: 'ui-requests-mediated.itemDetails.barcode',
@@ -39,7 +38,6 @@ const labelIds = {
   status: 'ui-requests-mediated.itemDetails.status',
   availableStatus: 'ui-requests-mediated.item.status.available',
   dueDate: 'ui-requests-mediated.itemDetails.dueDate',
-  requestsOnItem: 'ui-requests-mediated.itemDetails.requestsOnItem',
 };
 
 describe('ItemDetail', () => {
@@ -157,18 +155,6 @@ describe('ItemDetail', () => {
       const dueDateValue = screen.getByText(basicProps.loan.dueDate);
 
       expect(dueDateValue).toBeInTheDocument();
-    });
-
-    it('should render requests on item label', () => {
-      const requestsOnItemLabel = screen.getByText(labelIds.requestsOnItem);
-
-      expect(requestsOnItemLabel).toBeInTheDocument();
-    });
-
-    it('should render requests on item value', () => {
-      const requestsOnItemValue = screen.getByText(basicProps.requestCount);
-
-      expect(requestsOnItemValue).toBeInTheDocument();
     });
   });
 });
