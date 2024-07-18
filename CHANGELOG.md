@@ -14,6 +14,7 @@
 * Add Actions button and dropdown in Mediated requests UI. Refs UIREQMED-6.
 * Add Actions for Mediated requests details. Refs UIREQMED-11.
 * Add changes for integration between different stories. Refs UIREQMED-32.
+* Add `Closed - Cancelled` status to `Mediated request status` filter. Refs UIREQMED-33.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.
