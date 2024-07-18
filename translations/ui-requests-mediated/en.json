@@ -18,9 +18,9 @@
   "app.sendItemInTransit.paneTitle": "Send item in transit",
 
   "filters.mediatedRequestStatus.accordionTitle": "Mediated request status",
+  "filters.mediatedRequestStatus.closedCancelled": "Closed - Cancelled",
   "filters.mediatedRequestStatus.closedDeclined": "Closed - Declined",
   "filters.mediatedRequestStatus.closedFilled": "Closed - Filled",
-  "filters.mediatedRequestStatus.closedCancelled": "Closed - Cancelled",
   "filters.mediatedRequestStatus.newAwaitingConfirmation": "New - Awaiting confirmation",
   "filters.mediatedRequestStatus.openAwaitingPickup": "Open - Awaiting pickup",
   "filters.mediatedRequestStatus.openInProgress": "Open - In progress",
@@ -108,6 +108,7 @@
   "request.status.notYetFilled": "Open - Not yet filled",
   "request.status.closedDeclined": "Closed - Declined",
   "request.status.closedFilled": "Closed - Filled",
+  "request.status.closedCancelled": "Closed - Cancelled",
   "request.status.newAwaitingConfirmation": "New - Awaiting confirmation",
 
   "itemDetails.barcode": "Item barcode",

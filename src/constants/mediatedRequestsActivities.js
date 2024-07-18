@@ -50,6 +50,7 @@ export const MEDIATED_REQUEST_FILTER_TYPES = {
 };
 
 export const MEDIATED_REQUEST_STATUS = {
+  CLOSED_CANCELLED: 'Closed - Cancelled',
   CLOSED_DECLINED: 'Closed - Declined',
   CLOSED_FILLED: 'Closed - Filled',
   NEW_AWAITING_CONFIRMATION: 'New - Awaiting confirmation',
@@ -60,6 +61,7 @@ export const MEDIATED_REQUEST_STATUS = {
 };
 
 export const MEDIATED_REQUEST_STATUS_TRANSLATIONS = [
+  { label: 'ui-requests-mediated.filters.mediatedRequestStatus.closedCancelled', value: MEDIATED_REQUEST_STATUS.CLOSED_CANCELLED },
   { label: 'ui-requests-mediated.filters.mediatedRequestStatus.closedDeclined', value: MEDIATED_REQUEST_STATUS.CLOSED_DECLINED },
   { label: 'ui-requests-mediated.filters.mediatedRequestStatus.closedFilled', value: MEDIATED_REQUEST_STATUS.CLOSED_FILLED },
   { label: 'ui-requests-mediated.filters.mediatedRequestStatus.newAwaitingConfirmation', value: MEDIATED_REQUEST_STATUS.NEW_AWAITING_CONFIRMATION },
