@@ -126,6 +126,7 @@ class MediatedRequestsActivitiesContainer extends React.Component {
       },
       history,
       mutator: {
+        query,
         resultOffset,
       },
     } = this.props;
@@ -136,6 +137,12 @@ class MediatedRequestsActivitiesContainer extends React.Component {
 
     if (state.sortChanged) {
       resultOffset.replace(0);
+    }
+
+    if (/reset/.test(state.changeType)) {
+      query.replace(nsValues);
+    } else {
+      query.update(nsValues);
     }
 
     const url = buildUrl(location, nsValues);
