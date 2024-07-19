@@ -5,14 +5,14 @@ import {
   PaneMenu,
 } from '@folio/stripes/components';
 
-import { ICON_TYPES } from '../../../../constants';
+import { ICONS } from '../../../../constants';
 
 const RequestFormFirstMenu = ({ onCancel }) => {
   return (
     <PaneMenu>
       <PaneHeaderIconButton
         onClick={onCancel}
-        icon={ICON_TYPES.TIMES}
+        icon={ICONS.TIMES}
       />
     </PaneMenu>
   );

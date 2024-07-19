@@ -14,7 +14,6 @@ import {
 
 const basicProps = {
   instanceId: 'instanceId',
-  titleLevelRequestsCount: 2,
   title: 'title',
   contributors: [{ name: 'Contributor' }],
   publications: [{ dateOfPublication: '2021' }],
@@ -22,7 +21,6 @@ const basicProps = {
   identifiers: [{ value: 'identifier' }],
 };
 const labelIds = {
-  titleLevelRequests: 'ui-requests-mediated.instanceDetails.tlr',
   title: 'ui-requests-mediated.instanceDetails.title',
   contributor: 'ui-requests-mediated.instanceDetails.contributor',
   publicationsDate: 'ui-requests-mediated.instanceDetails.publicationDate',
@@ -46,18 +44,6 @@ describe('TitleInformation', () => {
           {...basicProps}
         />
       );
-    });
-
-    it('should render tlr label', () => {
-      const tlrLabel = screen.getByText(labelIds.titleLevelRequests);
-
-      expect(tlrLabel).toBeInTheDocument();
-    });
-
-    it('should render tlr value', () => {
-      const tlrValue = screen.queryByText(basicProps.titleLevelRequestsCount);
-
-      expect(tlrValue).toBeInTheDocument();
     });
 
     it('should render instance title label', () => {

@@ -6,15 +6,26 @@ import {
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import RequestForm from './RequestForm';
+import RequestInformation from '../RequestInformation';
 import {
+  FULFILMENT_TYPES,
+  ID_TYPE_MAP,
+  REQUEST_OPERATIONS,
+  REQUEST_TYPES,
   REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
   RESOURCE_TYPES,
 } from '../../../../constants';
+import {
+  getRequestInformation,
+  getFulfillmentPreference,
+  isDeliverySelected,
+} from '../../../../utils';
 
 const basicProps = {
   handleSubmit: jest.fn(),
   findResource: jest.fn(),
+  onSetSubmitInitiator: jest.fn(),
   onCancel: jest.fn(),
   onSetSelectedItem: jest.fn(),
   onSetSelectedUser: jest.fn(),
@@ -43,9 +54,11 @@ const labelIds = {
 const testIds = {
   findItem: 'findItem',
   findInstance: 'findInstance',
+  findUser: 'findUser',
 };
 const itemBarcode = 'itemBarcode';
 const instanceId = 'instanceId';
+const userBarcode = 'userBarcode';
 
 jest.mock('@folio/stripes/final-form', () => () => jest.fn((component) => component));
 jest.mock('../RequestFormShortcutsWrapper', () => jest.fn(({ children }) => <div>{children}</div>));
@@ -89,15 +102,55 @@ jest.mock('../InstanceInformation', () => jest.fn(({
     </>
   );
 }));
-jest.mock('../RequesterInformation', () => jest.fn(() => <div />));
+jest.mock('../RequesterInformation', () => jest.fn(({
+  findUser,
+}) => {
+  const onFindUser = () => {
+    findUser('barcode', userBarcode);
+  };
+
+  return (
+    <>
+      <button
+        type="button"
+        data-testid={testIds.findUser}
+        onClick={onFindUser}
+      >
+        Find User
+      </button>
+    </>
+  );
+}));
+jest.mock('../RequestInformation', () => jest.fn(() => <div />));
+jest.mock('../FulfilmentPreference', () => jest.fn(() => <div />));
+jest.mock('../AddressDetails', () => jest.fn(() => <div />));
 jest.mock('../ItemsDialog', () => jest.fn(() => <div />));
 jest.mock('../../../../utils', () => ({
+  ...jest.requireActual('../../../../utils'),
   getTlrSettings: jest.fn(() => ({
     titleLevelRequestsFeatureEnabled: true,
   })),
   handleKeyCommand: jest.fn(),
   getPatronGroup: jest.fn(),
   isSubmittingButtonDisabled: jest.fn(),
+  isFormEditing: jest.fn(),
+  resetFieldState: jest.fn(),
+  getFulfillmentTypeOptions: jest.fn(() => []),
+  getDefaultRequestPreferences: jest.fn(),
+  getFulfillmentPreference: jest.fn(),
+  getSelectedAddressTypeId: jest.fn(),
+  isDeliverySelected: jest.fn(),
+  getRequestTypesOptions: jest.fn(() => []),
+  getDeliveryInformation: jest.fn(() => ({
+    deliveryLocationsDetail: {},
+  })),
+  getResourceTypeId: jest.fn(() => 'itemId'),
+  getRequestInformation: jest.fn(() => ({
+    selectedResource: {
+      id: 'id',
+    },
+    isTitleLevelRequest: false,
+  })),
 }));
 
 describe('RequestForm', () => {
@@ -134,9 +187,6 @@ describe('RequestForm', () => {
       const foundLoan = {
         loans: [],
       };
-      const foundRequests = {
-        requests: [],
-      };
 
       beforeEach(() => {
         render(
@@ -149,8 +199,7 @@ describe('RequestForm', () => {
 
         basicProps.findResource
           .mockResolvedValueOnce(foundItem)
-          .mockResolvedValueOnce(foundLoan)
-          .mockResolvedValueOnce(foundRequests);
+          .mockResolvedValueOnce(foundLoan);
         fireEvent.click(findItemButton);
       });
 
@@ -178,12 +227,6 @@ describe('RequestForm', () => {
 
       it('should find related loans', () => {
         const expectedArgs = [RESOURCE_TYPES.LOAN, foundItem.items[0].id];
-
-        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
-      });
-
-      it('should find item requests', () => {
-        const expectedArgs = [RESOURCE_TYPES.REQUESTS_FOR_ITEM, foundItem.items[0].id];
 
         expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
       });
@@ -246,6 +289,246 @@ describe('RequestForm', () => {
     });
   });
 
+  describe('RequesterInformation', () => {
+    describe('When user data exists', () => {
+      const foundUser = {
+        totalRecords: 1,
+        users: [
+          {
+            id: 'userId',
+            barcode: 'userBarcode',
+          }
+        ],
+      };
+      const foundRequestPreferences = {
+        requestPreferences: [
+          {
+            defaultDeliveryAddressTypeId: '',
+            defaultServicePointId: 'defaultServicePointId',
+            delivery: false,
+          }
+        ],
+      };
+      const foundRequestTypes = {
+        [REQUEST_TYPES.PAGE]: [
+          {
+            id: 'id',
+            name: 'servicePoint',
+          }
+        ],
+      };
+      const props = {
+        ...basicProps,
+        selectedItem: {
+          id: 'itemId',
+        },
+      };
+
+      describe('When delivery is not selected', () => {
+        beforeEach(() => {
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+          getRequestInformation.mockReturnValueOnce({
+            isTitleLevelRequest: false,
+            selectedResource: props.selectedItem,
+          });
+          getFulfillmentPreference.mockReturnValueOnce(FULFILMENT_TYPES.HOLD_SHELF);
+
+          const findUserButton = screen.getByTestId(testIds.findUser);
+
+          basicProps.findResource
+            .mockResolvedValueOnce(foundUser)
+            .mockResolvedValueOnce(foundRequestPreferences)
+            .mockResolvedValueOnce(foundRequestTypes);
+          fireEvent.click(findUserButton);
+        });
+
+        it('should find user', () => {
+          const expectedArgs = [RESOURCE_TYPES.USER, userBarcode, RESOURCE_KEYS.BARCODE];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+        });
+
+        it('should set requester id form value', () => {
+          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, foundUser.users[0].id];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+        });
+
+        it('should set requester form value', () => {
+          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.REQUESTER, foundUser.users[0]];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+        });
+
+        it('should set selected user', () => {
+          expect(basicProps.onSetSelectedUser).toHaveBeenCalledWith(foundUser.users[0]);
+        });
+
+        it('should find request preferences', () => {
+          const expectedArgs = [RESOURCE_TYPES.REQUEST_PREFERENCES, foundUser.users[0].id, 'userId'];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+        });
+
+        it('should find request types', () => {
+          const expectedArgs = [
+            RESOURCE_TYPES.REQUEST_TYPES,
+            {
+              operation: REQUEST_OPERATIONS.CREATE,
+              requesterId: foundUser.users[0].id,
+              [ID_TYPE_MAP.ITEM_ID]: props.selectedItem.id,
+            }
+          ];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+        });
+
+        it('should set fulfilment preferences', async () => {
+          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF];
+
+          await waitFor(() => {
+            expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+          });
+        });
+
+        it('should reset delivery address type id', async () => {
+          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, ''];
+
+          await waitFor(() => {
+            expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+          });
+        });
+      });
+
+      describe('When delivery is selected', () => {
+        beforeEach(() => {
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+          getRequestInformation.mockReturnValueOnce({
+            isTitleLevelRequest: false,
+            selectedResource: props.selectedItem,
+          });
+          getFulfillmentPreference.mockReturnValueOnce(FULFILMENT_TYPES.HOLD_SHELF);
+          isDeliverySelected.mockReturnValueOnce(true);
+
+          const findUserButton = screen.getByTestId(testIds.findUser);
+
+          basicProps.findResource
+            .mockResolvedValueOnce(foundUser)
+            .mockResolvedValueOnce(foundRequestPreferences)
+            .mockResolvedValueOnce(foundRequestTypes);
+          fireEvent.click(findUserButton);
+        });
+
+        it('should reset pickup service point id', async () => {
+          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, ''];
+
+          await waitFor(() => {
+            expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+          });
+        });
+      });
+
+      describe('When error while receiving request preferences', () => {
+        beforeEach(() => {
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+
+          const findUserButton = screen.getByTestId(testIds.findUser);
+
+          basicProps.findResource
+            .mockResolvedValueOnce(foundUser)
+            .mockRejectedValueOnce({})
+            .mockResolvedValueOnce(foundRequestTypes);
+          fireEvent.click(findUserButton);
+        });
+
+        it('should set fulfilment preference to hold shelf', async () => {
+          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF];
+
+          await waitFor(() => {
+            expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+          });
+        });
+      });
+    });
+
+    describe('When user data does not exist', () => {
+      const foundUser = {
+        users: [],
+        totalRecords: 0,
+      };
+
+      beforeEach(() => {
+        render(
+          <RequestForm
+            {...basicProps}
+          />
+        );
+
+        const findUserButton = screen.getByTestId(testIds.findUser);
+
+        basicProps.findResource.mockResolvedValueOnce(foundUser);
+        fireEvent.click(findUserButton);
+      });
+
+      it('should not set requester id form value', async () => {
+        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, expect.any(String)];
+
+        await waitFor(() => {
+          expect(basicProps.form.change).not.toHaveBeenCalledWith(...expectedArgs);
+        });
+      });
+
+      it('should not set requester form value', async () => {
+        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.REQUESTER, expect.any(String)];
+
+        await waitFor(() => {
+          expect(basicProps.form.change).not.toHaveBeenCalledWith(...expectedArgs);
+        });
+      });
+
+      it('should not find request preferences', async () => {
+        const expectedArgs = [RESOURCE_TYPES.REQUEST_PREFERENCES, expect.any(String), 'userId'];
+
+        await waitFor(() => {
+          expect(basicProps.findResource).not.toHaveBeenCalledWith(...expectedArgs);
+        });
+      });
+    });
+
+    describe('When user data request throws error', () => {
+      beforeEach(() => {
+        render(
+          <RequestForm
+            {...basicProps}
+          />
+        );
+
+        const findUserButton = screen.getByTestId(testIds.findUser);
+
+        basicProps.findResource.mockRejectedValueOnce({});
+        fireEvent.click(findUserButton);
+      });
+
+      it('should set selected user to null', async () => {
+        await waitFor(() => {
+          expect(basicProps.onSetSelectedUser).toHaveBeenCalledWith(null);
+        });
+      });
+    });
+  });
+
   describe('InstanceInformation', () => {
     const props = {
       ...basicProps,
@@ -259,9 +542,6 @@ describe('RequestForm', () => {
         id: instanceId,
         hrid: 'hrid',
       };
-      const foundRequests = {
-        requests: [],
-      };
 
       beforeEach(() => {
         render(
@@ -272,9 +552,7 @@ describe('RequestForm', () => {
 
         const findInstanceButton = screen.getByTestId(testIds.findInstance);
 
-        basicProps.findResource
-          .mockResolvedValueOnce(foundInstance)
-          .mockResolvedValueOnce(foundRequests);
+        basicProps.findResource.mockResolvedValueOnce(foundInstance);
         fireEvent.click(findInstanceButton);
       });
 
@@ -298,12 +576,6 @@ describe('RequestForm', () => {
 
       it('should set selected instance', () => {
         expect(basicProps.onSetSelectedInstance).toHaveBeenCalledWith(foundInstance);
-      });
-
-      it('should find instance requests', () => {
-        const expectedArgs = [RESOURCE_TYPES.REQUESTS_FOR_INSTANCE, foundInstance.id];
-
-        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
       });
     });
 
@@ -359,6 +631,35 @@ describe('RequestForm', () => {
           expect(basicProps.onSetSelectedInstance).toHaveBeenCalledWith(null);
         });
       });
+    });
+  });
+
+  describe('RequestInformation', () => {
+    beforeEach(() => {
+      render(
+        <RequestForm
+          {...basicProps}
+        />
+      );
+    });
+
+    it('should trigger with correct props', () => {
+      const expectedProps = {
+        updateRequestPreferencesFields: expect.any(Function),
+        request: {},
+        requestTypeOptions: [],
+        isTitleLevelRequest: basicProps.values.createTitleLevelRequest,
+        isRequestTypesReceived: false,
+        isRequestTypeLoading: false,
+        isSelectedInstance: false,
+        isSelectedItem: false,
+        isSelectedUser: false,
+        values: basicProps.values,
+        form: basicProps.form,
+        shouldValidate: false,
+      };
+
+      expect(RequestInformation).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
     });
   });
 });

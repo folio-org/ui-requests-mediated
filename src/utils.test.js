@@ -1,4 +1,9 @@
 import {
+  render,
+  screen,
+} from '@folio/jest-config-stripes/testing-library/react';
+
+import {
   transformRequestFilterOptions,
   getIsTitleLevelRequestsFeatureEnabled,
   getRequesterName,
@@ -9,10 +14,30 @@ import {
   getPatronGroup,
   isSubmittingButtonDisabled,
   getFormattedYears,
-  getStatusQuery,
   getInstanceQueryString,
   getFullName,
+  getFulfillmentTypeOptions,
+  getSelectedAddressTypeId,
+  isDeliverySelected,
+  resetFieldState,
+  getDefaultRequestPreferences,
+  getFulfillmentPreference,
+  getRequestTypesOptions,
+  getDeliveryInformation,
+  getResourceTypeId,
+  getRequestInformation,
+  getNoRequestTypeErrorMessageId,
+  validateDropDownValue,
 } from './utils';
+import {
+  FULFILMENT_TYPES,
+  REQUEST_TYPE_TRANSLATIONS,
+  REQUEST_TYPES,
+  DEFAULT_VIEW_VALUE,
+  ID_TYPE_MAP,
+  REQUEST_TYPE_ERROR_TRANSLATIONS,
+  REQUEST_TYPE_ERRORS,
+} from './constants';
 
 describe('utils', () => {
   describe('transformRequestFilterOptions', () => {
@@ -236,19 +261,6 @@ describe('utils', () => {
     });
   });
 
-  describe('getStatusQuery', () => {
-    it('should return query string', () => {
-      const statusesList = ['test', 'test_2'];
-      const expectedResult = 'status=="test" or status=="test_2"';
-
-      expect(getStatusQuery(statusesList)).toBe(expectedResult);
-    });
-
-    it('should return empty string', () => {
-      expect(getStatusQuery()).toBe('');
-    });
-  });
-
   describe('getTlrSettings', () => {
     const defaultSettings = {
       titleLevelRequestsFeatureEnabled: true,
@@ -374,6 +386,286 @@ describe('utils', () => {
         const expectedResult = `${user.lastName} ${user.middleName}`;
 
         expect(getFullName(user)).toBe(expectedResult);
+      });
+    });
+  });
+
+  describe('resetFieldState', () => {
+    const form = {
+      getRegisteredFields: jest.fn(),
+      resetFieldState: jest.fn(),
+    };
+    const fieldName = 'test';
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    describe('When field exists', () => {
+      beforeEach(() => {
+        form.getRegisteredFields.mockReturnValue([fieldName]);
+        resetFieldState(form, fieldName);
+      });
+
+      it('should trigger get registered fields', () => {
+        expect(form.getRegisteredFields).toHaveBeenCalled();
+      });
+
+      it('should trigger reset field state', () => {
+        expect(form.resetFieldState).toHaveBeenCalledWith(fieldName);
+      });
+    });
+
+    describe('When field does not exist', () => {
+      beforeEach(() => {
+        form.getRegisteredFields.mockReturnValue([]);
+        resetFieldState(form, fieldName);
+      });
+
+      it('should not reset field state', () => {
+        expect(form.resetFieldState).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('getSelectedAddressTypeId', () => {
+    it('should return default delivery address type id"', () => {
+      const defaultDeliveryAddressTypeId = 'id';
+
+      expect(getSelectedAddressTypeId(true, defaultDeliveryAddressTypeId)).toBe(defaultDeliveryAddressTypeId);
+    });
+
+    it('should return empty string', () => {
+      expect(getSelectedAddressTypeId(false)).toBe('');
+    });
+  });
+
+  describe('isDeliverySelected', () => {
+    it('should return true', () => {
+      expect(isDeliverySelected(FULFILMENT_TYPES.DELIVERY)).toBe(true);
+    });
+
+    it('should return false', () => {
+      expect(isDeliverySelected('test')).toBe(false);
+    });
+  });
+
+  describe('getFulfillmentTypeOptions', () => {
+    const fulfillmentTypes = [
+      {
+        label: 'label_1',
+        id: 'id',
+      },
+      {
+        label: 'label_2',
+        id: FULFILMENT_TYPES.DELIVERY,
+      },
+    ];
+
+    describe('When hasDelivery is true', () => {
+      it('should return not filtered "fulfillmentTypeOptions"', () => {
+        const expectedResult = [
+          {
+            label: fulfillmentTypes[0].label,
+            value: fulfillmentTypes[0].id,
+          },
+          {
+            label: fulfillmentTypes[1].label,
+            value: fulfillmentTypes[1].id,
+          }
+        ];
+
+        expect(getFulfillmentTypeOptions(true, fulfillmentTypes)).toEqual(expectedResult);
+      });
+    });
+
+    describe('When hasDelivery is false', () => {
+      it('should return filtered fulfillment type Ootions', () => {
+        const expectedResult = [
+          {
+            label: fulfillmentTypes[0].label,
+            value: fulfillmentTypes[0].id,
+          }
+        ];
+
+        expect(getFulfillmentTypeOptions(false, fulfillmentTypes)).toEqual(expectedResult);
+      });
+    });
+  });
+
+  describe('getDefaultRequestPreferences', () => {
+    it('should return correct data', () => {
+      const initialValues = {
+        fulfillmentPreference:  FULFILMENT_TYPES.DELIVERY,
+      };
+      const expectedResult = {
+        hasDelivery: false,
+        defaultDeliveryAddressTypeId: DEFAULT_VIEW_VALUE,
+        defaultServicePointId: DEFAULT_VIEW_VALUE,
+        deliverySelected: true,
+        selectedAddressTypeId: DEFAULT_VIEW_VALUE,
+      };
+
+      expect(getDefaultRequestPreferences(initialValues)).toEqual(expectedResult);
+    });
+  });
+
+  describe('getFulfillmentPreference', () => {
+    it('should return correct fulfillment preference', () => {
+      const preferences = {};
+      const fulfillmentPreference = 'fulfillmentPreference';
+      const initialValues = {
+        fulfillmentPreference,
+      };
+
+      expect(getFulfillmentPreference(preferences, initialValues)).toBe(fulfillmentPreference);
+    });
+  });
+
+  describe('getRequestTypesOptions', () => {
+    it('should return array of options', () => {
+      const requestTypes = {
+        [REQUEST_TYPES.HOLD]: [],
+      };
+      const expectedResult = [
+        {
+          id: REQUEST_TYPE_TRANSLATIONS[REQUEST_TYPES.HOLD],
+          value: REQUEST_TYPES.HOLD,
+        }
+      ];
+
+      expect(getRequestTypesOptions(requestTypes)).toEqual(expectedResult);
+    });
+  });
+
+  describe('getDeliveryInformation', () => {
+    describe('When user is selected and addressTypes is available', () => {
+      const addressId = 'addressId';
+      const addressType = 'addressType';
+      const selectedUser = {
+        personal: {
+          addresses: [
+            {
+              addressTypeId: addressId,
+            }
+          ],
+        },
+      };
+      const addressTypes = {
+        addressTypes: [
+          {
+            id: addressId,
+            addressType,
+          }
+        ],
+      };
+
+      it('should return delivery information', () => {
+        const expectedResult = {
+          deliveryLocations: [
+            {
+              label: addressTypes.addressTypes[0].addressType,
+              value: selectedUser.personal.addresses[0].addressTypeId,
+            }
+          ],
+          deliveryLocationsDetail: {
+            [addressId]: {
+              addressTypeId: addressId,
+            },
+          },
+        };
+
+        expect(getDeliveryInformation(selectedUser, addressTypes)).toEqual(expectedResult);
+      });
+    });
+
+    describe('When user is not selected and addressTypes in not available', () => {
+      const selectedUser = {};
+      const addressTypes = {};
+
+      it('should return default delivery information', () => {
+        const expectedResult = {
+          deliveryLocationsDetail: {},
+        };
+
+        expect(getDeliveryInformation(selectedUser, addressTypes)).toEqual(expectedResult);
+      });
+    });
+  });
+
+  describe('getResourceTypeId', () => {
+    it('should return instance id', () => {
+      expect(getResourceTypeId(true)).toBe(ID_TYPE_MAP.INSTANCE_ID);
+    });
+
+    it('should return item id', () => {
+      expect(getResourceTypeId(false)).toBe(ID_TYPE_MAP.ITEM_ID);
+    });
+  });
+
+  describe('getRequestInformation', () => {
+    const selectedInstance = {
+      id: 'instanceId',
+    };
+    const selectedItem = {
+      id: 'itemId',
+    };
+
+    it('should return data with selected instance', () => {
+      const values = {
+        createTitleLevelRequest: true,
+      };
+      const expectedResult = {
+        isTitleLevelRequest: values.createTitleLevelRequest,
+        selectedResource: selectedInstance,
+      };
+
+      expect(getRequestInformation(values, selectedInstance, selectedItem)).toEqual(expectedResult);
+    });
+
+    it('should return data with selected item', () => {
+      const values = {
+        createTitleLevelRequest: false,
+      };
+      const expectedResult = {
+        isTitleLevelRequest: values.createTitleLevelRequest,
+        selectedResource: selectedItem,
+      };
+
+      expect(getRequestInformation(values, selectedInstance, selectedItem)).toEqual(expectedResult);
+    });
+  });
+
+  describe('getNoRequestTypeErrorMessageId', () => {
+    it('should return error for title level request', () => {
+      expect(getNoRequestTypeErrorMessageId(true)).toBe(REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.TITLE_LEVEL_ERROR]);
+    });
+
+    it('should return error for item level request', () => {
+      expect(getNoRequestTypeErrorMessageId(false)).toBe(REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.ITEM_LEVEL_ERROR]);
+    });
+  });
+
+  describe('validateDropDownValue', () => {
+    const value = 'value';
+
+    describe('When shouldValidate is true', () => {
+      it('should return undefined', () => {
+        expect(validateDropDownValue(true)(value)).toBeUndefined();
+      });
+
+      it('should return validation error message', () => {
+        const errorMessage = 'ui-requests-mediated.form.errors.requiredToConfirm';
+
+        render(validateDropDownValue(true)(''));
+
+        expect(screen.getByText(errorMessage)).toBeInTheDocument();
+      });
+    });
+
+    describe('When shouldValidate is false', () => {
+      it('should return undefined', () => {
+        expect(validateDropDownValue(false)(value)).toBeUndefined();
       });
     });
   });

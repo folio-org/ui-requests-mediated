@@ -33,7 +33,6 @@ class ItemInformation extends Component {
     values: PropTypes.object.isRequired,
     request: PropTypes.object.isRequired,
     onSetSelectedItem: PropTypes.func.isRequired,
-    itemRequestCount: PropTypes.number.isRequired,
     isLoading: PropTypes.bool.isRequired,
     submitting: PropTypes.bool.isRequired,
     isItemIdRequest: PropTypes.bool.isRequired,
@@ -156,7 +155,6 @@ class ItemInformation extends Component {
       selectedItem,
       request,
       selectedLoan,
-      itemRequestCount,
       enterButtonClass,
     } = this.props;
     const {
@@ -230,7 +228,6 @@ class ItemInformation extends Component {
                 request={request}
                 item={selectedItem}
                 loan={selectedLoan}
-                requestCount={itemRequestCount}
               />
           }
         </Col>

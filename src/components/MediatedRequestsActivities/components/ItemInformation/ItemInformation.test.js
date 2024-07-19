@@ -47,7 +47,6 @@ const basicProps = {
   },
   selectedLoan: {},
   selectedItem: {},
-  itemRequestCount: null,
   instanceId: 'instanceId',
   isLoading: false,
   submitting: false,
@@ -505,7 +504,6 @@ describe('ItemInformation', () => {
           request: basicProps.request,
           item: basicProps.selectedItem,
           loan: basicProps.selectedLoan,
-          requestCount: basicProps.itemRequestCount,
         };
 
         expect(ItemDetail).toHaveBeenCalledWith(expectedProps, {});
