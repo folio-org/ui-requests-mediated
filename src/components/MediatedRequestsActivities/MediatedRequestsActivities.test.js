@@ -1,8 +1,10 @@
 import {
   MemoryRouter,
+  useHistory,
 } from 'react-router-dom';
 
 import {
+  fireEvent,
   render,
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
@@ -13,7 +15,11 @@ import MediatedRequestsActivities, {
 import NavigationMenu from '../NavigationMenu';
 import MediatedRequestsFilters from './components/MediatedRequestsFilters';
 
-import { getMediatedRequestsActivitiesUrl } from '../../constants';
+import {
+  getMediatedRequestsActivitiesUrl,
+  MODULE_ROUTE,
+  MEDIATED_REQUESTS_ACTIVITIES,
+} from '../../constants';
 
 jest.mock('../NavigationMenu', () => jest.fn((props) => (<div {...props} />)));
 jest.mock('./components/MediatedRequestsFilters', () => jest.fn((props) => (<div {...props} />)));
@@ -112,8 +118,10 @@ describe('MediatedRequestsActivities', () => {
 });
 describe('getActionMenu', () => {
   const renderColumnsMenu = 'renderColumnsMenu';
+  const push = jest.fn();
 
   beforeEach(() => {
+    useHistory.mockReturnValueOnce({ push });
     render(getActionMenu(renderColumnsMenu)());
   });
 
@@ -123,5 +131,13 @@ describe('getActionMenu', () => {
 
   it('should render columns menu', async () => {
     expect(await screen.findByText(renderColumnsMenu)).toBeInTheDocument();
+  });
+
+  it('should redirect to new mediated request form', () => {
+    const newMediatedRequestButton = screen.getByText(labelIds.newMediatedRequestButton);
+
+    fireEvent.click(newMediatedRequestButton);
+
+    expect(push).toHaveBeenCalledWith(`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/create`);
   });
 });
