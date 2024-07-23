@@ -88,7 +88,7 @@ const MediatedRequestsActivities = ({
     );
   };
 
-  const mediatedRequests = resources?.[MEDIATED_REQUESTS_RECORDS_NAME]?.records ?? [];
+  const mediatedRequests = resources[MEDIATED_REQUESTS_RECORDS_NAME]?.records?.[0]?.mediatedRequests ?? [];
   const query = queryGetter ? queryGetter() || {} : {};
 
   return (

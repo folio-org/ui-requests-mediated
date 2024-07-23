@@ -14,7 +14,7 @@ import {
 
 import {
   ITEM_STATUSES,
-  ITEM_STATUS_TRANSLATIONS,
+  ITEM_STATUS_TRANSLATION_KEYS,
 } from '../../../../constants';
 import { useAvailableItems } from '../../../../hooks';
 
@@ -42,7 +42,7 @@ export const COLUMN_MAP = {
   loanType: <FormattedMessage id="ui-requests-mediated.itemsDialog.loanType" />,
 };
 export const formatter = {
-  itemStatus: item => <FormattedMessage id={ITEM_STATUS_TRANSLATIONS[item.status.name]} />,
+  itemStatus: item => <FormattedMessage id={ITEM_STATUS_TRANSLATION_KEYS[item.status.name]} />,
   location: item => get(item, 'location.name', ''),
   materialType: item => item.materialType.name,
   loanType: item => (item.temporaryLoanType ? get(item, 'temporaryLoanType.name', '') : get(item, 'permanentLoanType.name', '')),

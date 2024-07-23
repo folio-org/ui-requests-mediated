@@ -4,17 +4,17 @@ import {
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import PickupServicePoint from './PickupServicePoint';
-import { REQUEST_TYPES } from '../../../../constants';
+import { MEDIATED_REQUEST_TYPES } from '../../../../constants';
 
 const basicProps = {
   isEditForm: false,
   shouldValidate: false,
   request: {},
   values: {
-    requestType: REQUEST_TYPES.HOLD,
+    requestType: MEDIATED_REQUEST_TYPES.HOLD,
   },
   requestTypes: {
-    [REQUEST_TYPES.HOLD]: [
+    [MEDIATED_REQUEST_TYPES.HOLD]: [
       {
         id: 'id',
         name: 'name',

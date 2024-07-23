@@ -16,6 +16,7 @@
 * Add changes for integration between different stories. Refs UIREQMED-32.
 * Add `Closed - Cancelled` status to `Mediated request status` filter. Refs UIREQMED-33.
 * Implement Request information accordion and save functionality on request form. UIREQMED-30.
+* Migrate to mediated requests endpoints, refactor constants, utils. Refs UIREQMED-28.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.

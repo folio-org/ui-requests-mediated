@@ -70,15 +70,15 @@ class MediatedRequestsActivitiesContainer extends React.Component {
     },
     [MEDIATED_REQUESTS_RECORDS_NAME]: {
       type: 'okapi',
-      records: 'requests',
       resultOffset: '%{resultOffset}',
       perRequest: PAGE_AMOUNT,
-      path: 'circulation/requests',
+      path: 'requests-mediated/mediated-requests',
       GET: {
         params: {
           query: buildQuery,
         },
       },
+      throwErrors: false,
     },
   });
 

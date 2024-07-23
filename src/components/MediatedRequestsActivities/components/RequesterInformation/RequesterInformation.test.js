@@ -21,7 +21,7 @@ import RequesterInformation, {
 import UserDetail from '../UserDetail';
 import { isFormEditing } from '../../../../utils';
 import {
-  REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
   ENTER_EVENT_KEY,
   BASE_SPINNER_PROPS,
@@ -125,7 +125,7 @@ describe('RequesterInformation', () => {
 
     it('should trigger Field with correct props', () => {
       const expectedProps = {
-        name: REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE,
+        name: MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE,
         validate: expect.any(Function),
         validateFields: [],
       };
@@ -159,7 +159,7 @@ describe('RequesterInformation', () => {
 
       fireEvent.change(requesterBarcodeField, event);
 
-      expect(basicProps.form.change).toHaveBeenCalledWith(REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, event.target.value);
+      expect(basicProps.form.change).toHaveBeenCalledWith(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, event.target.value);
     });
 
     it('should render Enter button', () => {

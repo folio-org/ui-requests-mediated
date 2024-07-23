@@ -9,7 +9,7 @@ import {
 } from '@folio/stripes/components';
 
 import {
-  ITEM_STATUS_TRANSLATIONS,
+  ITEM_STATUS_TRANSLATION_KEYS,
   ITEM_STATUSES,
 } from '../../../../constants';
 import ItemsDialog, {
@@ -174,7 +174,7 @@ describe('ItemsDialog', () => {
 
     describe('itemStatus', () => {
       it('should return formatted message', () => {
-        expect(formatter.itemStatus(item).props.id).toBe(ITEM_STATUS_TRANSLATIONS[[ITEM_STATUSES.AGED_TO_LOST]]);
+        expect(formatter.itemStatus(item).props.id).toBe(ITEM_STATUS_TRANSLATION_KEYS[[ITEM_STATUSES.AGED_TO_LOST]]);
       });
     });
 
