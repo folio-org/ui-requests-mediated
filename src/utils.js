@@ -10,7 +10,6 @@ import { FormattedMessage } from 'react-intl';
 import {
   DEFAULT_VIEW_VALUE,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
-  MEDIATED_REQUESTS_RECORD_FIELD_PATH,
   FULFILMENT_TYPES,
   MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS,
   ID_TYPE_MAP,
@@ -108,22 +107,12 @@ export const getFormattedYears = (publications, limit) => {
     : '';
 };
 
-export const getFullName = (user) => {
-  const userNameObj = user?.personal || user;
-  const lastName = get(userNameObj, [MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_LAST_NAME], DEFAULT_VIEW_VALUE);
-  const firstName = get(userNameObj, [MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_FIRST_NAME], DEFAULT_VIEW_VALUE);
-  const middleName = get(userNameObj, [MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_MIDDLE_NAME], DEFAULT_VIEW_VALUE);
-  const preferredFirstName = get(userNameObj, [MEDIATED_REQUESTS_RECORD_FIELD_NAME.PREFERRED_FIRST_NAME], DEFAULT_VIEW_VALUE);
-  const displayedFirstName = preferredFirstName || firstName;
-
-  return `${lastName}${displayedFirstName ? ', ' : ''}${displayedFirstName} ${middleName}`;
-};
-
-export const getRequesterName = (mediatedRequest) => {
-  const lastName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_LAST_NAME], DEFAULT_VIEW_VALUE);
-  const firstName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_FIRST_NAME], DEFAULT_VIEW_VALUE);
-  const middleName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_MIDDLE_NAME], DEFAULT_VIEW_VALUE);
-  const preferredFirstName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.PREFERRED_FIRST_NAME], DEFAULT_VIEW_VALUE);
+export const getRequesterName = (dataObject) => {
+  const requester = dataObject?.requester ? dataObject.requester : dataObject?.personal || dataObject;
+  const lastName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_LAST_NAME, DEFAULT_VIEW_VALUE);
+  const firstName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_FIRST_NAME, DEFAULT_VIEW_VALUE);
+  const middleName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_MIDDLE_NAME, DEFAULT_VIEW_VALUE);
+  const preferredFirstName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.PREFERRED_FIRST_NAME, DEFAULT_VIEW_VALUE);
   const displayedFirstName = preferredFirstName || firstName;
   let requesterName = lastName;
 

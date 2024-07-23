@@ -20,7 +20,7 @@ const labelIds = {
 };
 
 jest.mock('../../../../utils', () => ({
-  getFullName: jest.fn((user) => user.lastName),
+  getRequesterName: jest.fn((user) => user.lastName),
 }));
 jest.mock('../UserHighlightBox', () => jest.fn(({
   title,

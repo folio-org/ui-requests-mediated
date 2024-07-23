@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { FormattedMessage } from 'react-intl';
+import { useHistory } from 'react-router-dom';
 
 import {
   IfPermission,
@@ -37,12 +38,19 @@ import {
 } from '../../constants';
 
 export const getActionMenu = (renderColumnsMenu) => () => {
+  const history = useHistory();
+
+  const goToNewMediatedRequest = () => {
+    history.push(`${getMediatedRequestsActivitiesUrl()}/create`);
+  };
+
   return (
     <>
       <IfPermission perm="ui-requests-mediated.view-create-edit">
         <Button
           buttonStyle="dropdownItem"
           marginBottom0
+          onClick={goToNewMediatedRequest}
         >
           <Icon icon={ICONS.PLUS_SIGN}>
             <FormattedMessage id="ui-requests-mediated.mediatedRequestList.actionMenu.newMediatedRequest" />
