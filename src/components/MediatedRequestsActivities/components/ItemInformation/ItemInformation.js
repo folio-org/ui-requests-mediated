@@ -13,7 +13,7 @@ import {
 } from '@folio/stripes/components';
 
 import {
-  REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
   ENTER_EVENT_KEY,
   BASE_SPINNER_PROPS,
@@ -98,7 +98,7 @@ class ItemInformation extends Component {
       this.setState({ validatedBarcode: null });
     }
 
-    form.change(REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, barcode);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, barcode);
   };
 
   handleBlur = (input) => () => {
@@ -178,8 +178,8 @@ class ItemInformation extends Component {
                       <Field
                         data-testid="itemBarcodeField"
                         key={key}
-                        name={REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE}
-                        validate={this.validate(REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, key)}
+                        name={MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE}
+                        validate={this.validate(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, key)}
                         validateFields={[]}
                       >
                         {({ input, meta }) => {

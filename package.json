@@ -92,18 +92,16 @@
           "mod-settings.entries.collection.get",
           "mod-settings.entries.item.get",
           "settings.requests-mediated.enabled",
-
           "circulation.items-by-instance.get",
           "circulation.loans.collection.get",
-          "circulation.requests.collection.get",
           "circulation.requests.item.get",
           "circulation-storage.loans.collection.get",
           "circulation-storage.loans.item.get",
-          "circulation-storage.requests.collection.get",
-          "circulation-storage.requests.item.get",
           "users.collection.get",
           "users.item.get",
-          "configuration.entries.collection.get"
+          "configuration.entries.collection.get",
+          "requests-mediated.mediated-request.collection.get",
+          "requests-mediated.mediated-request.item.get"
         ],
         "visible": true
       },
@@ -112,14 +110,10 @@
         "displayName": "Mediated requests: View, create, edit",
         "subPermissions": [
           "ui-requests-mediated.view",
-
-          "circulation.requests.item.post",
-          "circulation.requests.item.put",
           "circulation.requests.allowed-service-points.get",
-          "circulation-storage.requests.item.post",
-          "circulation-storage.requests.item.put",
-          "circulation-storage.requests.item.delete",
-          "circulation-storage.request-preferences.collection.get"
+          "circulation-storage.request-preferences.collection.get",
+          "requests-mediated.mediated-request.item.put",
+          "requests-mediated.mediated-request.item.post"
         ],
         "visible": true
       },
@@ -127,7 +121,8 @@
         "permissionName": "ui-requests-mediated.view-decline",
         "displayName": "Mediated requests: View, decline",
         "subPermissions": [
-          "ui-requests-mediated.view"
+          "ui-requests-mediated.view",
+          "requests-mediated.mediated-request.item.delete"
         ],
         "visible": true
       },
@@ -135,7 +130,8 @@
         "permissionName": "ui-requests-mediated.view-edit-decline",
         "displayName": "Mediated requests: View, edit, decline",
         "subPermissions": [
-          "ui-requests-mediated.view-decline"
+          "ui-requests-mediated.view-decline",
+          "requests-mediated.mediated-request.item.put"
         ],
         "visible": true
       },

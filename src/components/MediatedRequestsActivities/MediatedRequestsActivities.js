@@ -37,9 +37,7 @@ import {
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
 
-export const getActionMenu = (renderColumnsMenu) => () => {
-  const history = useHistory();
-
+export const getActionMenu = (renderColumnsMenu, history) => () => {
   const goToNewMediatedRequest = () => {
     history.push(`${getMediatedRequestsActivitiesUrl()}/create`);
   };
@@ -74,6 +72,7 @@ const MediatedRequestsActivities = ({
   children,
 }) => {
   const [filterPaneIsVisible, setFilterPaneIsVisible] = useState(true);
+  const history = useHistory();
 
   const toggleFilterPane = () => {
     setFilterPaneIsVisible(!filterPaneIsVisible);
@@ -96,7 +95,7 @@ const MediatedRequestsActivities = ({
     );
   };
 
-  const mediatedRequests = resources?.[MEDIATED_REQUESTS_RECORDS_NAME]?.records ?? [];
+  const mediatedRequests = resources[MEDIATED_REQUESTS_RECORDS_NAME]?.records?.[0]?.mediatedRequests ?? [];
   const query = queryGetter ? queryGetter() || {} : {};
 
   return (
@@ -157,7 +156,7 @@ const MediatedRequestsActivities = ({
                 appIcon={<AppIcon app={APP_ICON_NAME} />}
                 paneTitle={<FormattedMessage id="ui-requests-mediated.app.mediatedRequestsActivities.paneTitle" />}
                 firstMenu={renderResultsFirstMenu(activeFilters)}
-                actionMenu={getActionMenu(renderColumnsMenu)}
+                actionMenu={getActionMenu(renderColumnsMenu, history)}
               >
                 <MediatedRequestsList
                   visibleColumns={visibleColumns}

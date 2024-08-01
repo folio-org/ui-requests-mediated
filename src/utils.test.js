@@ -15,7 +15,6 @@ import {
   isSubmittingButtonDisabled,
   getFormattedYears,
   getInstanceQueryString,
-  getFullName,
   getFulfillmentTypeOptions,
   getSelectedAddressTypeId,
   isDeliverySelected,
@@ -31,12 +30,12 @@ import {
 } from './utils';
 import {
   FULFILMENT_TYPES,
-  REQUEST_TYPE_TRANSLATIONS,
-  REQUEST_TYPES,
+  MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS,
+  MEDIATED_REQUEST_TYPES,
   DEFAULT_VIEW_VALUE,
   ID_TYPE_MAP,
-  REQUEST_TYPE_ERROR_TRANSLATIONS,
-  REQUEST_TYPE_ERRORS,
+  MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
+  MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
 } from './constants';
 
 describe('utils', () => {
@@ -87,42 +86,60 @@ describe('utils', () => {
   });
 
   describe('getRequesterName', () => {
-    it('should return requester name when last name present', () => {
-      expect(getRequesterName({
-        requester: {
-          lastName: 'Do',
-        },
-      })).toEqual('Do');
+    describe('When requester property exists', () => {
+      it('should return requester name when last name present', () => {
+        expect(getRequesterName({
+          requester: {
+            lastName: 'Do',
+          },
+        })).toEqual('Do');
+      });
+
+      it('should return requester name when first name and lastName are present', () => {
+        expect(getRequesterName({
+          requester: {
+            firstName: 'Jo',
+            lastName: 'Do',
+          },
+        })).toEqual('Do, Jo');
+      });
+
+      it('should return requester name when first name, last name and middle name are present', () => {
+        expect(getRequesterName({
+          requester: {
+            firstName: 'Jo',
+            lastName: 'Do',
+            middleName: 'Re',
+          },
+        })).toEqual('Do, Jo Re');
+      });
+
+      it('should return requester preferred first name when preferred first name are present', () => {
+        expect(getRequesterName({
+          requester: {
+            firstName: 'Jo',
+            lastName: 'Do',
+            middleName: 'Re',
+            preferredFirstName: 'Pe',
+          },
+        })).toEqual('Do, Pe Re');
+      });
     });
 
-    it('should return requester name when first name and lastName are present', () => {
-      expect(getRequesterName({
-        requester: {
-          firstName: 'Jo',
-          lastName: 'Do',
-        },
-      })).toEqual('Do, Jo');
+    describe('When requester property does not exist', () => {
+      it('should return requester name when last name present', () => {
+        expect(getRequesterName({
+          personal: {
+            lastName: 'Do',
+          },
+        })).toEqual('Do');
+      });
     });
 
-    it('should return requester name when first name, last name and middle name are present', () => {
-      expect(getRequesterName({
-        requester: {
-          firstName: 'Jo',
-          lastName: 'Do',
-          middleName: 'Re',
-        },
-      })).toEqual('Do, Jo Re');
-    });
-
-    it('should return requester preferred first name when preferred first name are present', () => {
-      expect(getRequesterName({
-        requester: {
-          firstName: 'Jo',
-          lastName: 'Do',
-          middleName: 'Re',
-          preferredFirstName: 'Pe',
-        },
-      })).toEqual('Do, Pe Re');
+    describe('When requester and personal properties do not exist', () => {
+      it('should return requester name when last name present', () => {
+        expect(getRequesterName({ lastName: 'Do' })).toEqual('Do');
+      });
     });
   });
 
@@ -361,35 +378,6 @@ describe('utils', () => {
     });
   });
 
-  describe('getFullName', () => {
-    describe('When user has preferredFirstName', () => {
-      const user = {
-        lastName: 'lastName',
-        preferredFirstName: 'preferredFirstName',
-        middleName: 'middleName',
-      };
-
-      it('should return correct name', () => {
-        const expectedResult = `${user.lastName}, ${user.preferredFirstName} ${user.middleName}`;
-
-        expect(getFullName(user)).toBe(expectedResult);
-      });
-    });
-
-    describe('When user does not have preferredFirstName', () => {
-      const user = {
-        lastName: 'lastName',
-        middleName: 'middleName',
-      };
-
-      it('should return correct name', () => {
-        const expectedResult = `${user.lastName} ${user.middleName}`;
-
-        expect(getFullName(user)).toBe(expectedResult);
-      });
-    });
-  });
-
   describe('resetFieldState', () => {
     const form = {
       getRegisteredFields: jest.fn(),
@@ -525,12 +513,12 @@ describe('utils', () => {
   describe('getRequestTypesOptions', () => {
     it('should return array of options', () => {
       const requestTypes = {
-        [REQUEST_TYPES.HOLD]: [],
+        [MEDIATED_REQUEST_TYPES.HOLD]: [],
       };
       const expectedResult = [
         {
-          id: REQUEST_TYPE_TRANSLATIONS[REQUEST_TYPES.HOLD],
-          value: REQUEST_TYPES.HOLD,
+          id: MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS[MEDIATED_REQUEST_TYPES.HOLD],
+          value: MEDIATED_REQUEST_TYPES.HOLD,
         }
       ];
 
@@ -638,11 +626,11 @@ describe('utils', () => {
 
   describe('getNoRequestTypeErrorMessageId', () => {
     it('should return error for title level request', () => {
-      expect(getNoRequestTypeErrorMessageId(true)).toBe(REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.TITLE_LEVEL_ERROR]);
+      expect(getNoRequestTypeErrorMessageId(true)).toBe(MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.TITLE_LEVEL_ERROR]);
     });
 
     it('should return error for item level request', () => {
-      expect(getNoRequestTypeErrorMessageId(false)).toBe(REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.ITEM_LEVEL_ERROR]);
+      expect(getNoRequestTypeErrorMessageId(false)).toBe(MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.ITEM_LEVEL_ERROR]);
     });
   });
 

@@ -75,7 +75,7 @@ describe('buildQuery', () => {
 
   it('should include search fields when building CQL query', () => {
     expect(buildQuery(queryParams, pathComponents, resources, logger)).toEqual(expect.stringContaining(
-      'instance.title=="*queryValue*" or item.barcode=="*queryValue*" or requester.barcode=="*queryValue*" or searchIndex.callNumberComponents.callNumber=="*queryValue*" or fullCallNumberIndex=="*queryValue*") sortby sortValue'
+      'instanceTitle=="queryValue*" or itemBarcode=="queryValue*" or requesterBarcode=="queryValue*" or callNumber=="queryValue*" or fullCallNumber=="queryValue*") sortby sortValue'
     ));
   });
 });

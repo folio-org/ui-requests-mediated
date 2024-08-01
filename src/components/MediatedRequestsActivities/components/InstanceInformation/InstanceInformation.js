@@ -16,7 +16,7 @@ import { Pluggable } from '@folio/stripes/core';
 import {
   BASE_SPINNER_PROPS,
   ENTER_EVENT_KEY,
-  REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
 } from '../../../../constants';
 import TitleInformation from '../TitleInformation';
 import {
@@ -93,7 +93,7 @@ class InstanceInformation extends Component {
       this.setState({ validatedId: null });
     }
 
-    form.change(REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, instanceId);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, instanceId);
   };
 
   handleBlur = (input) => () => {
@@ -177,8 +177,8 @@ class InstanceInformation extends Component {
                         <Field
                           data-testid="instanceHridField"
                           key={key}
-                          name={REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID}
-                          validate={this.validate(REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, key)}
+                          name={MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID}
+                          validate={this.validate(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, key)}
                           validateFields={[]}
                         >
                           {({ input, meta }) => {

@@ -7,7 +7,7 @@ import {
   Row,
 } from '@folio/stripes/components';
 
-import { getFullName } from '../../../../utils';
+import { getRequesterName } from '../../../../utils';
 import UserHighlightBox from '../UserHighlightBox';
 
 const UserDetail = ({
@@ -16,7 +16,7 @@ const UserDetail = ({
   request,
 }) => {
   const id = user?.id ?? request.requesterId;
-  const name = getFullName(user);
+  const name = getRequesterName(user);
 
   return (
     <div>

@@ -10,13 +10,13 @@ import { FormattedMessage } from 'react-intl';
 import {
   DEFAULT_VIEW_VALUE,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
-  MEDIATED_REQUESTS_RECORD_FIELD_PATH,
   FULFILMENT_TYPES,
-  REQUEST_TYPE_TRANSLATIONS,
+  MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS,
   ID_TYPE_MAP,
-  REQUEST_LEVEL_TYPES,
-  REQUEST_TYPE_ERROR_TRANSLATIONS,
-  REQUEST_TYPE_ERRORS,
+  MEDIATED_REQUEST_LEVEL,
+  MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
+  MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
+  REQUEST_PARAMS,
 } from './constants';
 
 export const transformRequestFilterOptions = (formatMessage, source = []) => (
@@ -68,7 +68,7 @@ export const memoizeValidation = (fn) => {
   };
 };
 
-export const getInstanceQueryString = (hrid, id) => `("hrid"=="${hrid}" or "id"=="${id || hrid}")`;
+export const getInstanceQueryString = (hrid, id) => `("${REQUEST_PARAMS.HRID}"=="${hrid}" or "${REQUEST_PARAMS.ID}"=="${id || hrid}")`;
 
 export const getTlrSettings = (settings) => settings || {};
 
@@ -107,22 +107,12 @@ export const getFormattedYears = (publications, limit) => {
     : '';
 };
 
-export const getFullName = (user) => {
-  const userNameObj = user?.personal || user;
-  const lastName = get(userNameObj, ['lastName'], '');
-  const firstName = get(userNameObj, ['firstName'], '');
-  const middleName = get(userNameObj, ['middleName'], '');
-  const preferredFirstName = get(userNameObj, ['preferredFirstName'], '');
-  const displayedFirstName = preferredFirstName || firstName;
-
-  return `${lastName}${displayedFirstName ? ', ' : ''}${displayedFirstName} ${middleName}`;
-};
-
-export const getRequesterName = (mediatedRequest) => {
-  const lastName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_LAST_NAME], DEFAULT_VIEW_VALUE);
-  const firstName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_FIRST_NAME], DEFAULT_VIEW_VALUE);
-  const middleName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_MIDDLE_NAME], DEFAULT_VIEW_VALUE);
-  const preferredFirstName = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.PREFERRED_FIRST_NAME], DEFAULT_VIEW_VALUE);
+export const getRequesterName = (dataObject) => {
+  const requester = dataObject?.requester ? dataObject.requester : dataObject?.personal || dataObject;
+  const lastName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_LAST_NAME, DEFAULT_VIEW_VALUE);
+  const firstName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_FIRST_NAME, DEFAULT_VIEW_VALUE);
+  const middleName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_MIDDLE_NAME, DEFAULT_VIEW_VALUE);
+  const preferredFirstName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.PREFERRED_FIRST_NAME, DEFAULT_VIEW_VALUE);
   const displayedFirstName = preferredFirstName || firstName;
   let requesterName = lastName;
 
@@ -158,7 +148,8 @@ export const isDeliverySelected = (fulfillmentPreference) => {
 };
 
 export const getFulfillmentTypeOptions = (hasDelivery, fulfillmentTypes) => {
-  const sortedFulfillmentTypes = sortBy(fulfillmentTypes, ['label']);
+  const sortParam = 'label';
+  const sortedFulfillmentTypes = sortBy(fulfillmentTypes, [sortParam]);
   const fulfillmentTypeOptions = sortedFulfillmentTypes.map(({
     label,
     id,
@@ -175,7 +166,7 @@ export const getFulfillmentTypeOptions = (hasDelivery, fulfillmentTypes) => {
 export const getRequestTypesOptions = (requestTypes) => {
   return Object.keys(requestTypes).map(requestType => {
     return {
-      id: REQUEST_TYPE_TRANSLATIONS[requestType],
+      id: MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS[requestType],
       value: requestType,
     };
   });
@@ -220,8 +211,8 @@ export const getFulfillmentPreference = (preferences, initialValues) => {
 
 export const getRequestLevelValue = (value) => {
   return value
-    ? REQUEST_LEVEL_TYPES.TITLE
-    : REQUEST_LEVEL_TYPES.ITEM;
+    ? MEDIATED_REQUEST_LEVEL.TITLE
+    : MEDIATED_REQUEST_LEVEL.ITEM;
 };
 
 export const getResourceTypeId = (isTitleLevelRequest) => (isTitleLevelRequest ? ID_TYPE_MAP.INSTANCE_ID : ID_TYPE_MAP.ITEM_ID);
@@ -237,8 +228,8 @@ export const getRequestInformation = (values, selectedInstance, selectedItem) =>
 
 export const getNoRequestTypeErrorMessageId = (isTitleLevelRequest) => (
   isTitleLevelRequest ?
-    REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.TITLE_LEVEL_ERROR] :
-    REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.ITEM_LEVEL_ERROR]
+    MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.TITLE_LEVEL_ERROR] :
+    MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.ITEM_LEVEL_ERROR]
 );
 
 export const validateDropDownValue = (shouldValidate) => (value) => {
