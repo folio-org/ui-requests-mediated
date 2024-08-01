@@ -3,6 +3,14 @@ import { FormattedMessage } from 'react-intl';
 
 export const MEDIATED_REQUESTS_RECORDS_NAME = 'mediatedRequestsRecords';
 
+export const MEDIATED_REQUEST_SEARCH_PARAMS = {
+  INSTANCE_TITLE: 'instanceTitle',
+  ITEM_BARCODE: 'itemBarcode',
+  REQUESTER_BARCODE: 'requesterBarcode',
+  CALL_NUMBER: 'callNumber',
+  FULL_CALL_NUMBER: 'fullCallNumber',
+};
+
 export const MEDIATED_REQUESTS_RECORD_FIELD_NAME = {
   TITLE: 'title',
   REQUESTER: 'requester',
