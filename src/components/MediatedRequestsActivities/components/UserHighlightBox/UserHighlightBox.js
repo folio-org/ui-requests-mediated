@@ -1,5 +1,4 @@
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
 import {
@@ -9,6 +8,8 @@ import {
   Row,
 } from '@folio/stripes/components';
 
+import { getUserHighlightBoxLink } from '../../../../utils';
+
 import css from './UserHighlightBox.css';
 
 const UserHighlightBox = ({
@@ -17,11 +18,8 @@ const UserHighlightBox = ({
   id,
   barcode,
 }) => {
-  const getHighlightBoxLink = (text, userId) => {
-    return text ? <Link to={`/users/view/${userId}`}>{text}</Link> : <></>;
-  };
-  const recordLink = getHighlightBoxLink(name, id);
-  const barcodeLink = getHighlightBoxLink(barcode, id);
+  const recordLink = getUserHighlightBoxLink(name, id);
+  const barcodeLink = getUserHighlightBoxLink(barcode, id);
 
   return (
     <Row>

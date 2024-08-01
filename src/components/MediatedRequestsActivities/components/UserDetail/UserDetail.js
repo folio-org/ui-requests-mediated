@@ -12,8 +12,10 @@ import UserHighlightBox from '../UserHighlightBox';
 
 const UserDetail = ({
   user,
-  patronGroup = '',
   request,
+  userPreferences,
+  patronGroup = '',
+  isMediatedRequestDetailPage = false,
 }) => {
   const id = user?.id ?? request.requesterId;
   const name = getFullName(user);
@@ -33,6 +35,23 @@ const UserDetail = ({
             value={patronGroup}
           />
         </Col>
+        {
+          isMediatedRequestDetailPage &&
+            <>
+              <Col xs={4}>
+                <KeyValue
+                  label={<FormattedMessage id="ui-requests-mediated.requesterDetails.fulfillmentPreference" />}
+                  value={request.fulfillmentPreference}
+                />
+              </Col>
+              <Col xs={4}>
+                <KeyValue
+                  label={userPreferences.label}
+                  value={userPreferences.value}
+                />
+              </Col>
+            </>
+        }
       </Row>
     </div>
   );
@@ -42,6 +61,8 @@ UserDetail.propTypes = {
   patronGroup: PropTypes.string,
   user: PropTypes.object.isRequired,
   request: PropTypes.object,
+  userPreferences: PropTypes.object,
+  isMediatedRequestDetailPage: PropTypes.bool,
 };
 
 export default UserDetail;

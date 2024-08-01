@@ -99,3 +99,6 @@ export const MEDIATED_REQUEST_LEVEL_PROP_TYPES = {
     [MEDIATED_REQUEST_LEVEL.ITEM]: PropTypes.string,
   })),
 };
+
+export const STAFF_NOTES_DOMAIN_NAME = 'requests-mediated';
+export const STAFF_NOTES_ENTITY_TYPE = 'request-mediated';

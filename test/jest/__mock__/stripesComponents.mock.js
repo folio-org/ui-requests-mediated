@@ -6,8 +6,8 @@ jest.mock('@folio/stripes/components', () => ({
     'data-testid': testId,
   }) => (
     <div data-testid={testId}>
-      {label}
-      {children}
+      <span>{label}</span>
+      <span>{children}</span>
       <div>
         <button
           type="button"

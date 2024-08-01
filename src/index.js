@@ -11,6 +11,9 @@ import {
 
 import ConfirmItemArrival from './components/ConfirmItemArrival';
 import MediatedRequestsActivitiesContainer from './routes/MediatedRequestsActivitiesContainer';
+import NoteCreator from './routes/NoteCreator';
+import NoteEditor from './routes/NoteEditor';
+import NoteViewer from './routes/NoteViewer';
 import MediatedRequestsDetail from './components/MediatedRequestsActivities/components/MediatedRequestsDetail';
 import SendItemInTransit from './components/SendItemInTransit';
 import RequestFormContainer from './components/MediatedRequestsActivities/components/RequestFormContainer';
@@ -58,9 +61,24 @@ const RequestsMediated = (props) => {
           {...props}
           settings={settings}
         >
-          <MediatedRequestsDetail {...props} />
+          <MediatedRequestsDetail
+            {...props}
+            patronGroups={patronGroups?.usergroups}
+          />
         </MediatedRequestsActivitiesContainer>
       </Route>
+      <Route
+        path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}/notes/new`}
+        component={NoteCreator}
+      />
+      <Route
+        path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}/notes/:noteId/edit`}
+        component={NoteEditor}
+      />
+      <Route
+        path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}/notes/:noteId`}
+        component={NoteViewer}
+      />
       <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}`}>
         <MediatedRequestsActivitiesContainer
           {...props}

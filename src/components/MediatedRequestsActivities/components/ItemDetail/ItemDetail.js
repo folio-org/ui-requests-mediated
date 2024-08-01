@@ -30,7 +30,7 @@ const ItemDetail = ({
   const title = request?.instance.title || item.title || <NoValue />;
   const contributor = request?.instance.contributorNames?.[0]?.name || item.contributors?.[0]?.name || <NoValue />;
   const status = item.status?.name || item.status;
-  const statusMessage = <FormattedMessage id={ITEM_STATUS_TRANSLATIONS[status]} />;
+  const statusMessage = ITEM_STATUS_TRANSLATIONS[status] ? <FormattedMessage id={ITEM_STATUS_TRANSLATIONS[status]} /> : <NoValue />;
   const effectiveLocationName = item.location?.name || <NoValue />;
   const dueDate = loan?.dueDate ? <FormattedDate value={loan.dueDate} /> : <NoValue />;
   const effectiveCallNumberString = effectiveCallNumber(item);

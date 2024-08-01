@@ -81,7 +81,7 @@
   "form.request.type.page": "Page",
   "form.request.fulfillment.delivery": "Delivery",
   "form.request.fulfillment.holdShelf": "Hold Shelf",
-  "form.request.deliveryAddress": "Hold Shelf",
+  "form.request.deliveryAddress": "Delivery address",
 
   "form.requesterLookup.name": "Requester name",
   "form.requesterLookup.patronGroup": "Requester patron group",
@@ -139,6 +139,9 @@
   "requesterDetails.title": "Requester",
   "requesterDetails.patronGroup": "Requester patron group",
   "requesterDetails.barcode": "Barcode",
+  "requesterDetails.deliveryAddress": "Delivery address",
+  "requesterDetails.pickupServicePoint": "Pickup service point",
+  "requesterDetails.fulfillmentPreference": "Fulfillment preference",
 
   "item.status.agedToLost": "Aged to lost",
   "item.status.available": "Available",
@@ -164,5 +167,28 @@
   "item.status.retrievingFromASR": "Retrieving from ASR",
   "item.status.missingFromASR": "Missing from ASR",
   "item.status.orderClosed": "Order closed",
-  "item.status.restricted": "Restricted"
+  "item.status.restricted": "Restricted",
+
+  "mediatedRequestInformation.level.item": "Item",
+  "mediatedRequestInformation.level.title": "Title",
+  "mediatedRequestInformation.requestType": "Mediated request type",
+  "mediatedRequestInformation.status": "Mediated request status",
+  "mediatedRequestInformation.level": "Mediated request level",
+  "mediatedRequestInformation.confirmedRequest": "Confirmed request",
+  "mediatedRequestInformation.viewDetails": "view details in Requests",
+  "mediatedRequestInformation.patronComments": "Patron comments",
+
+  "mediatedRequestDetail.requester.accordionLabel": "Requester information",
+  "mediatedRequestDetail.title.accordionLabel": "Title information",
+  "mediatedRequestDetail.item.accordionLabel": "Item information",
+  "mediatedRequestDetail.mediatedRequest.accordionLabel": "Mediated request information",
+  "mediatedRequestDetail.item.noInformation": "There is no item information for this request.",
+
+  "notes.staffNotes": "Staff notes",
+  "notes.newStaffNote": "New staff note",
+  "notes.entityType.request": "Request",
+  "notes.entityType.request.pluralized": "{count} {count, plural, one {request} other {requests}}",
+  "notes.assigned.for": "For: {instanceLink} ({itemLink})",
+  "notes.assigned.requester": "Requester: {requesterName}",
+  "notes.assigned.requestDate": "Request date: {requestCreateDate}"
 }

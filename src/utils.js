@@ -6,7 +6,9 @@ import {
   sortBy,
 } from 'lodash';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 
+import AddressDetails from './components/MediatedRequestsActivities/components/AddressDetails';
 import {
   DEFAULT_VIEW_VALUE,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
@@ -247,4 +249,61 @@ export const validateDropDownValue = (shouldValidate) => (value) => {
   }
 
   return undefined;
+};
+
+export const getUserPreferences = (mediatedRequest, userData, servicePoints) => {
+  const userPreferences = {};
+
+  if (mediatedRequest) {
+    if (isDeliverySelected(mediatedRequest.fulfillmentPreference)) {
+      const address = userData?.users[0].personal.addresses.find(({ addressTypeId }) => addressTypeId === mediatedRequest.deliveryAddressTypeId);
+
+      userPreferences.label = <FormattedMessage id="ui-requests-mediated.requesterDetails.deliveryAddress" />;
+      userPreferences.value = <AddressDetails address={address} />;
+    } else {
+      userPreferences.label = <FormattedMessage id="ui-requests-mediated.requesterDetails.pickupServicePoint" />;
+      userPreferences.value = servicePoints?.servicepoints.find(servicePoint => servicePoint.id === mediatedRequest.pickupServicePointId)?.name;
+    }
+  }
+
+  return userPreferences;
+};
+
+export const getReferredRecordData = (mediatedRequest) => {
+  if (mediatedRequest) {
+    return {
+      instanceTitle: mediatedRequest.instance.title,
+      instanceId: mediatedRequest.instanceId,
+      itemBarcode: mediatedRequest?.item?.barcode,
+      itemId: mediatedRequest.itemId,
+      holdingsRecordId: mediatedRequest.holdingsRecordId,
+      requesterName: getFullName(mediatedRequest.requester),
+      requesterId: mediatedRequest.requester.id ?? mediatedRequest?.requesterId,
+      requestCreateDate: mediatedRequest?.metadata.createdDate,
+    };
+  }
+
+  return {};
+};
+
+export const formatNoteReferrerEntityData = (entityData) => {
+  if (!entityData) {
+    return false;
+  }
+
+  const {
+    entityName: name,
+    entityType: type,
+    entityId: id,
+  } = entityData;
+
+  return {
+    name,
+    type,
+    id,
+  };
+};
+
+export const getUserHighlightBoxLink = (linkText, id) => {
+  return linkText ? <Link to={`/users/view/${id}`}>{linkText}</Link> : <></>;
 };
