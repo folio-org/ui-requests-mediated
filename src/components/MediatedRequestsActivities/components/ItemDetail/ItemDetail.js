@@ -12,7 +12,7 @@ import {
 import { effectiveCallNumber } from '@folio/stripes/util';
 import { ClipCopy } from '@folio/stripes/smart-components';
 
-import { ITEM_STATUS_TRANSLATIONS } from '../../../../constants';
+import { ITEM_STATUS_TRANSLATION_KEYS } from '../../../../constants';
 
 const ItemDetail = ({
   request,
@@ -30,7 +30,7 @@ const ItemDetail = ({
   const title = request?.instance.title || item.title || <NoValue />;
   const contributor = request?.instance.contributorNames?.[0]?.name || item.contributors?.[0]?.name || <NoValue />;
   const status = item.status?.name || item.status;
-  const statusMessage = ITEM_STATUS_TRANSLATIONS[status] ? <FormattedMessage id={ITEM_STATUS_TRANSLATIONS[status]} /> : <NoValue />;
+  const statusMessage = ITEM_STATUS_TRANSLATION_KEYS[status] ? <FormattedMessage id={ITEM_STATUS_TRANSLATION_KEYS[status]} /> : <NoValue />;
   const effectiveLocationName = item.location?.name || <NoValue />;
   const dueDate = loan?.dueDate ? <FormattedDate value={loan.dueDate} /> : <NoValue />;
   const effectiveCallNumberString = effectiveCallNumber(item);

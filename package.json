@@ -132,10 +132,28 @@
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.view-edit-decline",
-        "displayName": "Mediated requests: View, edit, decline",
+        "permissionName": "ui-requests-mediated.view-confirm",
+        "displayName": "Mediated requests: View, confirm",
         "subPermissions": [
-          "ui-requests-mediated.view-decline"
+          "ui-requests-mediated.view",
+          "requests-mediated.mediated-request.item.put",
+          "requests-mediated.mediated-request.item.post"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.confirm-item-arrival",
+        "displayName": "Mediated requests: Confirm item arrival",
+        "subPermissions": [
+          "ui-requests-mediated.view"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.send-item-in-transit",
+        "displayName": "Mediated requests: Send item in transit",
+        "subPermissions": [
+          "ui-requests-mediated.view"
         ],
         "visible": true
       },

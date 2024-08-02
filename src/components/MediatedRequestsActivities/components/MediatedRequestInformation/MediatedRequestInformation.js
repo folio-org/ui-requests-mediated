@@ -11,8 +11,8 @@ import {
 import { ViewMetaData } from '@folio/stripes/smart-components';
 
 import {
-  REQUEST_STATUSES_TRANSLATIONS,
-  REQUEST_TYPE_TRANSLATIONS,
+  MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS,
+  MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS,
 } from '../../../../constants';
 
 const MediatedRequestInformation = ({
@@ -23,9 +23,9 @@ const MediatedRequestInformation = ({
   requestLevel,
   patronComments,
 }) => {
-  const requestTypeTranslationKey = REQUEST_TYPE_TRANSLATIONS[requestType];
+  const requestTypeTranslationKey = MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS[requestType];
   const requestTypeMessage = requestTypeTranslationKey ? <FormattedMessage id={requestTypeTranslationKey} /> : <NoValue />;
-  const requestStatusTranslationKey = REQUEST_STATUSES_TRANSLATIONS[requestStatus];
+  const requestStatusTranslationKey = MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS[requestStatus];
   const requestStatusMessage = requestStatusTranslationKey ? <FormattedMessage id={requestStatusTranslationKey} /> : <NoValue />;
   const requestLevelMessage = requestLevel ? <FormattedMessage id={`ui-requests-mediated.mediatedRequestInformation.level.${requestLevel.toLowerCase()}`} /> : <NoValue />;
 

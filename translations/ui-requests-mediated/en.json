@@ -4,7 +4,9 @@
   "permission.view": "Mediated requests: View",
   "permission.view-create-edit": "Mediated requests: View, create, edit",
   "permission.view-decline": "Mediated requests: View, decline",
-  "permission.view-edit-decline": "Mediated requests: View, edit, decline",
+  "permission.view-confirm": "Mediated requests: View, confirm",
+  "permission.confirm-item-arrival": "Mediated requests: Confirm item arrival",
+  "permission.send-item-in-transit": "Mediated requests: Send item in transit",
   "permission.all": "Mediated requests: All permissions",
 
   "app.filterPane.selectActivity": "Select activity",

@@ -6,11 +6,11 @@ import { ViewMetaData } from '@folio/stripes/smart-components';
 
 import MediatedRequestInformation from './MediatedRequestInformation';
 import {
-  REQUEST_LEVEL_TYPES,
-  REQUEST_STATUSES,
-  REQUEST_STATUSES_TRANSLATIONS,
-  REQUEST_TYPE_TRANSLATIONS,
-  REQUEST_TYPES,
+  MEDIATED_REQUEST_LEVEL,
+  MEDIATED_REQUEST_STATUS,
+  MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS,
+  MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS,
+  MEDIATED_REQUEST_TYPES,
 } from '../../../../constants';
 
 jest.mock('react-router-dom', () => ({
@@ -22,9 +22,9 @@ const basicProps = {
   metadata: {
     createdDate: 'createdDate',
   },
-  requestType: REQUEST_TYPES.RECALL,
-  requestStatus: REQUEST_STATUSES.AWAITING_DELIVERY,
-  requestLevel: REQUEST_LEVEL_TYPES.TITLE,
+  requestType: MEDIATED_REQUEST_TYPES.RECALL,
+  requestStatus: MEDIATED_REQUEST_STATUS.OPEN_AWAITING_PICKUP,
+  requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
   patronComments: 'patronComments',
 };
 const labelIds = {
@@ -66,7 +66,7 @@ describe('MediatedRequestInformation', () => {
     });
 
     it('should render request type value', () => {
-      const requestTypeValue = screen.getByText(REQUEST_TYPE_TRANSLATIONS[basicProps.requestType]);
+      const requestTypeValue = screen.getByText(MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS[basicProps.requestType]);
 
       expect(requestTypeValue).toBeInTheDocument();
     });
@@ -78,7 +78,7 @@ describe('MediatedRequestInformation', () => {
     });
 
     it('should render status value', () => {
-      const requestStatusValue = screen.getByText(REQUEST_STATUSES_TRANSLATIONS[basicProps.requestStatus]);
+      const requestStatusValue = screen.getByText(MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS[basicProps.requestStatus]);
 
       expect(requestStatusValue).toBeInTheDocument();
     });

@@ -14,8 +14,8 @@ import { getPatronGroup } from '../../../../utils';
 import {
   getMediatedRequestsActivitiesUrl,
   MEDIATED_REQUEST_STATUS,
-  REQUEST_LEVEL_TYPES,
-  REQUEST_TYPES,
+  MEDIATED_REQUEST_LEVEL,
+  MEDIATED_REQUEST_TYPES,
   STAFF_NOTES_DOMAIN_NAME,
   STAFF_NOTES_ENTITY_TYPE,
 } from '../../../../constants';
@@ -75,8 +75,8 @@ describe('MediatedRequestsDetail', () => {
     loan: {},
     id: 'id',
     metadata: {},
-    requestType: REQUEST_TYPES.HOLD,
-    requestLevel: REQUEST_LEVEL_TYPES.TITLE,
+    requestType: MEDIATED_REQUEST_TYPES.HOLD,
+    requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
     patronComments: '',
   };
   const patronGroup = {
