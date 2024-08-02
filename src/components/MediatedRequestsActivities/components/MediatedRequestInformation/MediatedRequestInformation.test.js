@@ -18,7 +18,7 @@ jest.mock('react-router-dom', () => ({
 }));
 
 const basicProps = {
-  requestId: 'requestId',
+  confirmedRequestId: 'confirmedRequestId',
   metadata: {
     createdDate: 'createdDate',
   },

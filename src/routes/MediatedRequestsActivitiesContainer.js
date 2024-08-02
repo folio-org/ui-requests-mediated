@@ -18,17 +18,17 @@ import {
 import {
   PAGE_AMOUNT,
   MEDIATED_REQUESTS_RECORDS_NAME,
-  MEDIATED_REQUESTS_RECORD_FIELD_PATH,
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME,
   MEDIATED_REQUEST_FILTER_TYPES,
+  MEDIATED_REQUEST_SEARCH_PARAMS,
 } from '../constants';
 
 export const buildQuery = (queryParams, pathComponents, resourceData, logger, props) => {
   const SEARCH_FIELDS = [
-    MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE],
-    MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE],
-    MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE],
-    MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER],
+    MEDIATED_REQUEST_SEARCH_PARAMS.INSTANCE_TITLE,
+    MEDIATED_REQUEST_SEARCH_PARAMS.ITEM_BARCODE,
+    MEDIATED_REQUEST_SEARCH_PARAMS.REQUESTER_BARCODE,
+    MEDIATED_REQUEST_SEARCH_PARAMS.CALL_NUMBER,
+    MEDIATED_REQUEST_SEARCH_PARAMS.FULL_CALL_NUMBER,
   ];
   const FILTER_CONFIG = [
     {
@@ -45,7 +45,7 @@ export const buildQuery = (queryParams, pathComponents, resourceData, logger, pr
     },
   ];
   const customFilterConfig = buildFilterConfig(queryParams.filters);
-  const mapFields = (index) => `${index}=="*%{query.query}*"`;
+  const mapFields = (index) => `${index}=="%{query.query}*"`;
   const getCql = makeQueryFunction(
     'cql.allRecords=1',
     SEARCH_FIELDS.map(mapFields).join(' or '),
@@ -70,15 +70,15 @@ class MediatedRequestsActivitiesContainer extends React.Component {
     },
     [MEDIATED_REQUESTS_RECORDS_NAME]: {
       type: 'okapi',
-      records: 'requests',
       resultOffset: '%{resultOffset}',
       perRequest: PAGE_AMOUNT,
-      path: 'circulation/requests',
+      path: 'requests-mediated/mediated-requests',
       GET: {
         params: {
           query: buildQuery,
         },
       },
+      throwErrors: false,
     },
   });
 

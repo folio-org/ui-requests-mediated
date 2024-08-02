@@ -14,8 +14,8 @@ import {
 import { ViewMetaData } from '@folio/stripes/smart-components';
 
 import {
-  REQUEST_STATUSES_TRANSLATIONS,
-  REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
 } from '../../../../constants';
 import {
   isFormEditing,
@@ -55,8 +55,8 @@ const RequestInformation = ({
     return undefined;
   }, [isItemOrTitleSelected, isSelectedUser, requestTypeOptions, isTitleLevelRequest, isRequestTypesReceived, shouldValidate]);
   const changeRequestType = (input) => (e) => {
-    form.change(REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
-    resetFieldState(form, REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
+    resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID);
     input.onChange(e);
     updateRequestPreferencesFields();
   };
@@ -75,7 +75,7 @@ const RequestInformation = ({
               <Field
                 data-testid="requestTypeDropDown"
                 key={values.keyOfRequestTypeField ?? 0}
-                name={REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE}
+                name={MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE}
                 validateFields={[]}
                 validate={validateRequestType}
               >
@@ -123,8 +123,8 @@ const RequestInformation = ({
               <Col xs={3}>
                 <KeyValue
                   label={<FormattedMessage id="ui-requests-mediated.form.request.status" />}
-                  value={(REQUEST_STATUSES_TRANSLATIONS[request.status]
-                    ? <FormattedMessage id={REQUEST_STATUSES_TRANSLATIONS[request.status]} />
+                  value={(MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS[request.status]
+                    ? <FormattedMessage id={MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS[request.status]} />
                     : <NoValue />)}
                 />
               </Col>

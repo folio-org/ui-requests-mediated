@@ -16,7 +16,7 @@ import ItemInformation from './ItemInformation';
 import ItemDetail from '../ItemDetail';
 import { isFormEditing } from '../../../../utils';
 import {
-  REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
   ENTER_EVENT_KEY,
   BASE_SPINNER_PROPS,
@@ -109,7 +109,7 @@ describe('ItemInformation', () => {
 
     it('should trigger Field with correct props', () => {
       const expectedProps = {
-        name: REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE,
+        name: MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE,
         validate: expect.any(Function),
         validateFields: [],
       };
@@ -149,7 +149,7 @@ describe('ItemInformation', () => {
 
       fireEvent.change(itemBarcodeField, event);
 
-      expect(basicProps.form.change).toHaveBeenCalledWith(REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, event.target.value);
+      expect(basicProps.form.change).toHaveBeenCalledWith(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, event.target.value);
     });
 
     it('should trigger TextField with correct props', () => {

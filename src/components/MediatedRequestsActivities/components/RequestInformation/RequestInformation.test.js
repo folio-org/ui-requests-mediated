@@ -15,11 +15,12 @@ import {
   getNoRequestTypeErrorMessageId,
 } from '../../../../utils';
 import {
-  REQUEST_FORM_FIELD_NAMES,
-  REQUEST_STATUSES,
-  REQUEST_TYPE_ERRORS,
-  REQUEST_TYPE_ERROR_TRANSLATIONS,
-  REQUEST_TYPE_TRANSLATIONS, REQUEST_TYPES,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_STATUS,
+  MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
+  MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
+  MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS,
+  MEDIATED_REQUEST_TYPES,
 } from '../../../../constants';
 
 jest.mock('../../../../utils', () => ({
@@ -103,7 +104,7 @@ describe('RequestInformation', () => {
     const props = {
       ...basicProps,
       request: {
-        status: REQUEST_STATUSES.AWAITING_PICKUP,
+        status: MEDIATED_REQUEST_STATUS.OPEN_AWAITING_PICKUP,
         patronComments: 'comments',
         id: 'id',
         metadata: {},
@@ -138,7 +139,7 @@ describe('RequestInformation', () => {
     const props = {
       ...basicProps,
       requestTypeOptions: [{
-        id: REQUEST_TYPE_TRANSLATIONS[REQUEST_TYPES.HOLD],
+        id: MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS[MEDIATED_REQUEST_TYPES.HOLD],
         value: 'value',
       }],
     };
@@ -153,7 +154,7 @@ describe('RequestInformation', () => {
     });
 
     it('should render request type option', () => {
-      const requestTypeOption = screen.getByText(REQUEST_TYPE_TRANSLATIONS[REQUEST_TYPES.HOLD]);
+      const requestTypeOption = screen.getByText(MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS[MEDIATED_REQUEST_TYPES.HOLD]);
 
       expect(requestTypeOption).toBeInTheDocument();
     });
@@ -186,7 +187,7 @@ describe('RequestInformation', () => {
       }));
 
       isFormEditing.mockReturnValue(false);
-      getNoRequestTypeErrorMessageId.mockReturnValue(REQUEST_TYPE_ERROR_TRANSLATIONS[REQUEST_TYPE_ERRORS.TITLE_LEVEL_ERROR]);
+      getNoRequestTypeErrorMessageId.mockReturnValue(MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.TITLE_LEVEL_ERROR]);
     });
 
     it('should render required to confirm error', () => {
@@ -322,13 +323,13 @@ describe('RequestInformation', () => {
     });
 
     it('should trigger change pickup service point id form value', () => {
-      const expectedArgs = [REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined];
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined];
 
       expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
     });
 
     it('should reset field state', () => {
-      const expectedArgs = [basicProps.form, REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID];
+      const expectedArgs = [basicProps.form, MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID];
 
       expect(resetFieldState).toHaveBeenCalledWith(...expectedArgs);
     });

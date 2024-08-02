@@ -171,7 +171,7 @@ describe('MediatedRequestsDetail', () => {
 
     it('should trigger MediatedRequestInformation with correct props', () => {
       const expectedProps = {
-        requestId: mediatedRequest.id,
+        confirmedRequestId: mediatedRequest.confirmedRequestId,
         metadata: mediatedRequest.metadata,
         requestType: mediatedRequest.requestType,
         requestStatus: mediatedRequest.status,

@@ -29,7 +29,7 @@ import {
   DEFAULT_REQUEST_TYPE_VALUE,
   FULFILMENT_TYPES,
   RESOURCE_TYPES,
-  REQUEST_LEVEL_TYPES,
+  MEDIATED_REQUEST_LEVEL,
   SAVE_BUTTON_ID,
   getMediatedRequestsActivitiesUrl,
 } from '../../../../constants';
@@ -137,6 +137,7 @@ const RequestFormContainer = ({
 
   const handleSubmit = (data) => {
     const requestData = cloneDeep(data);
+    const userData = requestData.requester;
 
     requestData.requestDate = moment.tz(intl.timeZone).toISOString();
     requestData.requestLevel = getRequestLevelValue(requestData.createTitleLevelRequest);
@@ -149,12 +150,12 @@ const RequestFormContainer = ({
       unset(requestData, 'pickupServicePointId');
     }
 
-    if (requestData.requestLevel === REQUEST_LEVEL_TYPES.ITEM) {
+    if (requestData.requestLevel === MEDIATED_REQUEST_LEVEL.ITEM) {
       requestData.instanceId = selectedItem?.instanceId;
       requestData.holdingsRecordId = selectedItem?.holdingsRecordId;
     }
 
-    if (requestData.requestLevel === REQUEST_LEVEL_TYPES.TITLE) {
+    if (requestData.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE) {
       requestData.instanceId = selectedInstance?.id;
 
       unset(requestData, 'itemId');
@@ -183,13 +184,13 @@ const RequestFormContainer = ({
           const {
             firstName,
             lastName,
-          } = requestData.requester.personal;
-          const user = `${lastName}${firstName ? ', ' + firstName : ''}`;
+          } = userData.personal;
+          const requesterName = `${lastName}${firstName ? ', ' + firstName : ''}`;
 
           callout.sendCallout({
             message: <FormattedMessage
               id="ui-requests-mediated.form.createRequest.success"
-              values={{ requester: user }}
+              values={{ requester: requesterName }}
             />,
           });
         }

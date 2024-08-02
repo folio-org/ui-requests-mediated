@@ -7,7 +7,7 @@ import {
 import FulfilmentPreference from './FulfilmentPreference';
 import DeliveryAddress from '../DeliveryAddress';
 import PickupServicePoint from '../PickupServicePoint';
-import { REQUEST_TYPES } from '../../../../constants';
+import { MEDIATED_REQUEST_TYPES } from '../../../../constants';
 
 jest.mock('../../../../utils', () => ({
   getSelectedAddressTypeId: jest.fn(),
@@ -31,7 +31,7 @@ const basicProps = {
   defaultDeliveryAddressTypeId: 'defaultId',
   setDeliveryAddress: jest.fn(),
   requestTypes: {
-    [REQUEST_TYPES.HOLD]: [
+    [MEDIATED_REQUEST_TYPES.HOLD]: [
       {
         id: 'id',
         name: 'name',
@@ -40,7 +40,7 @@ const basicProps = {
   },
   request: {},
   values: {
-    requestType: REQUEST_TYPES.HOLD,
+    requestType: MEDIATED_REQUEST_TYPES.HOLD,
   },
   form: {
     change: jest.fn(),

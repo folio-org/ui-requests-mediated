@@ -74,6 +74,8 @@ describe('MediatedRequestsActivities', () => {
   const settings = {};
 
   beforeEach(() => {
+    useHistory.mockReturnValueOnce({ push: jest.fn() });
+
     render(
       <MemoryRouter>
         <MediatedRequestsActivities
@@ -121,8 +123,7 @@ describe('getActionMenu', () => {
   const push = jest.fn();
 
   beforeEach(() => {
-    useHistory.mockReturnValueOnce({ push });
-    render(getActionMenu(renderColumnsMenu)());
+    render(getActionMenu(renderColumnsMenu, { push })());
   });
 
   it('should render new mediated request button', () => {

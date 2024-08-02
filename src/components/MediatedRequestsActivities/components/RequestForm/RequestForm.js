@@ -33,11 +33,11 @@ import RequestInformation from '../RequestInformation';
 import FulfilmentPreference from '../FulfilmentPreference';
 import AddressDetails from '../AddressDetails';
 import {
-  REQUEST_LEVEL_TYPES,
+  MEDIATED_REQUEST_LEVEL,
   RESOURCE_TYPES,
   RESOURCE_KEYS,
-  REQUEST_FORM_FIELD_NAMES,
-  REQUEST_OPERATIONS,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_OPERATIONS,
   DEFAULT_REQUEST_TYPE_VALUE,
   FULFILMENT_TYPES_MAP,
   FULFILMENT_TYPES,
@@ -184,15 +184,15 @@ class RequestForm extends React.Component {
     } = parse(location?.search);
 
     if (titleLevelRequestsFeatureEnabled === false) {
-      form.change(REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false);
 
       return;
     }
 
     if (itemId || itemBarcode) {
-      form.change(REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false);
     } else if (instanceId) {
-      form.change(REQUEST_FORM_FIELD_NAMES.CREATE_TLR, true);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, true);
     }
   }
 
@@ -240,16 +240,16 @@ class RequestForm extends React.Component {
       isRequestTypesReceived: false,
     });
 
-    form.change(REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
-    form.change(REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
 
     return findResource(RESOURCE_TYPES.USER, value, fieldName)
       .then((result) => {
         if (result.totalRecords === 1) {
           const selectedUser = result.users[0];
 
-          form.change(REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, selectedUser.id);
-          form.change(REQUEST_FORM_FIELD_NAMES.REQUESTER, selectedUser);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, selectedUser.id);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER, selectedUser);
           onSetSelectedUser(selectedUser);
 
           if (fieldName === RESOURCE_KEYS.ID) {
@@ -343,9 +343,9 @@ class RequestForm extends React.Component {
 
         const foundItem = result.items?.find(item => item[key] === value);
 
-        form.change(REQUEST_FORM_FIELD_NAMES.ITEM_ID, foundItem.id);
-        form.change(REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, foundItem.barcode);
-        resetFieldState(form, REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
+        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_ID, foundItem.id);
+        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, foundItem.barcode);
+        resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
         onSetSelectedItem(foundItem);
         this.setState({ isItemOrInstanceLoading: false });
 
@@ -405,9 +405,9 @@ class RequestForm extends React.Component {
           return null;
         }
 
-        form.change(REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, instance.id);
-        form.change(REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, instance.hrid);
-        resetFieldState(form, REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
+        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, instance.id);
+        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, instance.hrid);
+        resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
         onSetSelectedInstance(instance);
         this.setState({ isItemOrInstanceLoading: false });
 
@@ -438,7 +438,7 @@ class RequestForm extends React.Component {
       values,
     } = this.props;
 
-    form.change(REQUEST_FORM_FIELD_NAMES.KEY_OF_ITEM_BARCODE_FIELD, values.keyOfItemBarcodeField ? 0 : 1);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_ITEM_BARCODE_FIELD, values.keyOfItemBarcodeField ? 0 : 1);
   };
 
   triggerUserBarcodeValidation = () => {
@@ -447,7 +447,7 @@ class RequestForm extends React.Component {
       values,
     } = this.props;
 
-    form.change(REQUEST_FORM_FIELD_NAMES.KEY_OF_USER_BARCODE_FIELD, values.keyOfUserBarcodeField ? 0 : 1);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_USER_BARCODE_FIELD, values.keyOfUserBarcodeField ? 0 : 1);
   };
 
   triggerInstanceIdValidation = () => {
@@ -456,7 +456,7 @@ class RequestForm extends React.Component {
       values,
     } = this.props;
 
-    form.change(REQUEST_FORM_FIELD_NAMES.KEY_OF_INSTANCE_ID_FIELD, values.keyOfInstanceIdField ? 0 : 1);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_INSTANCE_ID_FIELD, values.keyOfInstanceIdField ? 0 : 1);
   };
 
   triggerRequestTypeValidation = () => {
@@ -465,7 +465,7 @@ class RequestForm extends React.Component {
       values,
     } = this.props;
 
-    form.change(REQUEST_FORM_FIELD_NAMES.KEY_OF_REQUEST_TYPE_FIELD, values.keyOfRequestTypeField ? 0 : 1);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_REQUEST_TYPE_FIELD, values.keyOfRequestTypeField ? 0 : 1);
   };
 
   handleTlrCheckboxChange = (event) => {
@@ -478,10 +478,10 @@ class RequestForm extends React.Component {
       onSetSelectedInstance,
     } = this.props;
 
-    form.change(REQUEST_FORM_FIELD_NAMES.CREATE_TLR, isCreateTlr);
-    form.change(REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, null);
-    form.change(REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, null);
-    form.change(REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, null);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, isCreateTlr);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, null);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, null);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, null);
 
     if (isCreateTlr) {
       this.setState({
@@ -495,8 +495,8 @@ class RequestForm extends React.Component {
 
       onSetSelectedItem(undefined);
     } else if (selectedInstance) {
-      form.change(REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
-      resetFieldState(form, REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
+      resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
       this.setState({ isItemsDialogOpen: true });
     } else {
       onSetSelectedInstance(undefined);
@@ -579,7 +579,7 @@ class RequestForm extends React.Component {
         deliverySelected,
         selectedAddressTypeId,
       }, () => {
-        form.change(REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, fulfillmentPreference);
+        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, fulfillmentPreference);
 
         this.updateRequestPreferencesFields();
       });
@@ -588,7 +588,7 @@ class RequestForm extends React.Component {
         ...getDefaultRequestPreferences(initialValues),
         deliverySelected: false,
       }, () => {
-        form.change(REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF);
+        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF);
       });
     }
   }
@@ -605,11 +605,11 @@ class RequestForm extends React.Component {
     if (deliverySelected) {
       const deliveryAddressTypeId = selectedAddressTypeId || defaultDeliveryAddressTypeId;
 
-      form.change(REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, deliveryAddressTypeId);
-      form.change(REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, '');
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, deliveryAddressTypeId);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, '');
     } else {
-      form.change(REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, defaultServicePointId);
-      form.change(REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, '');
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, defaultServicePointId);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, '');
     }
   }
 
@@ -624,16 +624,16 @@ class RequestForm extends React.Component {
 
     if (isEditForm) {
       requestParams = {
-        operation: REQUEST_OPERATIONS.REPLACE,
+        operation: MEDIATED_REQUEST_OPERATIONS.REPLACE,
         requestId: request.id,
       };
     } else {
       requestParams = {
-        operation: REQUEST_OPERATIONS.CREATE,
+        operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
         [resourceType]: resourceId,
         requesterId,
       };
-      form.change(REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
     }
 
     this.setState({ isRequestTypeLoading: true });
@@ -661,7 +661,7 @@ class RequestForm extends React.Component {
     const { form } = this.props;
     const selectedAddressTypeId = e.target.value;
 
-    form.change(REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, selectedAddressTypeId);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, selectedAddressTypeId);
     this.setState({ selectedAddressTypeId });
   }
 
@@ -682,7 +682,7 @@ class RequestForm extends React.Component {
     } = this.props;
 
     this.setState({ shouldValidate: isValidationRequired }, async () => {
-      await form.change(REQUEST_FORM_FIELD_NAMES.KEY_OF_REQUEST_TYPE_FIELD, values.keyOfRequestTypeField ? 0 : 1);
+      await form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_REQUEST_TYPE_FIELD, values.keyOfRequestTypeField ? 0 : 1);
       handleSubmit();
     });
   }
@@ -740,7 +740,7 @@ class RequestForm extends React.Component {
     const { createTitleLevelRequest } = values;
     const patronGroup = getPatronGroup(selectedUser, patronGroups);
     const isSubmittingDisabled = isSubmittingButtonDisabled(pristine, submitting);
-    const isTitleLevelRequest = createTitleLevelRequest || request?.requestLevel === REQUEST_LEVEL_TYPES.TITLE;
+    const isTitleLevelRequest = createTitleLevelRequest || request?.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE;
     const isTlrCheckboxDisabled = !titleLevelRequestsFeatureEnabled || isItemOrInstanceLoading;
     const requestTypeOptions = getRequestTypesOptions(requestTypes);
     const fulfillmentTypeOptions = getFulfillmentTypeOptions(hasDelivery, FULFILMENT_TYPES_MAP);
@@ -790,7 +790,7 @@ class RequestForm extends React.Component {
                         <Field
                           data-testid="tlrCheckbox"
                           type="checkbox"
-                          name={REQUEST_FORM_FIELD_NAMES.CREATE_TLR}
+                          name={MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR}
                           label={<FormattedMessage id="ui-requests-mediated.form.tlrCheckboxLabel" />}
                           component={Checkbox}
                           checked={isTitleLevelRequest}

@@ -10,11 +10,12 @@ import RequestInformation from '../RequestInformation';
 import {
   FULFILMENT_TYPES,
   ID_TYPE_MAP,
-  REQUEST_OPERATIONS,
-  REQUEST_TYPES,
-  REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_OPERATIONS,
+  MEDIATED_REQUEST_TYPES,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
   RESOURCE_TYPES,
+  DEFAULT_REQUEST_TYPE_VALUE,
 } from '../../../../constants';
 import {
   getRequestInformation,
@@ -55,6 +56,7 @@ const testIds = {
   findItem: 'findItem',
   findInstance: 'findInstance',
   findUser: 'findUser',
+  tlrCheckbox: 'tlrCheckbox',
 };
 const itemBarcode = 'itemBarcode';
 const instanceId = 'instanceId';
@@ -174,6 +176,57 @@ describe('RequestForm', () => {
     });
   });
 
+  describe('TLR checkbox', () => {
+    const props = {
+      ...basicProps,
+      values: {
+        createTitleLevelRequest: true,
+      },
+    };
+
+    beforeEach(() => {
+      render(
+        <RequestForm
+          {...props}
+        />
+      );
+
+      const tlrCheckbox = screen.getByTestId(testIds.tlrCheckbox);
+
+      fireEvent.click(tlrCheckbox);
+    });
+
+    it('should change tlr value to false', () => {
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false];
+
+      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+    });
+
+    it('should reset item barcode value', () => {
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, null];
+
+      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+    });
+
+    it('should reset instance hrid value', () => {
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, null];
+
+      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+    });
+
+    it('should reset instance id value', () => {
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, null];
+
+      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+    });
+
+    it('should set default request type value', () => {
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE];
+
+      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+    });
+  });
+
   describe('ItemInformation', () => {
     describe('When item data exists', () => {
       const foundItem = {
@@ -210,13 +263,13 @@ describe('RequestForm', () => {
       });
 
       it('should set item id form value', () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.ITEM_ID, foundItem.items[0].id];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_ID, foundItem.items[0].id];
 
         expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
       });
 
       it('should set item barcode form value', () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, foundItem.items[0].barcode];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, foundItem.items[0].barcode];
 
         expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
       });
@@ -251,7 +304,7 @@ describe('RequestForm', () => {
       });
 
       it('should not set item id form value', async () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.ITEM_ID, expect.any(String)];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_ID, expect.any(String)];
 
         await waitFor(() => {
           expect(basicProps.form.change).not.toHaveBeenCalledWith(...expectedArgs);
@@ -259,7 +312,7 @@ describe('RequestForm', () => {
       });
 
       it('should not set item barcode form value', async () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, expect.any(String)];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, expect.any(String)];
 
         await waitFor(() => {
           expect(basicProps.form.change).not.toHaveBeenCalledWith(...expectedArgs);
@@ -310,7 +363,7 @@ describe('RequestForm', () => {
         ],
       };
       const foundRequestTypes = {
-        [REQUEST_TYPES.PAGE]: [
+        [MEDIATED_REQUEST_TYPES.PAGE]: [
           {
             id: 'id',
             name: 'servicePoint',
@@ -353,13 +406,13 @@ describe('RequestForm', () => {
         });
 
         it('should set requester id form value', () => {
-          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, foundUser.users[0].id];
+          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, foundUser.users[0].id];
 
           expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
         });
 
         it('should set requester form value', () => {
-          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.REQUESTER, foundUser.users[0]];
+          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER, foundUser.users[0]];
 
           expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
         });
@@ -378,7 +431,7 @@ describe('RequestForm', () => {
           const expectedArgs = [
             RESOURCE_TYPES.REQUEST_TYPES,
             {
-              operation: REQUEST_OPERATIONS.CREATE,
+              operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
               requesterId: foundUser.users[0].id,
               [ID_TYPE_MAP.ITEM_ID]: props.selectedItem.id,
             }
@@ -388,7 +441,7 @@ describe('RequestForm', () => {
         });
 
         it('should set fulfilment preferences', async () => {
-          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF];
+          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF];
 
           await waitFor(() => {
             expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
@@ -396,7 +449,7 @@ describe('RequestForm', () => {
         });
 
         it('should reset delivery address type id', async () => {
-          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, ''];
+          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, ''];
 
           await waitFor(() => {
             expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
@@ -428,7 +481,7 @@ describe('RequestForm', () => {
         });
 
         it('should reset pickup service point id', async () => {
-          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, ''];
+          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, ''];
 
           await waitFor(() => {
             expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
@@ -454,7 +507,7 @@ describe('RequestForm', () => {
         });
 
         it('should set fulfilment preference to hold shelf', async () => {
-          const expectedArgs = [REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF];
+          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF];
 
           await waitFor(() => {
             expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
@@ -483,7 +536,7 @@ describe('RequestForm', () => {
       });
 
       it('should not set requester id form value', async () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, expect.any(String)];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, expect.any(String)];
 
         await waitFor(() => {
           expect(basicProps.form.change).not.toHaveBeenCalledWith(...expectedArgs);
@@ -491,7 +544,7 @@ describe('RequestForm', () => {
       });
 
       it('should not set requester form value', async () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.REQUESTER, expect.any(String)];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER, expect.any(String)];
 
         await waitFor(() => {
           expect(basicProps.form.change).not.toHaveBeenCalledWith(...expectedArgs);
@@ -563,13 +616,13 @@ describe('RequestForm', () => {
       });
 
       it('should set instance id form value', () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, foundInstance.id];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, foundInstance.id];
 
         expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
       });
 
       it('should set instance hrid form value', () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, foundInstance.hrid];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, foundInstance.hrid];
 
         expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
       });
@@ -596,7 +649,7 @@ describe('RequestForm', () => {
       });
 
       it('should not set instance id form value', async () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, expect.any(String)];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, expect.any(String)];
 
         await waitFor(() => {
           expect(basicProps.form.change).not.toHaveBeenCalledWith(...expectedArgs);
@@ -604,7 +657,7 @@ describe('RequestForm', () => {
       });
 
       it('should not set instance hrid form value', async () => {
-        const expectedArgs = [REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, expect.any(String)];
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, expect.any(String)];
 
         await waitFor(() => {
           expect(basicProps.form.change).not.toHaveBeenCalledWith(...expectedArgs);

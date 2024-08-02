@@ -13,7 +13,7 @@ const useMediatedRequestById = (mediatedRequestId) => {
     isFetching,
   } = useQuery(
     [namespace, mediatedRequestId],
-    () => ky.get(`circulation/requests/${mediatedRequestId}`).json(),
+    () => ky.get(`requests-mediated/mediated-requests/${mediatedRequestId}`).json(),
     { enabled: Boolean(mediatedRequestId) },
   );
 

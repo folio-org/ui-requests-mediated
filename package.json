@@ -92,34 +92,57 @@
           "mod-settings.entries.collection.get",
           "mod-settings.entries.item.get",
           "settings.requests-mediated.enabled",
-
           "circulation.items-by-instance.get",
           "circulation.loans.collection.get",
-          "circulation.requests.collection.get",
           "circulation.requests.item.get",
           "circulation-storage.loans.collection.get",
           "circulation-storage.loans.item.get",
-          "circulation-storage.requests.collection.get",
-          "circulation-storage.requests.item.get",
           "users.collection.get",
           "users.item.get",
-          "configuration.entries.collection.get"
+          "configuration.entries.collection.get",
+          "requests-mediated.mediated-request.collection.get",
+          "requests-mediated.mediated-request.item.get"
         ],
         "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.create",
+        "displayName": "Mediated requests: Create",
+        "subPermissions": [
+          "circulation.requests.allowed-service-points.get",
+          "circulation-storage.request-preferences.collection.get",
+          "requests-mediated.mediated-request.item.post"
+        ],
+        "visible": false
+      },
+      {
+        "permissionName": "ui-requests-mediated.edit",
+        "displayName": "Mediated requests: Edit",
+        "subPermissions": [
+          "circulation.requests.allowed-service-points.get",
+          "circulation-storage.request-preferences.collection.get",
+          "requests-mediated.mediated-request.item.put"
+        ],
+        "visible": false
+      },
+      {
+        "permissionName": "ui-requests-mediated.confirm",
+        "displayName": "Mediated requests: Confirm",
+        "subPermissions": [
+          "circulation.requests.allowed-service-points.get",
+          "circulation-storage.request-preferences.collection.get",
+          "requests-mediated.mediated-request.item.put",
+          "requests-mediated.mediated-request.item.post"
+        ],
+        "visible": false
       },
       {
         "permissionName": "ui-requests-mediated.view-create-edit",
         "displayName": "Mediated requests: View, create, edit",
         "subPermissions": [
           "ui-requests-mediated.view",
-
-          "circulation.requests.item.post",
-          "circulation.requests.item.put",
-          "circulation.requests.allowed-service-points.get",
-          "circulation-storage.requests.item.post",
-          "circulation-storage.requests.item.put",
-          "circulation-storage.requests.item.delete",
-          "circulation-storage.request-preferences.collection.get"
+          "ui-requests-mediated.create",
+          "ui-requests-mediated.edit"
         ],
         "visible": true
       },
@@ -127,7 +150,8 @@
         "permissionName": "ui-requests-mediated.view-decline",
         "displayName": "Mediated requests: View, decline",
         "subPermissions": [
-          "ui-requests-mediated.view"
+          "ui-requests-mediated.view",
+          "requests-mediated.mediated-request.item.delete"
         ],
         "visible": true
       },
@@ -136,8 +160,7 @@
         "displayName": "Mediated requests: View, confirm",
         "subPermissions": [
           "ui-requests-mediated.view",
-          "requests-mediated.mediated-request.item.put",
-          "requests-mediated.mediated-request.item.post"
+          "ui-requests-mediated.confirm"
         ],
         "visible": true
       },
@@ -162,7 +185,10 @@
         "displayName": "Mediated requests: All permissions",
         "subPermissions": [
           "ui-requests-mediated.view-create-edit",
-          "ui-requests-mediated.view-decline"
+          "ui-requests-mediated.view-decline",
+          "ui-requests-mediated.view-confirm",
+          "ui-requests-mediated.confirm-item-arrival",
+          "ui-requests-mediated.send-item-in-transit"
         ],
         "visible": true
       }

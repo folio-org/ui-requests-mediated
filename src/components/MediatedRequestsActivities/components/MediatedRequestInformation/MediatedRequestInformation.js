@@ -16,7 +16,7 @@ import {
 } from '../../../../constants';
 
 const MediatedRequestInformation = ({
-  requestId,
+  confirmedRequestId,
   metadata,
   requestType,
   requestStatus,
@@ -64,9 +64,11 @@ const MediatedRequestInformation = ({
           <KeyValue
             label={<FormattedMessage id="ui-requests-mediated.mediatedRequestInformation.confirmedRequest" />}
             value={
-              <Link to={`/requests/view/${requestId}`}>
-                <FormattedMessage id="ui-requests-mediated.mediatedRequestInformation.viewDetails" />
-              </Link>
+              confirmedRequestId ?
+                <Link to={`/requests/view/${confirmedRequestId}`}>
+                  <FormattedMessage id="ui-requests-mediated.mediatedRequestInformation.viewDetails" />
+                </Link> :
+                <NoValue />
             }
           />
         </Col>
@@ -82,10 +84,10 @@ const MediatedRequestInformation = ({
 };
 
 MediatedRequestInformation.propTypes = {
-  requestId: PropTypes.string.isRequired,
   requestType: PropTypes.string.isRequired,
   requestStatus: PropTypes.string.isRequired,
   requestLevel: PropTypes.string.isRequired,
+  confirmedRequestId: PropTypes.string,
   metadata: PropTypes.object,
   patronComments: PropTypes.string,
 };

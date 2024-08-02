@@ -21,7 +21,7 @@ import { isFormEditing } from '../../../../utils';
 import {
   BASE_SPINNER_PROPS,
   ENTER_EVENT_KEY,
-  REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
 } from '../../../../constants';
 
 jest.mock('../../../../utils', () => ({
@@ -102,7 +102,7 @@ describe('InstanceInformation', () => {
 
     it('should trigger instance hrid Field with correct props', () => {
       const expectedProps = {
-        name: REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID,
+        name: MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID,
         validate: expect.any(Function),
         validateFields: [],
       };
@@ -148,7 +148,7 @@ describe('InstanceInformation', () => {
 
       fireEvent.change(instanceHridField, event);
 
-      expect(basicProps.form.change).toHaveBeenCalledWith(REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, event.target.value);
+      expect(basicProps.form.change).toHaveBeenCalledWith(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, event.target.value);
     });
 
     it('should trigger TextField with correct props', () => {

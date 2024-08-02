@@ -134,74 +134,75 @@ const MediatedRequestsDetail = ({
           >
             <Loading size="large" />
           </Layout> :
-          <AccordionStatus>
-            <AccordionSet>
+          mediatedRequest?.id &&
+            <AccordionStatus>
+              <AccordionSet>
+                <Accordion
+                  id="titleInformationAccordion"
+                  label={<FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.title.accordionLabel" />}
+                >
+                  <TitleInformation
+                    instanceId={mediatedRequest.instanceId}
+                    title={mediatedRequest.instance.title}
+                    contributors={mediatedRequest.instance.contributorNames}
+                    publications={mediatedRequest.instance.publication}
+                    editions={mediatedRequest.instance.editions}
+                    identifiers={mediatedRequest.instance.identifiers}
+                  />
+                </Accordion>
+                <Accordion
+                  id="itemInformationAccordion"
+                  label={<FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.item.accordionLabel" />}
+                >
+                  {
+                    mediatedRequest?.item ?
+                      <ItemDetail
+                        request={mediatedRequest}
+                        item={mediatedRequest.item}
+                        loan={mediatedRequest.loan}
+                      /> :
+                      <FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.item.noInformation" />
+                  }
+                </Accordion>
+              </AccordionSet>
               <Accordion
-                id="titleInformationAccordion"
-                label={<FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.title.accordionLabel" />}
+                id="mediatedRequestInformationAccordion"
+                label={<FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.mediatedRequest.accordionLabel" />}
               >
-                <TitleInformation
-                  instanceId={mediatedRequest.instanceId}
-                  title={mediatedRequest.instance.title}
-                  contributors={mediatedRequest.instance.contributorNames}
-                  publications={mediatedRequest.instance.publication}
-                  editions={mediatedRequest.instance.editions}
-                  identifiers={mediatedRequest.instance.identifiers}
+                <MediatedRequestInformation
+                  confirmedRequestId={mediatedRequest.confirmedRequestId}
+                  metadata={mediatedRequest.metadata}
+                  requestType={mediatedRequest.requestType}
+                  requestStatus={mediatedRequest.status}
+                  requestLevel={mediatedRequest.requestLevel}
+                  patronComments={mediatedRequest.patronComments}
                 />
               </Accordion>
               <Accordion
-                id="itemInformationAccordion"
-                label={<FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.item.accordionLabel" />}
+                id="requesterInformationAccordion"
+                label={<FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.requester.accordionLabel" />}
               >
-                {
-                  mediatedRequest?.item ?
-                    <ItemDetail
-                      request={mediatedRequest}
-                      item={mediatedRequest.item}
-                      loan={mediatedRequest.loan}
-                    /> :
-                    <FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.item.noInformation" />
-                }
+                <UserDetail
+                  user={mediatedRequest.requester}
+                  patronGroup={patronGroup?.group}
+                  request={mediatedRequest}
+                  userPreferences={userPreferences}
+                  isMediatedRequestDetailPage
+                />
               </Accordion>
-            </AccordionSet>
-            <Accordion
-              id="mediatedRequestInformationAccordion"
-              label={<FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.mediatedRequest.accordionLabel" />}
-            >
-              <MediatedRequestInformation
-                requestId={mediatedRequest.id}
-                metadata={mediatedRequest.metadata}
-                requestType={mediatedRequest.requestType}
-                requestStatus={mediatedRequest.status}
-                requestLevel={mediatedRequest.requestLevel}
-                patronComments={mediatedRequest.patronComments}
+              <NotesSmartAccordion
+                id="staffNotes"
+                domainName={STAFF_NOTES_DOMAIN_NAME}
+                entityId={mediatedRequest.id}
+                entityName={mediatedRequest.instance.title}
+                entityType={STAFF_NOTES_ENTITY_TYPE}
+                referredRecordData={referredRecordData}
+                label={<FormattedMessage id="ui-requests-mediated.notes.staffNotes" />}
+                pathToNoteCreate={`${mediatedRequestsActivitiesUrl}/notes/new`}
+                pathToNoteDetails={`${mediatedRequestsActivitiesUrl}/notes`}
+                hideAssignButton
               />
-            </Accordion>
-            <Accordion
-              id="requesterInformationAccordion"
-              label={<FormattedMessage id="ui-requests-mediated.mediatedRequestDetail.requester.accordionLabel" />}
-            >
-              <UserDetail
-                user={mediatedRequest.requester}
-                patronGroup={patronGroup?.group}
-                request={mediatedRequest}
-                userPreferences={userPreferences}
-                isMediatedRequestDetailPage
-              />
-            </Accordion>
-            <NotesSmartAccordion
-              id="staffNotes"
-              domainName={STAFF_NOTES_DOMAIN_NAME}
-              entityId={mediatedRequest.id}
-              entityName={mediatedRequest.instance.title}
-              entityType={STAFF_NOTES_ENTITY_TYPE}
-              referredRecordData={referredRecordData}
-              label={<FormattedMessage id="ui-requests-mediated.notes.staffNotes" />}
-              pathToNoteCreate={`${mediatedRequestsActivitiesUrl}/notes/new`}
-              pathToNoteDetails={`${mediatedRequestsActivitiesUrl}/notes`}
-              hideAssignButton
-            />
-          </AccordionStatus>
+            </AccordionStatus>
       }
     </Pane>
   );

@@ -23,7 +23,7 @@ import {
   RESOURCE_TYPES,
   DEFAULT_REQUEST_TYPE_VALUE,
   FULFILMENT_TYPES,
-  REQUEST_LEVEL_TYPES,
+  MEDIATED_REQUEST_LEVEL,
 } from '../../../../constants';
 
 const basicProps = {
@@ -200,7 +200,7 @@ describe('RequestFormContainer', () => {
         const dataToSubmit = {
           ...basicDataToSend,
           fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
-          requestLevel: REQUEST_LEVEL_TYPES.ITEM,
+          requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
         };
 
         beforeEach(() => {
@@ -216,7 +216,7 @@ describe('RequestFormContainer', () => {
                 item: basicDataToSend.item,
                 pickupServicePointId: basicDataToSend.pickupServicePointId,
                 requestDate: expect.any(String),
-                requestLevel: REQUEST_LEVEL_TYPES.ITEM,
+                requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
                 fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
               }),
             }
@@ -236,7 +236,7 @@ describe('RequestFormContainer', () => {
         const dataToSubmit = {
           ...basicDataToSend,
           fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
-          requestLevel: REQUEST_LEVEL_TYPES.TITLE,
+          requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
           createTitleLevelRequest: true,
           deliveryAddressTypeId: 'deliveryAddressTypeId',
           pickupServicePointId: '',
@@ -253,7 +253,7 @@ describe('RequestFormContainer', () => {
               json: expect.objectContaining({
                 deliveryAddressTypeId: dataToSubmit.deliveryAddressTypeId,
                 requestDate: expect.any(String),
-                requestLevel: REQUEST_LEVEL_TYPES.TITLE,
+                requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
                 fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
               }),
             }
@@ -273,7 +273,7 @@ describe('RequestFormContainer', () => {
         const dataToSubmit = {
           ...basicDataToSend,
           fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
-          requestLevel: REQUEST_LEVEL_TYPES.TITLE,
+          requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
           createTitleLevelRequest: true,
           deliveryAddressTypeId: 'deliveryAddressTypeId',
           pickupServicePointId: '',

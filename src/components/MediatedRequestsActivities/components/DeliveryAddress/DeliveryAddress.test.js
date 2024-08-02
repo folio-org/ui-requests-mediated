@@ -17,7 +17,7 @@ const basicProps = {
   ],
 };
 const labelIds = {
-  deliveryAddress: 'ui-requests-mediated.form.request.deliveryAddress',
+  deliveryAddress: 'ui-requests-mediated.form.request.delivery',
 };
 const testIds = {
   deliveryAddress: 'deliveryAddress',

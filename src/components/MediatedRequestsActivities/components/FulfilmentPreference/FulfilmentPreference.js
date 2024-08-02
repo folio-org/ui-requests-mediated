@@ -10,7 +10,7 @@ import {
 
 import DeliveryAddress from '../DeliveryAddress';
 import PickupServicePoint from '../PickupServicePoint';
-import { REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
+import { MEDIATED_REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
 import {
   getSelectedAddressTypeId,
   isDeliverySelected,
@@ -37,7 +37,7 @@ const FulfilmentPreference = ({
     const isDelivery = isDeliverySelected(selectedFulfillmentPreference);
     const selectedAddressTypeId = getSelectedAddressTypeId(isDelivery, defaultDeliveryAddressTypeId);
 
-    form.change(REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, selectedFulfillmentPreference);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, selectedFulfillmentPreference);
     setDeliveryAddress(isDelivery, selectedAddressTypeId);
   };
 
@@ -50,7 +50,7 @@ const FulfilmentPreference = ({
         >
           <Field
             data-testid="fulfilmentPreference"
-            name={REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE}
+            name={MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE}
             label={<FormattedMessage id="ui-requests-mediated.form.request.fulfilmentPreference" />}
             component={Select}
             value={fulfillmentPreference}

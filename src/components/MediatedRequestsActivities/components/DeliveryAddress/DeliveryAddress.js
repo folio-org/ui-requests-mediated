@@ -15,7 +15,7 @@ const DeliveryAddress = ({
     <Field
       name="deliveryAddressTypeId"
       data-testid="deliveryAddress"
-      label={<FormattedMessage id="ui-requests-mediated.form.request.deliveryAddress" />}
+      label={<FormattedMessage id="ui-requests-mediated.form.request.delivery" />}
       component={Select}
       fullWidth
       onChange={onChangeAddress}

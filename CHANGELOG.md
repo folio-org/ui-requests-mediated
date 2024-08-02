@@ -17,6 +17,7 @@
 * Add `Closed - Cancelled` status to `Mediated request status` filter. Refs UIREQMED-33.
 * Implement Request information accordion and save functionality on request form. Refs UIREQMED-30.
 * Implement functionality of `New mediated request` button. Refs UIREQMED-35.
+* Migrate to mediated requests endpoints, refactor constants, utils. Refs UIREQMED-28.
 * Implement Mediated requests details page. Refs UIREQMED-10.
 
 ## 1.0.0
