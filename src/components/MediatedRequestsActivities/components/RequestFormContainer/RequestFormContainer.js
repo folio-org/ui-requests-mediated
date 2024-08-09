@@ -33,7 +33,7 @@ import {
   SAVE_BUTTON_ID,
   getMediatedRequestsActivitiesUrl,
 } from '../../../../constants';
-import useAddressTypes from '../../../../hooks/useAddressTypes';
+import { useAddressTypes } from '../../../../hooks';
 
 export const urls = {
   [RESOURCE_TYPES.USER]: (value, idType) => {

@@ -274,3 +274,6 @@ export const ITEM_STATUS_TRANSLATION_KEYS = {
   [ITEM_STATUSES.ORDER_CLOSED]: 'ui-requests-mediated.item.status.orderClosed',
   [ITEM_STATUSES.RESTRICTED]: 'ui-requests-mediated.item.status.restricted',
 };
+
+export const STAFF_NOTES_DOMAIN_NAME = 'requests-mediated';
+export const STAFF_NOTES_ENTITY_TYPE = 'request-mediated';

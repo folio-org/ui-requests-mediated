@@ -26,7 +26,7 @@ const TitleInformation = (props) => {
   } = props;
   const instanceTitle = <Link to={`/inventory/view/${instanceId}`}>{title}</Link>;
   const instanceContributors = contributors.map(({ name }) => name).join(CONTRIBUTOR_SEPARATOR);
-  const instanceEditions = editions.map(({ name }) => name).join(TEXT_SEPARATOR);
+  const instanceEditions = editions.join(TEXT_SEPARATOR);
   const instanceIdentifiers = identifiers.slice(0, MAX_IDENTIFIERS_COUNT).map(({ value }) => value).join(TEXT_SEPARATOR);
   const formattedYears = getFormattedYears(publications, DEFAULT_DISPLAYED_YEARS_AMOUNT);
 

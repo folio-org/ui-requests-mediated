@@ -10,7 +10,7 @@ const basicProps = {
   title: 'title',
   contributors: [{ name: 'Contributor' }],
   publications: [{ dateOfPublication: '2021' }],
-  editions: [{ name: 'Edition' }],
+  editions: ['Edition'],
   identifiers: [{ value: 'identifier' }],
 };
 const labelIds = {
@@ -81,7 +81,7 @@ describe('TitleInformation', () => {
   });
 
   it('should render edition value', () => {
-    const editionValue = screen.getByText(basicProps.editions[0].name);
+    const editionValue = screen.getByText(basicProps.editions[0]);
 
     expect(editionValue).toBeInTheDocument();
   });

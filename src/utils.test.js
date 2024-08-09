@@ -27,6 +27,10 @@ import {
   getRequestInformation,
   getNoRequestTypeErrorMessageId,
   validateDropDownValue,
+  getUserPreferences,
+  getReferredRecordData,
+  formatNoteReferrerEntityData,
+  getUserHighlightBoxLink,
 } from './utils';
 import {
   FULFILMENT_TYPES,
@@ -37,6 +41,11 @@ import {
   MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
   MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
 } from './constants';
+
+jest.mock('react-router-dom', () => ({
+  Link: jest.fn(({ to, children }) => <a href={to}>{children}</a>),
+}));
+jest.mock('./components/MediatedRequestsActivities/components/AddressDetails', () => jest.fn(() => <div />));
 
 describe('utils', () => {
   describe('transformRequestFilterOptions', () => {
@@ -655,6 +664,149 @@ describe('utils', () => {
       it('should return undefined', () => {
         expect(validateDropDownValue(false)(value)).toBeUndefined();
       });
+    });
+  });
+
+  describe('getUserPreferences', () => {
+    const labelIds = {
+      deliveryAddress: 'ui-requests-mediated.requesterDetails.deliveryAddress',
+      pickupServicePoint: 'ui-requests-mediated.requesterDetails.pickupServicePoint',
+    };
+
+    describe('When mediatedRequest is provided', () => {
+      const addressTypeId = 'addressTypeId';
+      const pickupServicePointId = 'pickupServicePointId';
+      const servicePoints = {
+        servicepoints: [
+          {
+            id: pickupServicePointId,
+            name: 'pickupServicePointName',
+          }
+        ],
+      };
+      const userData = {
+        users: [
+          {
+            personal: {
+              addresses: [
+                {
+                  addressTypeId,
+                }
+              ],
+            },
+          }
+        ],
+      };
+
+      it('should get information with delivery address', () => {
+        const mediatedRequest = {
+          fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
+          deliveryAddressTypeId: addressTypeId,
+        };
+        const userPreferences = getUserPreferences(mediatedRequest, userData, servicePoints);
+
+        render(userPreferences.label);
+
+        expect(screen.getByText(labelIds.deliveryAddress)).toBeInTheDocument();
+      });
+
+      it('should get information with pickup service point', () => {
+        const mediatedRequest = {
+          fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
+          pickupServicePointId,
+        };
+        const userPreferences = getUserPreferences(mediatedRequest, userData, servicePoints);
+
+        render(userPreferences.label);
+
+        expect(screen.getByText(labelIds.pickupServicePoint)).toBeInTheDocument();
+      });
+    });
+
+    describe('When mediatedRequest is not provided', () => {
+      it('should return empty object', () => {
+        expect(getUserPreferences()).toEqual({});
+      });
+    });
+  });
+
+  describe('getReferredRecordData', () => {
+    describe('When mediatedRequest is provided', () => {
+      const mediatedRequest = {
+        instance: {
+          title: 'title',
+        },
+        instanceId: 'instanceId',
+        item: {
+          barcode: 'barcode',
+        },
+        itemId: 'itemId',
+        holdingsRecordId: 'holdingsRecordId',
+        requesterId: 'requesterId',
+        requester: {
+          lastName: 'lastName',
+        },
+        metadata: {
+          createdDate: 'createdDate',
+        },
+      };
+
+      it('should return referred record data', () => {
+        const expectedResult = {
+          instanceTitle: mediatedRequest.instance.title,
+          instanceId: mediatedRequest.instanceId,
+          itemBarcode: mediatedRequest?.item?.barcode,
+          itemId: mediatedRequest.itemId,
+          holdingsRecordId: mediatedRequest.holdingsRecordId,
+          requesterName: mediatedRequest.requester.lastName,
+          requesterId: mediatedRequest.requester.id ?? mediatedRequest?.requesterId,
+          requestCreateDate: mediatedRequest?.metadata.createdDate,
+        };
+
+        expect(getReferredRecordData(mediatedRequest)).toEqual(expectedResult);
+      });
+    });
+
+    describe('When mediatedRequest is not provided', () => {
+      it('should return empty object', () => {
+        expect(getReferredRecordData()).toEqual({});
+      });
+    });
+  });
+
+  describe('formatNoteReferrerEntityData', () => {
+    describe('When entityData is provided', () => {
+      const entityData = {
+        entityName: 'entityName',
+        entityType: 'entityType',
+        entityId: 'entityId',
+      };
+
+      it('should return correct entity data', () => {
+        const expectedResult = {
+          name: entityData.entityName,
+          type: entityData.entityType,
+          id: entityData.entityId,
+        };
+
+        expect(formatNoteReferrerEntityData(entityData)).toEqual(expectedResult);
+      });
+    });
+
+    describe('When entityData is not provided', () => {
+      it('should return false', () => {
+        expect(formatNoteReferrerEntityData()).toBe(false);
+      });
+    });
+  });
+
+  describe('getUserHighlightBoxLink', () => {
+    it('should render link', () => {
+      const linkText = 'link';
+
+      render(getUserHighlightBoxLink(linkText));
+
+      expect(screen.getByText(linkText)).toBeInTheDocument();
     });
   });
 });

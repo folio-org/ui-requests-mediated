@@ -106,14 +106,43 @@
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.view-create-edit",
-        "displayName": "Mediated requests: View, create, edit",
+        "permissionName": "ui-requests-mediated.create",
+        "displayName": "Mediated requests: Create",
         "subPermissions": [
-          "ui-requests-mediated.view",
+          "circulation.requests.allowed-service-points.get",
+          "circulation-storage.request-preferences.collection.get",
+          "requests-mediated.mediated-request.item.post"
+        ],
+        "visible": false
+      },
+      {
+        "permissionName": "ui-requests-mediated.edit",
+        "displayName": "Mediated requests: Edit",
+        "subPermissions": [
+          "circulation.requests.allowed-service-points.get",
+          "circulation-storage.request-preferences.collection.get",
+          "requests-mediated.mediated-request.item.put"
+        ],
+        "visible": false
+      },
+      {
+        "permissionName": "ui-requests-mediated.confirm",
+        "displayName": "Mediated requests: Confirm",
+        "subPermissions": [
           "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
           "requests-mediated.mediated-request.item.put",
           "requests-mediated.mediated-request.item.post"
+        ],
+        "visible": false
+      },
+      {
+        "permissionName": "ui-requests-mediated.view-create-edit",
+        "displayName": "Mediated requests: View, create, edit",
+        "subPermissions": [
+          "ui-requests-mediated.view",
+          "ui-requests-mediated.create",
+          "ui-requests-mediated.edit"
         ],
         "visible": true
       },
@@ -127,11 +156,27 @@
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.view-edit-decline",
-        "displayName": "Mediated requests: View, edit, decline",
+        "permissionName": "ui-requests-mediated.view-confirm",
+        "displayName": "Mediated requests: View, confirm",
         "subPermissions": [
-          "ui-requests-mediated.view-decline",
-          "requests-mediated.mediated-request.item.put"
+          "ui-requests-mediated.view",
+          "ui-requests-mediated.confirm"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.confirm-item-arrival",
+        "displayName": "Mediated requests: Confirm item arrival",
+        "subPermissions": [
+          "ui-requests-mediated.view"
+        ],
+        "visible": true
+      },
+      {
+        "permissionName": "ui-requests-mediated.send-item-in-transit",
+        "displayName": "Mediated requests: Send item in transit",
+        "subPermissions": [
+          "ui-requests-mediated.view"
         ],
         "visible": true
       },
@@ -140,7 +185,10 @@
         "displayName": "Mediated requests: All permissions",
         "subPermissions": [
           "ui-requests-mediated.view-create-edit",
-          "ui-requests-mediated.view-decline"
+          "ui-requests-mediated.view-decline",
+          "ui-requests-mediated.view-confirm",
+          "ui-requests-mediated.confirm-item-arrival",
+          "ui-requests-mediated.send-item-in-transit"
         ],
         "visible": true
       }

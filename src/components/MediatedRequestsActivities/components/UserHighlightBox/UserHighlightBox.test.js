@@ -16,8 +16,8 @@ const labelIds = {
   barcodeLabel: 'ui-requests-mediated.requesterDetails.barcode',
 };
 
-jest.mock('react-router-dom', () => ({
-  Link: jest.fn(({ to, children }) => <a href={to}>{children}</a>),
+jest.mock('../../../../utils', () => ({
+  getUserHighlightBoxLink: jest.fn(value => value),
 }));
 
 describe('UserHighlightBox', () => {
@@ -45,7 +45,7 @@ describe('UserHighlightBox', () => {
     });
 
     it('should render barcode', () => {
-      const barcode = screen.getByText(basicProps.barcode);
+      const barcode = screen.getByText(basicProps.barcode, { exact: false });
 
       expect(barcode).toBeInTheDocument();
     });

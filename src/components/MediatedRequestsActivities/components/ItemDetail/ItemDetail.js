@@ -30,12 +30,12 @@ const ItemDetail = ({
   const title = request?.instance.title || item.title || <NoValue />;
   const contributor = request?.instance.contributorNames?.[0]?.name || item.contributors?.[0]?.name || <NoValue />;
   const status = item.status?.name || item.status;
-  const statusMessage = <FormattedMessage id={ITEM_STATUS_TRANSLATION_KEYS[status]} />;
+  const statusMessage = ITEM_STATUS_TRANSLATION_KEYS[status] ? <FormattedMessage id={ITEM_STATUS_TRANSLATION_KEYS[status]} /> : <NoValue />;
   const effectiveLocationName = item.location?.name || <NoValue />;
   const dueDate = loan?.dueDate ? <FormattedDate value={loan.dueDate} /> : <NoValue />;
   const effectiveCallNumberString = effectiveCallNumber(item);
   const itemLabel = item.barcode ? 'ui-requests-mediated.itemDetails.barcode' : 'ui-requests-mediated.itemDetails.id';
-  const recordLink = itemId ? <Link to={`/inventory/view/${instanceId}/${holdingsRecordId}/${itemId}`}>{item.barcode || itemId}</Link> : <NoValue />;
+  const recordLink = itemId ? <Link to={`/inventory/view/${instanceId}/${holdingsRecordId}/${itemId}`}>{item.barcode || itemId}</Link> : item.barcode || <NoValue />;
 
   return (
     <>

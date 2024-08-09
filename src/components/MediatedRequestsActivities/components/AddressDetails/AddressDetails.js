@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-const AddressDetails = ({ address }) => {
+const AddressDetails = ({ address = {} }) => {
   const NO_VALUE = '';
   const getValue = (fieldName) => address[fieldName] || NO_VALUE;
 
