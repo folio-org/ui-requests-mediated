@@ -330,6 +330,15 @@ describe('utils', () => {
         expect(getPatronGroup(patron, patronGroups)).toBeUndefined();
       });
     });
+
+    describe('When patronGroups argument is empty', () => {
+      const patron = {};
+      const patronGroups = [];
+
+      it('should return undefined', () => {
+        expect(getPatronGroup(patron, patronGroups)).toBeUndefined();
+      });
+    });
   });
 
   describe('isSubmittingButtonDisabled', () => {

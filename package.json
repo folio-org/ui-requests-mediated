@@ -98,6 +98,8 @@
           "circulation-storage.loans.collection.get",
           "circulation-storage.loans.item.get",
           "users.collection.get",
+          "usergroups.collection.get",
+          "inventory-storage.service-points.collection.get",
           "users.item.get",
           "configuration.entries.collection.get",
           "requests-mediated.mediated-request.collection.get",
