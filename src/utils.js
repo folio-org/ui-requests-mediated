@@ -77,7 +77,7 @@ export const getTlrSettings = (settings) => settings || {};
 export const getPatronGroup = (patron, patronGroups) => {
   const patronGroup = get(patron, 'patronGroup');
 
-  if (!patronGroup || !patronGroups.length) {
+  if (!patronGroups?.length) {
     return;
   }
 
