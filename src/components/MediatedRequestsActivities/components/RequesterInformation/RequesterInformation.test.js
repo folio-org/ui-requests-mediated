@@ -18,7 +18,7 @@ import RequesterInformation, {
   COLUMN_MAPPING,
   VISIBLE_COLUMNS,
 } from './RequesterInformation';
-import UserDetail from '../UserDetail';
+import UserForm from '../UserForm';
 import { isFormEditing } from '../../../../utils';
 import {
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
@@ -32,7 +32,7 @@ jest.mock('../../../../utils', () => ({
   isFormEditing: jest.fn(() => false),
   memoizeValidation: (fn) => () => fn,
 }));
-jest.mock('../UserDetail', () => jest.fn(() => <div />));
+jest.mock('../UserForm', () => jest.fn(() => <div />));
 
 const basicProps = {
   triggerUserBarcodeValidation: jest.fn(),
@@ -59,6 +59,9 @@ const basicProps = {
   },
   isLoading: false,
   submitting: false,
+  proxy: {},
+  selectProxy: jest.fn(),
+  handleCloseProxy: jest.fn(),
 };
 const labelIds = {
   selectUser: 'ui-requests-mediated.form.errors.selectUser',
@@ -190,11 +193,14 @@ describe('RequesterInformation', () => {
       isFormEditing.mockReturnValueOnce(true);
     });
 
-    it('should trigger UserDetail with correct props', () => {
+    it('should trigger UserForm with correct props', () => {
       const expectedProps = {
         user: basicProps.request.requester,
         request: basicProps.request,
         patronGroup: basicProps.patronGroup.group,
+        proxy: basicProps.proxy,
+        selectProxy: basicProps.selectProxy,
+        handleCloseProxy: basicProps.handleCloseProxy,
       };
 
       render(
@@ -203,10 +209,10 @@ describe('RequesterInformation', () => {
         />
       );
 
-      expect(UserDetail).toHaveBeenCalledWith(expectedProps, {});
+      expect(UserForm).toHaveBeenCalledWith(expectedProps, {});
     });
 
-    it('should trigger UserDetail with selected user', () => {
+    it('should trigger UserForm with selected user', () => {
       const props = {
         ...basicProps,
         request: undefined,
@@ -224,7 +230,7 @@ describe('RequesterInformation', () => {
         />
       );
 
-      expect(UserDetail).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+      expect(UserForm).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
     });
   });
 

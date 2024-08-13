@@ -112,6 +112,7 @@ class RequestForm extends React.Component {
     const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.items[0]?.value);
 
     this.state = {
+      proxy: null,
       selectedLoan: loan,
       isItemOrInstanceLoading: false,
       isItemsDialogOpen: false,
@@ -227,6 +228,29 @@ class RequestForm extends React.Component {
       });
   }
 
+  selectProxy = (proxy) => {
+    const {
+      form,
+      selectedUser,
+    } = this.props;
+
+    if (selectedUser.id !== proxy.id) {
+      this.setState({
+        proxy,
+        requestTypes: {},
+        isRequestTypesReceived: false,
+      });
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, proxy.id);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, selectedUser.id);
+      this.findRequestPreferences(proxy.id);
+      this.getAvailableRequestTypes(proxy);
+    }
+  }
+
+  handleCloseProxy = () => {
+    this.setState({ proxy: null });
+  };
+
   findUser = (fieldName, value) => {
     const {
       form,
@@ -238,10 +262,12 @@ class RequestForm extends React.Component {
       isUserLoading: true,
       requestTypes: {},
       isRequestTypesReceived: false,
+      proxy: null,
     });
 
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, undefined);
 
     return findResource(RESOURCE_TYPES.USER, value, fieldName)
       .then((result) => {
@@ -717,6 +743,7 @@ class RequestForm extends React.Component {
       hasDelivery,
       defaultDeliveryAddressTypeId,
       shouldValidate,
+      proxy,
     } = this.state;
     const {
       handleSubmit,
@@ -862,6 +889,9 @@ class RequestForm extends React.Component {
                       patronGroup={patronGroup}
                       isLoading={isUserLoading}
                       findUser={this.findUser}
+                      selectProxy={this.selectProxy}
+                      handleCloseProxy={this.handleCloseProxy}
+                      proxy={proxy}
                       getUserValidationData={this.getUserValidationData}
                       triggerUserBarcodeValidation={this.triggerUserBarcodeValidation}
                       enterButtonClass={css.enterButton}

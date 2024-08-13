@@ -3,6 +3,8 @@ import {
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
+import { NoValue } from '@folio/stripes/components';
+
 import {
   transformRequestFilterOptions,
   getIsTitleLevelRequestsFeatureEnabled,
@@ -31,6 +33,7 @@ import {
   getReferredRecordData,
   formatNoteReferrerEntityData,
   getUserHighlightBoxLink,
+  getProxyInformation,
 } from './utils';
 import {
   FULFILMENT_TYPES,
@@ -807,6 +810,60 @@ describe('utils', () => {
       render(getUserHighlightBoxLink(linkText));
 
       expect(screen.getByText(linkText)).toBeInTheDocument();
+    });
+  });
+
+  describe('getProxyInformation', () => {
+    describe('When proxy is provided', () => {
+      it('should return proxy information with barcode', () => {
+        const proxy = {
+          id: 'id',
+          lastName: 'lastName',
+          barcode: 'barcode',
+        };
+        const expectedResult = {
+          name: proxy.lastName,
+          id: proxy.id,
+          barcode: proxy.barcode,
+        };
+
+        expect(getProxyInformation(proxy)).toEqual(expectedResult);
+      });
+
+      it('should return proxy information without barcode', () => {
+        const proxy = {
+          id: 'id',
+          lastName: 'lastName',
+        };
+        const expectedResult = {
+          name: proxy.lastName,
+          id: proxy.id,
+          barcode: <NoValue />,
+        };
+
+        expect(getProxyInformation(proxy)).toEqual(expectedResult);
+      });
+
+      it('should return proxy information with proxyIdFromRequest', () => {
+        const proxyIdFromRequest = 'proxyIdFromRequest';
+        const proxy = {
+          lastName: 'lastName',
+          barcode: 'barcode',
+        };
+        const expectedResult = {
+          name: proxy.lastName,
+          id: proxyIdFromRequest,
+          barcode: proxy.barcode,
+        };
+
+        expect(getProxyInformation(proxy, proxyIdFromRequest)).toEqual(expectedResult);
+      });
+    });
+
+    describe('When proxy is not provided', () => {
+      it('should return empty object', () => {
+        expect(getProxyInformation()).toEqual({});
+      });
     });
   });
 });

@@ -42,6 +42,7 @@ jest.mock('@folio/stripes/smart-components', () => ({
       </button>
     </div>
   )),
+  ProxyManager: jest.fn(() => <div />),
   SearchAndSortNoResultsMessage: jest.fn((props) => (<div {...props} />)),
   ViewMetaData: jest.fn(({ metadata, ...rest }) => (
     <div {...rest}>{metadata.createdDate}</div>

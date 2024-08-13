@@ -187,7 +187,7 @@ const MediatedRequestsDetail = ({
                   patronGroup={patronGroup?.group}
                   request={mediatedRequest}
                   userPreferences={userPreferences}
-                  isMediatedRequestDetailPage
+                  proxy={mediatedRequest.proxy}
                 />
               </Accordion>
               <NotesSmartAccordion

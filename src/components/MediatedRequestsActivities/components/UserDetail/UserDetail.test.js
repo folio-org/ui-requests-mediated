@@ -5,6 +5,7 @@ import {
 
 import UserDetail from './UserDetail';
 import UserHighlightBox from '../UserHighlightBox';
+import { getProxyInformation } from '../../../../utils';
 
 const basicProps = {
   user: {
@@ -13,14 +14,27 @@ const basicProps = {
     id: 'userId',
   },
   patronGroup: 'patronGroup',
+  userPreferences: {
+    label: 'userPreferencesLabel',
+    value: 'userPreferencesValue',
+  },
+  request: {},
+  proxy: {},
 };
 const labelIds = {
-  userTitle: 'ui-requests-mediated.requesterDetails.title',
+  userTitle: 'ui-requests-mediated.requesterDetails.requester',
+  proxyTitle: 'ui-requests-mediated.requesterDetails.proxy',
   patronGroup: 'ui-requests-mediated.requesterDetails.patronGroup',
+};
+const proxy = {
+  name: 'proxyName',
+  id: 'proxyId',
+  barcode: 'proxyBarcode',
 };
 
 jest.mock('../../../../utils', () => ({
   getRequesterName: jest.fn((user) => user.lastName),
+  getProxyInformation: jest.fn(() => proxy),
 }));
 jest.mock('../UserHighlightBox', () => jest.fn(({
   title,
@@ -60,7 +74,7 @@ describe('UserDetail', () => {
       expect(patronGroupTitle).toBeInTheDocument();
     });
 
-    it('should trigger UserHighlightBox with user id', () => {
+    it('should trigger UserHighlightBox with user data', () => {
       const expectedProps = {
         name: basicProps.user.lastName,
         id: basicProps.user.id,
@@ -99,6 +113,50 @@ describe('UserDetail', () => {
       };
 
       expect(UserHighlightBox).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+    });
+  });
+
+  describe('When proxy information exists', () => {
+    beforeEach(() => {
+      render(
+        <UserDetail
+          {...basicProps}
+        />
+      );
+    });
+
+    it('should render proxy title', () => {
+      const proxyTitle = screen.getByText(labelIds.proxyTitle);
+
+      expect(proxyTitle).toBeInTheDocument();
+    });
+
+    it('should trigger UserHighlightBox with proxy data', () => {
+      const expectedProps = {
+        name: proxy.name,
+        id: proxy.id,
+        barcode: proxy.barcode,
+      };
+
+      expect(UserHighlightBox).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+    });
+  });
+
+  describe('When proxy information does not exist', () => {
+    beforeEach(() => {
+      getProxyInformation.mockReturnValueOnce({});
+
+      render(
+        <UserDetail
+          {...basicProps}
+        />
+      );
+    });
+
+    it('should not render proxy title', () => {
+      const proxyTitle = screen.queryByText(labelIds.proxyTitle);
+
+      expect(proxyTitle).not.toBeInTheDocument();
     });
   });
 });

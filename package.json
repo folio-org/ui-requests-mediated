@@ -111,6 +111,7 @@
         "subPermissions": [
           "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
+          "proxiesfor.collection.get",
           "requests-mediated.mediated-request.item.post"
         ],
         "visible": false
@@ -121,6 +122,7 @@
         "subPermissions": [
           "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
+          "proxiesfor.collection.get",
           "requests-mediated.mediated-request.item.put"
         ],
         "visible": false
@@ -131,6 +133,7 @@
         "subPermissions": [
           "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
+          "proxiesfor.collection.get",
           "requests-mediated.mediated-request.item.put",
           "requests-mediated.mediated-request.item.post"
         ],
