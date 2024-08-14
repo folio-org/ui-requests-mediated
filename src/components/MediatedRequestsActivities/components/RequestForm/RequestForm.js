@@ -60,6 +60,7 @@ import {
   getDeliveryInformation,
   getResourceTypeId,
   getRequestInformation,
+  getRequester,
 } from '../../../../utils';
 
 import css from './RequestForm.css';
@@ -345,7 +346,10 @@ class RequestForm extends React.Component {
   };
 
   findItem = (key, value, isBarcodeRequired = false) => {
-    const { isItemOrInstanceLoading } = this.state;
+    const {
+      isItemOrInstanceLoading,
+      proxy,
+    } = this.state;
     const {
       findResource,
       form,
@@ -384,7 +388,8 @@ class RequestForm extends React.Component {
       })
       .then(item => {
         if (item && selectedUser?.id) {
-          this.findRequestTypes(item.id, selectedUser.id, ID_TYPE_MAP.ITEM_ID);
+          const requester = getRequester(proxy, selectedUser);
+          this.findRequestTypes(item.id, requester.id, ID_TYPE_MAP.ITEM_ID);
         }
 
         return item;
@@ -411,7 +416,10 @@ class RequestForm extends React.Component {
   }
 
   findInstance = async (instanceId) => {
-    const { isItemOrInstanceLoading } = this.state;
+    const {
+      isItemOrInstanceLoading,
+      proxy,
+    } = this.state;
     const {
       findResource,
       form,
@@ -446,7 +454,8 @@ class RequestForm extends React.Component {
       })
       .then(instance => {
         if (instance && selectedUser?.id) {
-          this.findRequestTypes(instance.id, selectedUser.id, ID_TYPE_MAP.INSTANCE_ID);
+          const requester = getRequester(proxy, selectedUser);
+          this.findRequestTypes(instance.id, requester.id, ID_TYPE_MAP.INSTANCE_ID);
         }
 
         return instance;
@@ -765,7 +774,8 @@ class RequestForm extends React.Component {
     let addressDetail;
     const isEditForm = isFormEditing(request);
     const { createTitleLevelRequest } = values;
-    const patronGroup = getPatronGroup(selectedUser, patronGroups);
+    const requester = getRequester(proxy, selectedUser);
+    const patronGroup = getPatronGroup(requester, patronGroups);
     const isSubmittingDisabled = isSubmittingButtonDisabled(pristine, submitting);
     const isTitleLevelRequest = createTitleLevelRequest || request?.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE;
     const isTlrCheckboxDisabled = !titleLevelRequestsFeatureEnabled || isItemOrInstanceLoading;
@@ -775,7 +785,7 @@ class RequestForm extends React.Component {
     const {
       deliveryLocations,
       deliveryLocationsDetail,
-    } = getDeliveryInformation(selectedUser, addressTypes);
+    } = getDeliveryInformation(requester, addressTypes);
 
     if (selectedAddressTypeId) {
       addressDetail = <AddressDetails address={deliveryLocationsDetail[selectedAddressTypeId]} />;

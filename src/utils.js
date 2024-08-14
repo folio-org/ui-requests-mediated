@@ -79,7 +79,7 @@ export const getTlrSettings = (settings) => settings || {};
 export const getPatronGroup = (patron, patronGroups) => {
   const patronGroup = get(patron, 'patronGroup');
 
-  if (!patronGroup || !patronGroups.length) {
+  if (!patronGroups?.length) {
     return;
   }
 
@@ -312,3 +312,5 @@ export const getProxyInformation = (proxy, proxyIdFromRequest) => {
 
   return {};
 };
+
+export const getRequester = (proxy, selectedUser) => proxy || selectedUser;

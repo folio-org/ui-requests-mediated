@@ -34,6 +34,7 @@ import {
   formatNoteReferrerEntityData,
   getUserHighlightBoxLink,
   getProxyInformation,
+  getRequester,
 } from './utils';
 import {
   FULFILMENT_TYPES,
@@ -328,6 +329,15 @@ describe('utils', () => {
           id: 'id',
         }
       ];
+
+      it('should return undefined', () => {
+        expect(getPatronGroup(patron, patronGroups)).toBeUndefined();
+      });
+    });
+
+    describe('When patronGroups argument is empty', () => {
+      const patron = {};
+      const patronGroups = [];
 
       it('should return undefined', () => {
         expect(getPatronGroup(patron, patronGroups)).toBeUndefined();
@@ -864,6 +874,24 @@ describe('utils', () => {
       it('should return empty object', () => {
         expect(getProxyInformation()).toEqual({});
       });
+    });
+  });
+
+  describe('getRequester', () => {
+    const selectedUser = {
+      id: 'selectedUserId',
+    };
+
+    it('should return proxy user', () => {
+      const proxy = {
+        id: 'proxyId',
+      };
+
+      expect(getRequester(proxy, selectedUser)).toEqual(proxy);
+    });
+
+    it('should return selected user', () => {
+      expect(getRequester(null, selectedUser)).toEqual(selectedUser);
     });
   });
 });
