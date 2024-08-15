@@ -66,7 +66,7 @@ const MediatedRequestInformation = ({
             value={
               confirmedRequestId ?
                 <Link to={`/requests/view/${confirmedRequestId}`}>
-                  <FormattedMessage id="ui-requests-mediated.mediatedRequestInformation.viewDetails" />
+                  <FormattedMessage id="ui-requests-mediated.mediatedRequestInformation.viewDetailsLink" />
                 </Link> :
                 <NoValue />
             }

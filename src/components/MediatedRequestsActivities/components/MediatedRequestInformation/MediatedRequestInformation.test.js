@@ -33,7 +33,7 @@ const labelIds = {
   level: 'ui-requests-mediated.mediatedRequestInformation.level',
   titleRequest: 'ui-requests-mediated.mediatedRequestInformation.level.title',
   confirmedRequest: 'ui-requests-mediated.mediatedRequestInformation.confirmedRequest',
-  viewDetailsLink: 'ui-requests-mediated.mediatedRequestInformation.viewDetails',
+  viewDetailsLink: 'ui-requests-mediated.mediatedRequestInformation.viewDetailsLink',
   patronComments: 'ui-requests-mediated.mediatedRequestInformation.patronComments',
 };
 
