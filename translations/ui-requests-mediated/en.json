@@ -130,7 +130,8 @@
   "instanceDetails.edition": "Edition",
   "instanceDetails.identifiers": "ISBN(s)",
 
-  "requesterDetails.title": "Requester",
+  "requesterDetails.requester": "Requester",
+  "requesterDetails.proxy": "Requester's proxy",
   "requesterDetails.patronGroup": "Requester patron group",
   "requesterDetails.barcode": "Barcode",
   "requesterDetails.deliveryAddress": "Delivery address",

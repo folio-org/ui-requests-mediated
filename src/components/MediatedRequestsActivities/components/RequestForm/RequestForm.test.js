@@ -56,11 +56,13 @@ const testIds = {
   findItem: 'findItem',
   findInstance: 'findInstance',
   findUser: 'findUser',
+  selectProxy: 'selectProxy',
   tlrCheckbox: 'tlrCheckbox',
 };
 const itemBarcode = 'itemBarcode';
 const instanceId = 'instanceId';
 const userBarcode = 'userBarcode';
+const proxyId = 'proxyId';
 
 jest.mock('@folio/stripes/final-form', () => () => jest.fn((component) => component));
 jest.mock('../RequestFormShortcutsWrapper', () => jest.fn(({ children }) => <div>{children}</div>));
@@ -106,9 +108,13 @@ jest.mock('../InstanceInformation', () => jest.fn(({
 }));
 jest.mock('../RequesterInformation', () => jest.fn(({
   findUser,
+  selectProxy,
 }) => {
   const onFindUser = () => {
     findUser('barcode', userBarcode);
+  };
+  const onSelectProxy = () => {
+    selectProxy({ id: proxyId });
   };
 
   return (
@@ -119,6 +125,13 @@ jest.mock('../RequesterInformation', () => jest.fn(({
         onClick={onFindUser}
       >
         Find User
+      </button>
+      <button
+        type="button"
+        data-testid={testIds.selectProxy}
+        onClick={onSelectProxy}
+      >
+        Select proxy
       </button>
     </>
   );
@@ -153,6 +166,7 @@ jest.mock('../../../../utils', () => ({
     },
     isTitleLevelRequest: false,
   })),
+  getRequester: jest.fn((proxy, selectedUser) => selectedUser),
 }));
 
 describe('RequestForm', () => {
@@ -577,6 +591,107 @@ describe('RequestForm', () => {
       it('should set selected user to null', async () => {
         await waitFor(() => {
           expect(basicProps.onSetSelectedUser).toHaveBeenCalledWith(null);
+        });
+      });
+    });
+
+    describe('When user has a proxy', () => {
+      describe('When user is acting as himself', () => {
+        const props = {
+          ...basicProps,
+          selectedUser: {
+            id: proxyId,
+          },
+        };
+
+        beforeEach(() => {
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+
+          const selectProxyButton = screen.getByTestId(testIds.selectProxy);
+
+          fireEvent.click(selectProxyButton);
+        });
+
+        it('should not set requester id', () => {
+          expect(basicProps.form.change).not.toHaveBeenCalledWith(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, proxyId);
+        });
+
+        it('should not set proxy user id', () => {
+          expect(basicProps.form.change).not.toHaveBeenCalledWith(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, props.selectedUser.id);
+        });
+      });
+
+      describe('When user is acting as a proxy', () => {
+        const props = {
+          ...basicProps,
+          selectedUser: {
+            id: 'selectedUserId',
+          },
+        };
+        const foundRequestPreferences = {
+          requestPreferences: [
+            {
+              defaultDeliveryAddressTypeId: '',
+              defaultServicePointId: 'defaultServicePointId',
+              delivery: false,
+            }
+          ],
+        };
+        const foundRequestTypes = {
+          [MEDIATED_REQUEST_TYPES.PAGE]: [
+            {
+              id: 'id',
+              name: 'servicePoint',
+            }
+          ],
+        };
+
+        beforeEach(() => {
+          basicProps.findResource
+            .mockResolvedValueOnce(foundRequestPreferences)
+            .mockResolvedValueOnce(foundRequestTypes);
+
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+
+          const selectProxyButton = screen.getByTestId(testIds.selectProxy);
+
+          fireEvent.click(selectProxyButton);
+        });
+
+        it('should set requester id', () => {
+          expect(basicProps.form.change).toHaveBeenCalledWith(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, proxyId);
+        });
+
+        it('should set proxy user id', () => {
+          expect(basicProps.form.change).toHaveBeenCalledWith(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, props.selectedUser.id);
+        });
+
+        it('should find request preferences', () => {
+          const expectedArgs = [RESOURCE_TYPES.REQUEST_PREFERENCES, proxyId, 'userId'];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+        });
+
+        it('should find request types', () => {
+          const selectedResourceId = 'id';
+          const expectedArgs = [
+            RESOURCE_TYPES.REQUEST_TYPES,
+            {
+              operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
+              requesterId: proxyId,
+              [ID_TYPE_MAP.ITEM_ID]: selectedResourceId,
+            }
+          ];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
         });
       });
     });

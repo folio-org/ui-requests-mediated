@@ -8,6 +8,8 @@ import {
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 
+import { NoValue } from '@folio/stripes/components';
+
 import AddressDetails from './components/MediatedRequestsActivities/components/AddressDetails';
 import {
   DEFAULT_VIEW_VALUE,
@@ -298,3 +300,17 @@ export const formatNoteReferrerEntityData = (entityData) => {
 export const getUserHighlightBoxLink = (linkText, id) => {
   return linkText ? <Link to={`/users/view/${id}`}>{linkText}</Link> : <></>;
 };
+
+export const getProxyInformation = (proxy, proxyIdFromRequest) => {
+  if (proxy) {
+    return {
+      name: getRequesterName(proxy),
+      barcode: proxy.barcode || <NoValue />,
+      id: proxy.id || proxyIdFromRequest,
+    };
+  }
+
+  return {};
+};
+
+export const getRequester = (proxy, selectedUser) => proxy || selectedUser;

@@ -38,4 +38,7 @@ jest.mock('@folio/stripes/core', () => ({
       </>
     );
   }),
+  useStripes: jest.fn(() => ({
+    connect: Component => Component,
+  })),
 }));

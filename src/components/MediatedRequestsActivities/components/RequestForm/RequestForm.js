@@ -60,6 +60,7 @@ import {
   getDeliveryInformation,
   getResourceTypeId,
   getRequestInformation,
+  getRequester,
 } from '../../../../utils';
 
 import css from './RequestForm.css';
@@ -112,6 +113,7 @@ class RequestForm extends React.Component {
     const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.items[0]?.value);
 
     this.state = {
+      proxy: null,
       selectedLoan: loan,
       isItemOrInstanceLoading: false,
       isItemsDialogOpen: false,
@@ -227,6 +229,29 @@ class RequestForm extends React.Component {
       });
   }
 
+  selectProxy = (proxy) => {
+    const {
+      form,
+      selectedUser,
+    } = this.props;
+
+    if (selectedUser.id !== proxy.id) {
+      this.setState({
+        proxy,
+        requestTypes: {},
+        isRequestTypesReceived: false,
+      });
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, proxy.id);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, selectedUser.id);
+      this.findRequestPreferences(proxy.id);
+      this.getAvailableRequestTypes(proxy);
+    }
+  }
+
+  handleCloseProxy = () => {
+    this.setState({ proxy: null });
+  };
+
   findUser = (fieldName, value) => {
     const {
       form,
@@ -238,10 +263,12 @@ class RequestForm extends React.Component {
       isUserLoading: true,
       requestTypes: {},
       isRequestTypesReceived: false,
+      proxy: null,
     });
 
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, undefined);
 
     return findResource(RESOURCE_TYPES.USER, value, fieldName)
       .then((result) => {
@@ -319,7 +346,10 @@ class RequestForm extends React.Component {
   };
 
   findItem = (key, value, isBarcodeRequired = false) => {
-    const { isItemOrInstanceLoading } = this.state;
+    const {
+      isItemOrInstanceLoading,
+      proxy,
+    } = this.state;
     const {
       findResource,
       form,
@@ -358,7 +388,8 @@ class RequestForm extends React.Component {
       })
       .then(item => {
         if (item && selectedUser?.id) {
-          this.findRequestTypes(item.id, selectedUser.id, ID_TYPE_MAP.ITEM_ID);
+          const requester = getRequester(proxy, selectedUser);
+          this.findRequestTypes(item.id, requester.id, ID_TYPE_MAP.ITEM_ID);
         }
 
         return item;
@@ -385,7 +416,10 @@ class RequestForm extends React.Component {
   }
 
   findInstance = async (instanceId) => {
-    const { isItemOrInstanceLoading } = this.state;
+    const {
+      isItemOrInstanceLoading,
+      proxy,
+    } = this.state;
     const {
       findResource,
       form,
@@ -420,7 +454,8 @@ class RequestForm extends React.Component {
       })
       .then(instance => {
         if (instance && selectedUser?.id) {
-          this.findRequestTypes(instance.id, selectedUser.id, ID_TYPE_MAP.INSTANCE_ID);
+          const requester = getRequester(proxy, selectedUser);
+          this.findRequestTypes(instance.id, requester.id, ID_TYPE_MAP.INSTANCE_ID);
         }
 
         return instance;
@@ -717,6 +752,7 @@ class RequestForm extends React.Component {
       hasDelivery,
       defaultDeliveryAddressTypeId,
       shouldValidate,
+      proxy,
     } = this.state;
     const {
       handleSubmit,
@@ -738,7 +774,8 @@ class RequestForm extends React.Component {
     let addressDetail;
     const isEditForm = isFormEditing(request);
     const { createTitleLevelRequest } = values;
-    const patronGroup = getPatronGroup(selectedUser, patronGroups);
+    const requester = getRequester(proxy, selectedUser);
+    const patronGroup = getPatronGroup(requester, patronGroups);
     const isSubmittingDisabled = isSubmittingButtonDisabled(pristine, submitting);
     const isTitleLevelRequest = createTitleLevelRequest || request?.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE;
     const isTlrCheckboxDisabled = !titleLevelRequestsFeatureEnabled || isItemOrInstanceLoading;
@@ -748,7 +785,7 @@ class RequestForm extends React.Component {
     const {
       deliveryLocations,
       deliveryLocationsDetail,
-    } = getDeliveryInformation(selectedUser, addressTypes);
+    } = getDeliveryInformation(requester, addressTypes);
 
     if (selectedAddressTypeId) {
       addressDetail = <AddressDetails address={deliveryLocationsDetail[selectedAddressTypeId]} />;
@@ -862,6 +899,9 @@ class RequestForm extends React.Component {
                       patronGroup={patronGroup}
                       isLoading={isUserLoading}
                       findUser={this.findUser}
+                      selectProxy={this.selectProxy}
+                      handleCloseProxy={this.handleCloseProxy}
+                      proxy={proxy}
                       getUserValidationData={this.getUserValidationData}
                       triggerUserBarcodeValidation={this.triggerUserBarcodeValidation}
                       enterButtonClass={css.enterButton}

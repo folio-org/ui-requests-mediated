@@ -13,7 +13,7 @@ import {
 } from '@folio/stripes/components';
 import { Pluggable } from '@folio/stripes/core';
 
-import UserDetail from '../UserDetail';
+import UserForm from '../UserForm';
 import {
   isFormEditing,
   memoizeValidation,
@@ -47,6 +47,9 @@ class RequesterInformation extends Component {
     isLoading: PropTypes.bool,
     request: PropTypes.object,
     patronGroup: PropTypes.object,
+    proxy: PropTypes.object,
+    selectProxy: PropTypes.func,
+    handleCloseProxy: PropTypes.func,
   };
 
   constructor(props) {
@@ -183,6 +186,9 @@ class RequesterInformation extends Component {
       patronGroup,
       isLoading,
       enterButtonClass,
+      selectProxy,
+      proxy,
+      handleCloseProxy,
     } = this.props;
     const {
       isUserClicked,
@@ -257,10 +263,13 @@ class RequesterInformation extends Component {
             </Col>
           </Row>}
           {(selectedUser?.id || isEditForm) &&
-            <UserDetail
+            <UserForm
               user={user}
               request={request}
               patronGroup={patronGroup?.group}
+              proxy={proxy}
+              selectProxy={selectProxy}
+              handleCloseProxy={handleCloseProxy}
             />
           }
           {

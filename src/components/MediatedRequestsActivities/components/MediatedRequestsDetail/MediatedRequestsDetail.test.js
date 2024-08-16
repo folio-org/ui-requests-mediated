@@ -78,6 +78,7 @@ describe('MediatedRequestsDetail', () => {
     requestType: MEDIATED_REQUEST_TYPES.HOLD,
     requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
     patronComments: '',
+    proxy: {},
   };
   const patronGroup = {
     group: 'group',
@@ -188,7 +189,7 @@ describe('MediatedRequestsDetail', () => {
         patronGroup: patronGroup.group,
         request: mediatedRequest,
         userPreferences: {},
-        isMediatedRequestDetailPage: true,
+        proxy: mediatedRequest.proxy,
       };
 
       expect(UserDetail).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});

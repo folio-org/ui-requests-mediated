@@ -153,6 +153,7 @@ export const MEDIATED_REQUEST_FORM_FIELD_NAMES = {
   REQUESTER: 'requester',
   REQUESTER_ID: 'requesterId',
   REQUESTER_BARCODE: 'requester.barcode',
+  PROXY_USER_ID: 'proxyUserId',
   ITEM_ID: 'itemId',
   ITEM_BARCODE: 'item.barcode',
   INSTANCE_ID: 'instanceId',

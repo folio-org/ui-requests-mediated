@@ -19,6 +19,7 @@
 * Implement functionality of `New mediated request` button. Refs UIREQMED-35.
 * Migrate to mediated requests endpoints, refactor constants, utils. Refs UIREQMED-28.
 * Implement Mediated requests details page. Refs UIREQMED-10.
+* Implement proxy functionality on mediated request form and on mediated details page. Refs UIREQMED-31.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.

@@ -7,23 +7,35 @@ import {
   Row,
 } from '@folio/stripes/components';
 
-import { getRequesterName } from '../../../../utils';
+import {
+  getRequesterName,
+  getProxyInformation,
+} from '../../../../utils';
 import UserHighlightBox from '../UserHighlightBox';
 
 const UserDetail = ({
   user,
   request,
   userPreferences,
+  proxy,
   patronGroup = '',
-  isMediatedRequestDetailPage = false,
 }) => {
   const id = user?.id ?? request.requesterId;
   const name = getRequesterName(user);
+  const proxyInformation = getProxyInformation(proxy, request.proxyUserId);
+  const proxySection = proxyInformation.id ?
+    <UserHighlightBox
+      title={<FormattedMessage id="ui-requests-mediated.requesterDetails.proxy" />}
+      name={proxyInformation.name}
+      id={proxyInformation.id}
+      barcode={proxyInformation.barcode}
+    /> :
+    null;
 
   return (
     <div>
       <UserHighlightBox
-        title={<FormattedMessage id="ui-requests-mediated.requesterDetails.title" />}
+        title={<FormattedMessage id="ui-requests-mediated.requesterDetails.requester" />}
         name={name}
         id={id}
         barcode={user.barcode}
@@ -35,24 +47,20 @@ const UserDetail = ({
             value={patronGroup}
           />
         </Col>
-        {
-          isMediatedRequestDetailPage &&
-            <>
-              <Col xs={4}>
-                <KeyValue
-                  label={<FormattedMessage id="ui-requests-mediated.requesterDetails.fulfillmentPreference" />}
-                  value={request.fulfillmentPreference}
-                />
-              </Col>
-              <Col xs={4}>
-                <KeyValue
-                  label={userPreferences.label}
-                  value={userPreferences.value}
-                />
-              </Col>
-            </>
-        }
+        <Col xs={4}>
+          <KeyValue
+            label={<FormattedMessage id="ui-requests-mediated.requesterDetails.fulfillmentPreference" />}
+            value={request.fulfillmentPreference}
+          />
+        </Col>
+        <Col xs={4}>
+          <KeyValue
+            label={userPreferences.label}
+            value={userPreferences.value}
+          />
+        </Col>
       </Row>
+      {proxySection}
     </div>
   );
 };
@@ -62,7 +70,7 @@ UserDetail.propTypes = {
   user: PropTypes.object.isRequired,
   request: PropTypes.object,
   userPreferences: PropTypes.object,
-  isMediatedRequestDetailPage: PropTypes.bool,
+  proxy: PropTypes.object,
 };
 
 export default UserDetail;
