@@ -170,7 +170,7 @@
   "mediatedRequestInformation.status": "Mediated request status",
   "mediatedRequestInformation.level": "Mediated request level",
   "mediatedRequestInformation.confirmedRequest": "Confirmed request",
-  "mediatedRequestInformation.viewDetails": "view details in Requests",
+  "mediatedRequestInformation.viewDetailsLink": "View details in Requests",
   "mediatedRequestInformation.patronComments": "Patron comments",
 
   "mediatedRequestDetail.requester.accordionLabel": "Requester information",
