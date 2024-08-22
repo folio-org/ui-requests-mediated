@@ -13,7 +13,6 @@ import { NoValue } from '@folio/stripes/components';
 import AddressDetails from './components/MediatedRequestsActivities/components/AddressDetails';
 import {
   DEFAULT_VIEW_VALUE,
-  MEDIATED_REQUESTS_RECORD_FIELD_NAME,
   FULFILMENT_TYPES,
   MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS,
   ID_TYPE_MAP,
@@ -21,6 +20,7 @@ import {
   MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
   MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
   REQUEST_PARAMS,
+  USER_NAMES,
 } from './constants';
 
 export const transformRequestFilterOptions = (formatMessage, source = []) => (
@@ -113,10 +113,10 @@ export const getFormattedYears = (publications, limit) => {
 
 export const getRequesterName = (dataObject) => {
   const requester = dataObject?.requester ? dataObject.requester : dataObject?.personal || dataObject;
-  const lastName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_LAST_NAME, DEFAULT_VIEW_VALUE);
-  const firstName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_FIRST_NAME, DEFAULT_VIEW_VALUE);
-  const middleName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_MIDDLE_NAME, DEFAULT_VIEW_VALUE);
-  const preferredFirstName = get(requester, MEDIATED_REQUESTS_RECORD_FIELD_NAME.PREFERRED_FIRST_NAME, DEFAULT_VIEW_VALUE);
+  const lastName = get(requester, USER_NAMES.USER_LAST_NAME, DEFAULT_VIEW_VALUE);
+  const firstName = get(requester, USER_NAMES.USER_FIRST_NAME, DEFAULT_VIEW_VALUE);
+  const middleName = get(requester, USER_NAMES.USER_MIDDLE_NAME, DEFAULT_VIEW_VALUE);
+  const preferredFirstName = get(requester, USER_NAMES.PREFERRED_FIRST_NAME, DEFAULT_VIEW_VALUE);
   const displayedFirstName = preferredFirstName || firstName;
   let requesterName = lastName;
 

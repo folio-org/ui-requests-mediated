@@ -70,6 +70,8 @@ describe('MediatedRequestsActivities', () => {
   };
   const source = {
     resources,
+    loaded: jest.fn(),
+    totalCount: jest.fn(),
   };
   const settings = {};
 
@@ -118,6 +120,7 @@ describe('MediatedRequestsActivities', () => {
     }), {});
   });
 });
+
 describe('getActionMenu', () => {
   const renderColumnsMenu = 'renderColumnsMenu';
   const push = jest.fn();

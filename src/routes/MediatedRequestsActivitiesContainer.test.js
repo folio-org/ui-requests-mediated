@@ -29,6 +29,7 @@ const resources = {
 };
 
 describe('MediatedRequestsActivitiesContainer', () => {
+  const settings = {};
   const mutator = {
     [MEDIATED_REQUESTS_RECORDS_NAME]: {
       POST: jest.fn(),
@@ -53,6 +54,7 @@ describe('MediatedRequestsActivitiesContainer', () => {
     },
     resources,
     mutator,
+    settings,
   };
   beforeEach(() => {
     render(<MediatedRequestsActivitiesContainer {...props} />);
@@ -60,8 +62,10 @@ describe('MediatedRequestsActivitiesContainer', () => {
 
   it('should render mediated requests activities with correct props', () => {
     expect(MediatedRequestsActivities).toHaveBeenCalledWith(expect.objectContaining({
+      onNeedMoreData:  expect.any(Function),
       resources,
       mutator,
+      settings,
     }), {});
   });
 });

@@ -33,7 +33,9 @@ import {
   MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
 } from '../../../../constants';
 
-const source = {};
+const source = {
+  totalCount: jest.fn(() => 0),
+};
 const query = {
   query: '',
 };
@@ -76,7 +78,10 @@ describe('MediatedRequestsList', () => {
       columnWidths: COLUMN_WIDTHS,
       columnMapping: MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
       contentData,
+      totalCount: 0,
       formatter: mediatedRequestsListFormatter,
+      sortOrder: '',
+      sortDirection: 'ascending',
     };
 
     expect(MultiColumnList).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});

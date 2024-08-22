@@ -290,4 +290,5 @@ jest.mock('@folio/stripes/components', () => ({
       </div>
     );
   }),
+  MCLPagingTypes: jest.fn(() => ({})),
 }));

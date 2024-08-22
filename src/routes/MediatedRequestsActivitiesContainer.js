@@ -20,6 +20,7 @@ import {
   MEDIATED_REQUESTS_RECORDS_NAME,
   MEDIATED_REQUEST_FILTER_TYPES,
   MEDIATED_REQUEST_SEARCH_PARAMS,
+  MEDIATED_REQUESTS_RECORD_FIELD_NAME,
 } from '../constants';
 
 export const buildQuery = (queryParams, pathComponents, resourceData, logger, props) => {
@@ -49,7 +50,9 @@ export const buildQuery = (queryParams, pathComponents, resourceData, logger, pr
   const getCql = makeQueryFunction(
     'cql.allRecords=1',
     SEARCH_FIELDS.map(mapFields).join(' or '),
-    {},
+    {
+      [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: `${MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_LAST_NAME} ${MEDIATED_REQUESTS_RECORD_FIELD_NAME.USER_FIRST_NAME}`,
+    },
     [...FILTER_CONFIG, ...customFilterConfig],
     2,
   );
@@ -70,7 +73,9 @@ class MediatedRequestsActivitiesContainer extends React.Component {
     },
     [MEDIATED_REQUESTS_RECORDS_NAME]: {
       type: 'okapi',
+      records: 'mediatedRequests',
       resultOffset: '%{resultOffset}',
+      resultDensity: 'sparse',
       perRequest: PAGE_AMOUNT,
       path: 'requests-mediated/mediated-requests',
       GET: {
@@ -156,6 +161,20 @@ class MediatedRequestsActivitiesContainer extends React.Component {
     return this.props?.resources?.query ?? {};
   }
 
+  onNeedMoreData = (askAmount, index) => {
+    const {
+      resultOffset,
+    } = this.props.mutator;
+
+    if (this.source) {
+      if (resultOffset && index >= 0) {
+        this.source.fetchOffset(index);
+      } else {
+        this.source.fetchMore(PAGE_AMOUNT);
+      }
+    }
+  };
+
   render() {
     if (this.source) {
       this.source.update(this.props, MEDIATED_REQUESTS_RECORDS_NAME);
@@ -166,6 +185,7 @@ class MediatedRequestsActivitiesContainer extends React.Component {
         source={this.source}
         queryGetter={this.queryGetter}
         querySetter={this.querySetter}
+        onNeedMoreData={this.onNeedMoreData}
         resources={this.props.resources}
         mutator={this.props.mutator}
         settings={this.props.settings}
