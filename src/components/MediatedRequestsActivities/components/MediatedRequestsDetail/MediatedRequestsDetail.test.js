@@ -3,6 +3,7 @@ import {
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 import { NotesSmartAccordion } from '@folio/stripes/smart-components';
+import { TitleManager } from '@folio/stripes/core';
 
 import MediatedRequestsDetail from './MediatedRequestsDetail';
 import TitleInformation from '../TitleInformation';
@@ -121,6 +122,14 @@ describe('MediatedRequestsDetail', () => {
           {...props}
         />
       );
+    });
+
+    it('should trigger TitleManager with correct props', () => {
+      const expectedProps = {
+        record: mediatedRequest.instance.title,
+      };
+
+      expect(TitleManager).toHaveBeenCalledWith(expectedProps, {});
     });
 
     it('should render title accordion label', () => {

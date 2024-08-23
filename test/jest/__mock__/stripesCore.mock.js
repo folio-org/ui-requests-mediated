@@ -38,6 +38,7 @@ jest.mock('@folio/stripes/core', () => ({
       </>
     );
   }),
+  TitleManager: jest.fn(() => <div />),
   useStripes: jest.fn(() => ({
     connect: Component => Component,
   })),
