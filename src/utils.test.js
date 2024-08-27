@@ -9,6 +9,7 @@ import {
   transformRequestFilterOptions,
   getIsTitleLevelRequestsFeatureEnabled,
   getRequesterName,
+  getTotalCount,
   handleKeyCommand,
   isFormEditing,
   memoizeValidation,
@@ -153,6 +154,20 @@ describe('utils', () => {
       it('should return requester name when last name present', () => {
         expect(getRequesterName({ lastName: 'Do' })).toEqual('Do');
       });
+    });
+  });
+
+  describe('getTotalCount', () => {
+    it('should return value from total count', () => {
+      const source = {
+        totalCount: jest.fn(() => (10)),
+      };
+
+      expect(getTotalCount(source)).toEqual(10);
+    });
+
+    it('should return 0 value', () => {
+      expect(getTotalCount()).toEqual(0);
     });
   });
 

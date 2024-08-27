@@ -135,6 +135,10 @@ export const getRequesterName = (dataObject) => {
   return requesterName;
 };
 
+export const getTotalCount = (source) => (
+  source ? source.totalCount() : 0
+);
+
 export const resetFieldState = (form, fieldName) => {
   const registeredFields = form.getRegisteredFields();
 

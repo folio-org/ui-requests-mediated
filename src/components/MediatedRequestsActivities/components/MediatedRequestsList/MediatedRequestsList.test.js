@@ -21,6 +21,10 @@ import {
 } from '@folio/stripes/util';
 
 import MediatedRequestsList, {
+  SORT_DIRECTION,
+  ASCENDING,
+  DESCENDING,
+  getSortOrder,
   COLUMN_WIDTHS,
   mediatedRequestsListFormatter,
   emptyMessage,
@@ -45,6 +49,16 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(),
   useHistory: jest.fn(),
 }));
+
+describe('getSortOrder', () => {
+  it(`should return ${DESCENDING}`, () => {
+    expect(getSortOrder(`${SORT_DIRECTION}requester`)).toEqual(DESCENDING);
+  });
+
+  it(`should return ${ASCENDING}`, () => {
+    expect(getSortOrder('requester')).toEqual(ASCENDING);
+  });
+});
 
 describe('MediatedRequestsList', () => {
   const MEDIATED_REQUEST_COLUMNS_NAME = [

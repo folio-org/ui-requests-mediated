@@ -11,6 +11,7 @@ import {
 
 import MediatedRequestsActivities, {
   getActionMenu,
+  getResultPaneSub,
 } from './MediatedRequestsActivities';
 import NavigationMenu from '../NavigationMenu';
 import MediatedRequestsFilters from './components/MediatedRequestsFilters';
@@ -32,6 +33,8 @@ const testIds = {
 const labelIds = {
   paneTitle: 'ui-requests-mediated.app.mediatedRequestsActivities.paneTitle',
   newMediatedRequestButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.newMediatedRequest',
+  searchCriteria: 'stripes-smart-components.searchCriteria',
+  searchResultsCount: 'stripes-smart-components.searchResultsCountHeader',
 };
 
 jest.mock('@folio/stripes/smart-components', () => ({
@@ -143,5 +146,28 @@ describe('getActionMenu', () => {
     fireEvent.click(newMediatedRequestButton);
 
     expect(push).toHaveBeenCalledWith(`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/create`);
+  });
+});
+
+describe('getResultPaneSub', () => {
+  it('should render search criteria', () => {
+    const source = {
+      loaded: jest.fn(() => false),
+    };
+
+    render(getResultPaneSub(source));
+
+    expect(screen.getByText(labelIds.searchCriteria)).toBeInTheDocument();
+  });
+
+  it('should render search results count', () => {
+    const source = {
+      totalCount: jest.fn(),
+      loaded: jest.fn(() => true),
+    };
+
+    render(getResultPaneSub(source));
+
+    expect(screen.getByText(labelIds.searchResultsCount)).toBeInTheDocument();
   });
 });

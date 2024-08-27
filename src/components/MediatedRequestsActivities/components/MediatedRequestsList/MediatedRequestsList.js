@@ -26,6 +26,7 @@ import {
 
 import {
   getRequesterName,
+  getTotalCount,
 } from '../../../../utils';
 import {
   APP_ICON_NAME,
@@ -38,6 +39,13 @@ import {
   MODULE_ROUTE,
 } from '../../../../constants';
 
+export const SORT_DIRECTION = '-';
+export const ASCENDING = 'ascending';
+export const DESCENDING = 'descending';
+
+export const getSortOrder = (sortOrder) => (
+  sortOrder.startsWith(SORT_DIRECTION) ? DESCENDING : ASCENDING
+);
 export const COLUMN_WIDTHS = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: { max: 150 },
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]: { max: 130 },
@@ -102,7 +110,7 @@ const MediatedRequestsList = ({
   const history = useHistory();
   const location = useLocation();
   const sortOrder = query.sort || '';
-  const totalCount = source ? source.totalCount() : 0;
+  const totalCount = getTotalCount(source);
 
   const onRowClick = (e, row) => {
     history.push(`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/preview/${row.id}${location.search}`);
@@ -123,7 +131,7 @@ const MediatedRequestsList = ({
       onNeedMoreData={onNeedMoreData}
       onHeaderClick={onSort}
       sortOrder={sortOrder.replace(/^-/, '').replace(/,.*/, '')}
-      sortDirection={sortOrder.startsWith('-') ? 'descending' : 'ascending'}
+      sortDirection={getSortOrder(sortOrder)}
       fullWidth
       autosize
       hasMargin

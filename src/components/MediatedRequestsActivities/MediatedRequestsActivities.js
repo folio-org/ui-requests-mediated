@@ -36,6 +36,7 @@ import {
   ICONS,
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
+import { getTotalCount } from '../../utils';
 
 export const getActionMenu = (renderColumnsMenu, history) => () => {
   const goToNewMediatedRequest = () => {
@@ -64,7 +65,7 @@ export const getResultPaneSub = (source) => {
   let resultPaneSub = <FormattedMessage id="stripes-smart-components.searchCriteria" />;
 
   if (source?.loaded()) {
-    const count = source.totalCount();
+    const count = getTotalCount(source);
 
     resultPaneSub = <FormattedMessage id="stripes-smart-components.searchResultsCountHeader" values={{ count }} />;
   }
