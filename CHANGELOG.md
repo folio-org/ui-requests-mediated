@@ -22,6 +22,7 @@
 * Implement proxy functionality on mediated request form and on mediated details page. Refs UIREQMED-31.
 * Add instance title to page title if the detail record is opened. Refs UIREQMED-16.
 * Create table of filtered Mediated requests in Mediated requests app. Refs UIREQMED-5.
+* Remove mediated requests from settings. Refs UIREQMED-41.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.
