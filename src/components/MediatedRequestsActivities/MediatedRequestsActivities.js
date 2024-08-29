@@ -36,6 +36,7 @@ import {
   ICONS,
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
+import { getTotalCount } from '../../utils';
 
 export const getActionMenu = (renderColumnsMenu, history) => () => {
   const goToNewMediatedRequest = () => {
@@ -60,9 +61,22 @@ export const getActionMenu = (renderColumnsMenu, history) => () => {
   );
 };
 
+export const getResultPaneSub = (source) => {
+  let resultPaneSub = <FormattedMessage id="stripes-smart-components.searchCriteria" />;
+
+  if (source?.loaded()) {
+    const count = getTotalCount(source);
+
+    resultPaneSub = <FormattedMessage id="stripes-smart-components.searchResultsCountHeader" values={{ count }} />;
+  }
+
+  return resultPaneSub;
+};
+
 const MediatedRequestsActivities = ({
   querySetter,
   queryGetter,
+  onNeedMoreData,
   source,
   resources,
   mutator: {
@@ -95,7 +109,7 @@ const MediatedRequestsActivities = ({
     );
   };
 
-  const mediatedRequests = resources[MEDIATED_REQUESTS_RECORDS_NAME]?.records?.[0]?.mediatedRequests ?? [];
+  const mediatedRequests = resources[MEDIATED_REQUESTS_RECORDS_NAME]?.records ?? [];
   const query = queryGetter ? queryGetter() || {} : {};
 
   return (
@@ -111,6 +125,7 @@ const MediatedRequestsActivities = ({
         getSearchHandlers,
         getFilterHandlers,
         searchValue,
+        onSort,
         onSubmitSearch,
         resetAll,
       }) => (
@@ -153,8 +168,11 @@ const MediatedRequestsActivities = ({
             {({ renderColumnsMenu, visibleColumns }) => (
               <Pane
                 defaultWidth="fill"
+                padContent={false}
+                noOverflow
                 appIcon={<AppIcon app={APP_ICON_NAME} />}
                 paneTitle={<FormattedMessage id="ui-requests-mediated.app.mediatedRequestsActivities.paneTitle" />}
+                paneSub={getResultPaneSub(source)}
                 firstMenu={renderResultsFirstMenu(activeFilters)}
                 actionMenu={getActionMenu(renderColumnsMenu, history)}
               >
@@ -163,6 +181,8 @@ const MediatedRequestsActivities = ({
                   contentData={mediatedRequests}
                   source={source}
                   query={query}
+                  onSort={onSort}
+                  onNeedMoreData={onNeedMoreData}
                 />
               </Pane>
             )}
@@ -177,6 +197,7 @@ const MediatedRequestsActivities = ({
 MediatedRequestsActivities.propTypes = {
   queryGetter: PropTypes.func.isRequired,
   querySetter: PropTypes.func.isRequired,
+  onNeedMoreData: PropTypes.func.isRequired,
   resources: PropTypes.shape({
     [MEDIATED_REQUESTS_RECORDS_NAME]: PropTypes.shape({
       records: PropTypes.arrayOf(PropTypes.object),
@@ -187,7 +208,10 @@ MediatedRequestsActivities.propTypes = {
       replace: PropTypes.func.isRequired,
     }),
   }).isRequired,
-  source: PropTypes.object,
+  source: PropTypes.shape({
+    totalCount: PropTypes.func,
+    loaded: PropTypes.func,
+  }).isRequired,
   settings: PropTypes.object.isRequired,
   children: PropTypes.node,
 };

@@ -14,7 +14,9 @@ import {
 import {
   MultiColumnList,
   FormattedTime,
+  MCLPagingTypes,
 } from '@folio/stripes/components';
+
 import {
   SearchAndSortNoResultsMessage,
 } from '@folio/stripes/smart-components';
@@ -24,10 +26,12 @@ import {
 
 import {
   getRequesterName,
+  getTotalCount,
 } from '../../../../utils';
 import {
   APP_ICON_NAME,
   DEFAULT_VIEW_VALUE,
+  PAGE_AMOUNT,
   MEDIATED_REQUESTS_ACTIVITIES,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
   MEDIATED_REQUESTS_RECORD_FIELD_PATH,
@@ -35,14 +39,21 @@ import {
   MODULE_ROUTE,
 } from '../../../../constants';
 
+export const SORT_DIRECTION = '-';
+export const ASCENDING = 'ascending';
+export const DESCENDING = 'descending';
+
+export const getSortOrder = (sortOrder) => (
+  sortOrder.startsWith(SORT_DIRECTION) ? DESCENDING : ASCENDING
+);
 export const COLUMN_WIDTHS = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: { max: 150 },
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]: { max: 150 },
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE]: { max: 150 },
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]: { max: 150 },
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]: { max: 150 },
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: { max: 150 },
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: { max: 150 },
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]: { max: 130 },
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE]: { max: 190 },
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]: { max: 225 },
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]: { max: 210 },
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: { max: 120 },
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: { max: 120 },
 };
 export const mediatedRequestsListFormatter = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: (mediatedRequest) => (
@@ -93,9 +104,13 @@ const MediatedRequestsList = ({
   contentData,
   source,
   query,
+  onSort,
+  onNeedMoreData,
 }) => {
   const history = useHistory();
   const location = useLocation();
+  const sortOrder = query.sort || '';
+  const totalCount = getTotalCount(source);
 
   const onRowClick = (e, row) => {
     history.push(`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/preview/${row.id}${location.search}`);
@@ -109,9 +124,19 @@ const MediatedRequestsList = ({
       columnWidths={COLUMN_WIDTHS}
       columnMapping={MEDIATED_REQUESTS_RECORD_TRANSLATIONS}
       contentData={contentData}
+      totalCount={totalCount}
       formatter={mediatedRequestsListFormatter}
       isEmptyMessage={emptyMessage(source, query)}
       onRowClick={onRowClick}
+      onNeedMoreData={onNeedMoreData}
+      onHeaderClick={onSort}
+      sortOrder={sortOrder.replace(/^-/, '').replace(/,.*/, '')}
+      sortDirection={getSortOrder(sortOrder)}
+      fullWidth
+      autosize
+      hasMargin
+      pageAmount={PAGE_AMOUNT}
+      pagingType={MCLPagingTypes.PREV_NEXT}
     />
   );
 };
@@ -119,10 +144,15 @@ const MediatedRequestsList = ({
 MediatedRequestsList.propTypes = {
   visibleColumns: PropTypes.object,
   contentData: PropTypes.arrayOf(PropTypes.object).isRequired,
-  source: PropTypes.object,
+  source: PropTypes.shape({
+    totalCount: PropTypes.func,
+  }).isRequired,
   query: PropTypes.shape({
     query: PropTypes.string,
+    sort: PropTypes.string,
   }).isRequired,
+  onSort: PropTypes.func.isRequired,
+  onNeedMoreData: PropTypes.func.isRequired,
 };
 
 export default MediatedRequestsList;

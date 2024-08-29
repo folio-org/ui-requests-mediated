@@ -21,6 +21,10 @@ import {
 } from '@folio/stripes/util';
 
 import MediatedRequestsList, {
+  SORT_DIRECTION,
+  ASCENDING,
+  DESCENDING,
+  getSortOrder,
   COLUMN_WIDTHS,
   mediatedRequestsListFormatter,
   emptyMessage,
@@ -33,7 +37,9 @@ import {
   MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
 } from '../../../../constants';
 
-const source = {};
+const source = {
+  totalCount: jest.fn(() => 0),
+};
 const query = {
   query: '',
 };
@@ -43,6 +49,16 @@ jest.mock('react-router-dom', () => ({
   useLocation: jest.fn(),
   useHistory: jest.fn(),
 }));
+
+describe('getSortOrder', () => {
+  it(`should return ${DESCENDING}`, () => {
+    expect(getSortOrder(`${SORT_DIRECTION}requester`)).toEqual(DESCENDING);
+  });
+
+  it(`should return ${ASCENDING}`, () => {
+    expect(getSortOrder('requester')).toEqual(ASCENDING);
+  });
+});
 
 describe('MediatedRequestsList', () => {
   const MEDIATED_REQUEST_COLUMNS_NAME = [
@@ -76,7 +92,10 @@ describe('MediatedRequestsList', () => {
       columnWidths: COLUMN_WIDTHS,
       columnMapping: MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
       contentData,
+      totalCount: 0,
       formatter: mediatedRequestsListFormatter,
+      sortOrder: '',
+      sortDirection: 'ascending',
     };
 
     expect(MultiColumnList).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
