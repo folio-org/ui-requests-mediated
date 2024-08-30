@@ -17,7 +17,6 @@ import NoteViewer from './routes/NoteViewer';
 import MediatedRequestsDetail from './components/MediatedRequestsActivities/components/MediatedRequestsDetail';
 import SendItemInTransit from './components/SendItemInTransit';
 import RequestFormContainer from './components/MediatedRequestsActivities/components/RequestFormContainer';
-import Settings from './settings';
 
 import {
   CONFIRM_ITEM_ARRIVAL,
@@ -33,10 +32,6 @@ const RequestsMediated = (props) => {
   const stripes = useStripes();
   const { settings } = useGeneralTlrSettings(!props.showSettings);
   const { patronGroups } = usePatronGroups(!props.showSettings);
-
-  if (props.showSettings) {
-    return <Settings {...props} />;
-  }
 
   const {
     match: {

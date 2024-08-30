@@ -56,8 +56,7 @@
   },
   "stripes": {
     "actsAs": [
-      "app",
-      "settings"
+      "app"
     ],
     "queryResource": "query",
     "displayName": "ui-requests-mediated.meta.title",
@@ -76,13 +75,6 @@
         "displayName": "UI: Mediated requests module is enabled"
       },
       {
-        "permissionName": "settings.requests-mediated.enabled",
-        "displayName": "Settings (Mediated requests): display list of settings pages",
-        "subPermissions": [
-          "settings.enabled"
-        ]
-      },
-      {
         "permissionName": "ui-requests-mediated.view",
         "displayName": "Mediated requests: View",
         "subPermissions": [
@@ -91,7 +83,6 @@
           "mod-settings.global.read.circulation",
           "mod-settings.entries.collection.get",
           "mod-settings.entries.item.get",
-          "settings.requests-mediated.enabled",
           "circulation.items-by-instance.get",
           "circulation.loans.collection.get",
           "circulation.requests.item.get",
