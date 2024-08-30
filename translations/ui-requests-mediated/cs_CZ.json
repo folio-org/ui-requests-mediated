@@ -158,6 +158,6 @@
     "notes.assigned.requester": "Čtenář: {requesterName}",
     "notes.assigned.requestDate": "Datum žádanky: {requestCreateDate}",
     "mediatedRequestInformation.viewDetailsLink": "Zobrazení podrobností v Žádankách",
-    "requesterDetails.requester": "Requester",
-    "requesterDetails.proxy": "Requester's proxy"
+    "requesterDetails.requester": "Čtenář",
+    "requesterDetails.proxy": "Zástupce čtenáře"
 }
