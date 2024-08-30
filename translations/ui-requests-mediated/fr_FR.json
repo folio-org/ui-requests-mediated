@@ -19,7 +19,7 @@
     "filters.mediatedRequestLevel.title": "Titre",
     "permission.view-decline": "Mediated requests: View, decline",
     "form.title": "New mediated request",
-    "form.tlrCheckboxLabel": "Create title level request",
+    "form.tlrCheckboxLabel": "Créer une réservation au niveau du titre",
     "form.enterButton": "Valider",
     "form.cancelButton": "Annuler",
     "form.confirmButton": "Confirmer",
