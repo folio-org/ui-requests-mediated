@@ -1,8 +1,5 @@
 {
     "meta.title": "Zprostředkované žádanky",
-    "settings.index.paneTitle": "Zprostředkované žádanky",
-    "settings.general": "Obecné",
-    "settings.general.message": "Toto jsou obecná nastavení aplikace.",
     "permission.view": "Zprostředkované žádanky: Zobrazit",
     "permission.view-create-edit": "Zprostředkované žádanky: Zobrazit, vytvořit, upravit",
     "permission.all": "Zprostředkované žádanky: Všechna oprávnění",
@@ -128,8 +125,6 @@
     "mediatedRequestStatus.closedFilled": "Uzavřená - Vyřízená",
     "mediatedRequestStatus.newAwaitingConfirmation": "Novinka - Čeká se na potvrzení",
     "mediatedRequestStatus.openAwaitingPickup": "Otevřená - Čeká na vyzvednutí",
-    "mediatedRequestStatus.openInProgress": "Otevřená – probíhá",
-    "mediatedRequestStatus.openInTransit": "Otevřená - V přepravě",
     "mediatedRequestStatus.openItemArrived": "Otevřená - Jednotka dorazila",
     "permission.view-confirm": "Zprostředkované žádanky: Zobrazit, potvrdit",
     "permission.confirm-item-arrival": "Zprostředkované žádanky: Potvrdit příchod jednotky",
@@ -159,5 +154,9 @@
     "notes.assigned.requestDate": "Datum žádanky: {requestCreateDate}",
     "mediatedRequestInformation.viewDetailsLink": "Zobrazení podrobností v Žádankách",
     "requesterDetails.requester": "Čtenář",
-    "requesterDetails.proxy": "Zástupce čtenáře"
+    "requesterDetails.proxy": "Zástupce čtenáře",
+    "mediatedRequestStatus.openAwaitingDelivery": "Otevřená - Čeká na doručení",
+    "mediatedRequestStatus.openInTransitForApproval": "Otevřená - na cestě ke schválení",
+    "mediatedRequestStatus.openInTransitToBeCheckedOut": "Otevřená - na cestě k vypůjčení",
+    "mediatedRequestStatus.openNotYetFilled": "Otevřená - Dosud nevyřízená"
 }
