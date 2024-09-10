@@ -1,8 +1,5 @@
 {
     "meta.title": "中介请求",
-    "settings.index.paneTitle": "中介请求",
-    "settings.general": "通用",
-    "settings.general.message": "这些是常规应用设置。",
     "permission.view": "中介请求：查看",
     "permission.view-create-edit": "中介请求：查看、创建、编辑",
     "permission.all": "中介请求：所有权限",
@@ -128,8 +125,6 @@
     "mediatedRequestStatus.closedFilled": "已关闭 - 已满足",
     "mediatedRequestStatus.newAwaitingConfirmation": "新建 - 等待确认",
     "mediatedRequestStatus.openAwaitingPickup": "开放 - 等待取件",
-    "mediatedRequestStatus.openInProgress": "开放 - 进行中",
-    "mediatedRequestStatus.openInTransit": "开放 - 转运中",
     "mediatedRequestStatus.openItemArrived": "开放 - 单件已抵达",
     "permission.view-confirm": "Mediated requests: View, confirm",
     "permission.confirm-item-arrival": "Mediated requests: Confirm item arrival",
@@ -159,5 +154,9 @@
     "notes.assigned.requestDate": "Request date: {requestCreateDate}",
     "mediatedRequestInformation.viewDetailsLink": "View details in Requests",
     "requesterDetails.requester": "Requester",
-    "requesterDetails.proxy": "Requester's proxy"
+    "requesterDetails.proxy": "Requester's proxy",
+    "mediatedRequestStatus.openAwaitingDelivery": "Open - Awaiting delivery",
+    "mediatedRequestStatus.openInTransitForApproval": "Open - In transit for approval",
+    "mediatedRequestStatus.openInTransitToBeCheckedOut": "Open - In transit to be checked out",
+    "mediatedRequestStatus.openNotYetFilled": "Open - Not yet filled"
 }

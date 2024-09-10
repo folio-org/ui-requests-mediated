@@ -64,8 +64,7 @@ jest.mock('react-router-dom', () => ({
 }));
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
-  getDeliveryAddressForCsvRecords: jest.fn(address => address.addressLine1),
-  getFullNameForCsvRecords: jest.fn(user => user.lastName),
+  modifyRecordsToExport: jest.fn(records => records),
 }));
 
 describe('MediatedRequestsActivities', () => {
@@ -144,16 +143,9 @@ describe('getActionMenu', () => {
         title: 'title_1',
         contributorNames: [{ name: 'contributor' }],
       },
-      proxy: {
-        lastName: 'proxyLastName',
-        barcode: 'proxyBarcode',
-      },
       requester: {
         lastName: 'requesterLastName_1',
         barcode: 'requesterBarcode_1',
-      },
-      deliveryAddress: {
-        addressLine1: 'addressLine1',
       },
     },
     {
@@ -248,33 +240,7 @@ describe('getActionMenu', () => {
       });
 
       it('should export data to CSV', () => {
-        const dataToExport = [
-          {
-            ...mediatedRequests[0],
-            instance: {
-              ...mediatedRequests[0].instance,
-              contributorNames: 'contributor',
-            },
-            proxy: {
-              ...mediatedRequests[0].proxy,
-              name: 'proxyLastName',
-            },
-            requester: {
-              ...mediatedRequests[0].requester,
-              name: 'requesterLastName_1',
-            },
-            deliveryAddress: 'addressLine1',
-          },
-          {
-            ...mediatedRequests[1],
-            requester: {
-              ...mediatedRequests[1].requester,
-              name: 'requesterLastName_2',
-            },
-          }
-        ];
-
-        expect(exportToCsv).toHaveBeenCalledWith(dataToExport, {
+        expect(exportToCsv).toHaveBeenCalledWith(mediatedRequests, {
           onlyFields: expect.any(Array),
         });
       });

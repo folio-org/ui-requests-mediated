@@ -43,39 +43,13 @@ import {
   ICONS,
   SEARCH_FIELDS,
   FILTER_CONFIG,
+  REPORT_HEADERS,
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
 import {
   getTotalCount,
-  getDeliveryAddressForCsvRecords,
-  getFullNameForCsvRecords,
+  modifyRecordsToExport,
 } from '../../utils';
-
-const REPORT_HEADERS = [
-  'requestType',
-  'status',
-  'requestDate',
-  'item.barcode',
-  'instance.title',
-  'instance.contributorNames',
-  'item.location.libraryName',
-  'item.callNumberComponents.prefix',
-  'item.callNumberComponents.callNumber',
-  'item.callNumberComponents.suffix',
-  'item.volume',
-  'item.enumeration',
-  'item.chronology',
-  'item.copyNumber',
-  'requester.name',
-  'requester.barcode',
-  'requester.patronGroup.group',
-  'fulfillmentPreference',
-  'pickupServicePoint.name',
-  'deliveryAddress',
-  'proxy.name',
-  'proxy.barcode',
-  'patronComments',
-];
 
 export const getActionMenu = ({
   renderColumnsMenu,
@@ -89,7 +63,7 @@ export const getActionMenu = ({
   setIsLoadingReport,
   formatMessage,
   // eslint-disable-next-line react/prop-types
-}) => ({ onToggle }) => {
+}) => ({ onToggle }) => { // NOSONAR
   const goToNewMediatedRequest = () => {
     history.push(`${getMediatedRequestsActivitiesUrl()}/create`);
   };
@@ -144,23 +118,7 @@ export const getActionMenu = ({
   const buildRecords = (records) => {
     const clonedRecords = cloneDeep(records);
 
-    clonedRecords.forEach(record => {
-      if (record.instance.contributorNames?.length > 0) {
-        record.instance.contributorNames = record.instance.contributorNames.map(({ name }) => name).join('; ');
-      }
-
-      if (record.proxy) {
-        record.proxy.name = getFullNameForCsvRecords(record.proxy);
-      }
-
-      if (record.deliveryAddress) {
-        record.deliveryAddress = getDeliveryAddressForCsvRecords(record.deliveryAddress);
-      }
-
-      record.requester.name = getFullNameForCsvRecords(record.requester);
-    });
-
-    return clonedRecords;
+    return modifyRecordsToExport(clonedRecords);
   };
 
   const exportResults = async () => {
