@@ -18,33 +18,12 @@ import {
 import {
   PAGE_AMOUNT,
   MEDIATED_REQUESTS_RECORDS_NAME,
-  MEDIATED_REQUEST_FILTER_TYPES,
-  MEDIATED_REQUEST_SEARCH_PARAMS,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
+  SEARCH_FIELDS,
+  FILTER_CONFIG,
 } from '../constants';
 
 export const buildQuery = (queryParams, pathComponents, resourceData, logger, props) => {
-  const SEARCH_FIELDS = [
-    MEDIATED_REQUEST_SEARCH_PARAMS.INSTANCE_TITLE,
-    MEDIATED_REQUEST_SEARCH_PARAMS.ITEM_BARCODE,
-    MEDIATED_REQUEST_SEARCH_PARAMS.REQUESTER_BARCODE,
-    MEDIATED_REQUEST_SEARCH_PARAMS.CALL_NUMBER,
-    MEDIATED_REQUEST_SEARCH_PARAMS.FULL_CALL_NUMBER,
-  ];
-  const FILTER_CONFIG = [
-    {
-      name: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_STATUS,
-      cql: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_STATUS,
-      values: [],
-      operator: '==',
-    },
-    {
-      name: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS,
-      cql: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS,
-      values: [],
-      operator: '==',
-    },
-  ];
   const customFilterConfig = buildFilterConfig(queryParams.filters);
   const mapFields = (index) => `${index}=="%{query.query}*"`;
   const getCql = makeQueryFunction(
@@ -84,6 +63,13 @@ class MediatedRequestsActivitiesContainer extends React.Component {
         },
       },
       throwErrors: false,
+    },
+    reportRecords: {
+      type: 'okapi',
+      path: 'requests-mediated/mediated-requests',
+      records: 'mediatedRequests',
+      throwErrors: false,
+      accumulate: true,
     },
   });
 

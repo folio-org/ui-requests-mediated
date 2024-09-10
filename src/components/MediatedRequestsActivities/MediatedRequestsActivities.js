@@ -1,11 +1,16 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 import { useHistory } from 'react-router-dom';
+import { cloneDeep } from 'lodash';
 
 import {
   IfPermission,
   AppIcon,
+  useCallout,
 } from '@folio/stripes/core';
 import {
   Button,
@@ -13,6 +18,8 @@ import {
   Pane,
   PaneMenu,
   Paneset,
+  exportToCsv,
+  filters2cql,
 } from '@folio/stripes/components';
 import {
   SearchAndSortQuery,
@@ -34,13 +41,115 @@ import {
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
   MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
   ICONS,
+  SEARCH_FIELDS,
+  FILTER_CONFIG,
+  REPORT_HEADERS,
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
-import { getTotalCount } from '../../utils';
+import {
+  getTotalCount,
+  modifyRecordsToExport,
+} from '../../utils';
 
-export const getActionMenu = (renderColumnsMenu, history) => () => {
+export const getActionMenu = ({
+  renderColumnsMenu,
+  mediatedRequests,
+  searchValue,
+  activeFilters,
+  reportRecords,
+  callout,
+  history,
+  isLoadingReport,
+  setIsLoadingReport,
+  formatMessage,
+  // eslint-disable-next-line react/prop-types
+}) => ({ onToggle }) => { // NOSONAR
   const goToNewMediatedRequest = () => {
     history.push(`${getMediatedRequestsActivitiesUrl()}/create`);
+  };
+
+  const getRecords = async (query) => {
+    const {
+      GET,
+      reset,
+    } = reportRecords;
+
+    const limit = 1000;
+    const data = [];
+    let offset = 0;
+    let hasData = true;
+
+    while (hasData) {
+      try {
+        reset();
+        // eslint-disable-next-line no-await-in-loop
+        const result = await GET({
+          params: {
+            query,
+            limit,
+            offset,
+          },
+        });
+        hasData = result.length;
+        offset += limit;
+
+        if (hasData) {
+          data.push(...result);
+        }
+
+        if (result.length < limit) {
+          hasData = false;
+        }
+      } catch (err) {
+        hasData = false;
+      }
+    }
+
+    return data;
+  };
+
+  const getColumnHeaders = (headers) => {
+    return headers.map(header => ({
+      label: formatMessage({ id: `ui-requests-mediated.report.${header}` }),
+      value: header,
+    }));
+  };
+
+  const buildRecords = (records) => {
+    const clonedRecords = cloneDeep(records);
+
+    return modifyRecordsToExport(clonedRecords);
+  };
+
+  const exportResults = async () => {
+    setIsLoadingReport(true);
+    onToggle();
+    callout.sendCallout({
+      message: <FormattedMessage id="ui-requests-mediated.mediatedRequest.notification.CSVReport" />
+    });
+    const queryParams = [];
+
+    if (searchValue?.query) {
+      const searchQuery = SEARCH_FIELDS.map(searchSubQuery => `${searchSubQuery}==${searchValue.query}*`).join(' or ');
+
+      queryParams.push(`(${searchQuery})`);
+    }
+
+    if (activeFilters?.string) {
+      const filterQuery = filters2cql(FILTER_CONFIG, activeFilters.string);
+
+      queryParams.push(filterQuery);
+    }
+
+    const queryString = queryParams.join(' and ');
+    const records = await getRecords(queryString);
+    const recordsToCSV = buildRecords(records);
+    const columns = getColumnHeaders(REPORT_HEADERS);
+
+    exportToCsv(recordsToCSV, {
+      onlyFields: columns,
+    });
+    setIsLoadingReport(false);
   };
 
   return (
@@ -55,6 +164,32 @@ export const getActionMenu = (renderColumnsMenu, history) => () => {
             <FormattedMessage id="ui-requests-mediated.mediatedRequestList.actionMenu.newMediatedRequest" />
           </Icon>
         </Button>
+      </IfPermission>
+      <IfPermission perm="ui-requests-mediated.view">
+        {
+          isLoadingReport ?
+            <Button
+              buttonStyle="dropdownItem"
+              disabled
+            >
+              <Icon
+                icon={ICONS.SPINNER}
+                width="10px"
+              >
+                <FormattedMessage id="ui-requests-mediated.mediatedRequestList.actionMenu.reportPending" />
+              </Icon>
+            </Button> :
+            <Button
+              buttonStyle="dropdownItem"
+              onClick={exportResults}
+              disabled={!mediatedRequests?.length}
+              marginBottom0
+            >
+              <Icon icon={ICONS.DOWNLOAD}>
+                <FormattedMessage id="ui-requests-mediated.mediatedRequestList.actionMenu.exportResults" />
+              </Icon>
+            </Button>
+        }
       </IfPermission>
       {renderColumnsMenu}
     </>
@@ -81,12 +216,16 @@ const MediatedRequestsActivities = ({
   resources,
   mutator: {
     resultOffset,
+    reportRecords,
   },
   settings,
   children,
 }) => {
   const [filterPaneIsVisible, setFilterPaneIsVisible] = useState(true);
   const history = useHistory();
+  const callout = useCallout();
+  const [isLoadingReport, setIsLoadingReport] = useState(false);
+  const { formatMessage } = useIntl();
 
   const toggleFilterPane = () => {
     setFilterPaneIsVisible(!filterPaneIsVisible);
@@ -174,7 +313,20 @@ const MediatedRequestsActivities = ({
                 paneTitle={<FormattedMessage id="ui-requests-mediated.app.mediatedRequestsActivities.paneTitle" />}
                 paneSub={getResultPaneSub(source)}
                 firstMenu={renderResultsFirstMenu(activeFilters)}
-                actionMenu={getActionMenu(renderColumnsMenu, history)}
+                actionMenu={
+                  getActionMenu({
+                    renderColumnsMenu,
+                    mediatedRequests,
+                    searchValue,
+                    activeFilters,
+                    reportRecords,
+                    callout,
+                    history,
+                    isLoadingReport,
+                    setIsLoadingReport,
+                    formatMessage,
+                  })
+                }
               >
                 <MediatedRequestsList
                   visibleColumns={visibleColumns}
@@ -206,6 +358,10 @@ MediatedRequestsActivities.propTypes = {
   mutator: PropTypes.shape({
     resultOffset: PropTypes.shape({
       replace: PropTypes.func.isRequired,
+    }),
+    reportRecords: PropTypes.shape({
+      GET: PropTypes.func.isRequired,
+      reset: PropTypes.func.isRequired,
     }),
   }).isRequired,
   source: PropTypes.shape({

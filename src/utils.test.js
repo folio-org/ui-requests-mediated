@@ -36,6 +36,9 @@ import {
   getUserHighlightBoxLink,
   getProxyInformation,
   getRequester,
+  getFullNameForCsvRecords,
+  getDeliveryAddressForCsvRecords,
+  modifyRecordsToExport,
 } from './utils';
 import {
   FULFILMENT_TYPES,
@@ -907,6 +910,111 @@ describe('utils', () => {
 
     it('should return selected user', () => {
       expect(getRequester(null, selectedUser)).toEqual(selectedUser);
+    });
+  });
+
+  describe('getFullNameForCsvRecords', () => {
+    describe('When all user information exists', () => {
+      it('should return user name for CSV report', () => {
+        const user = {
+          firstName: 'firstName',
+          middleName: 'middleName',
+          lastName: 'lastName',
+        };
+
+        expect(getFullNameForCsvRecords(user)).toBe(`${user.firstName} ${user.middleName} ${user.lastName}`);
+      });
+    });
+
+    describe('When user information does not exist', () => {
+      it('should return empty string', () => {
+        expect(getFullNameForCsvRecords({})).toBe('');
+      });
+    });
+  });
+
+  describe('getDeliveryAddressForCsvRecords', () => {
+    describe('When all address information exists', () => {
+      it('should return delivery address for CSV report', () => {
+        const address = {
+          addressLine1: 'addressLine1',
+          city: 'city',
+          region: 'region',
+          postalCode: 'postalCode',
+          countryId: 'countryId',
+        };
+
+        expect(getDeliveryAddressForCsvRecords(address))
+          .toBe(`${address.addressLine1} ${address.city} ${address.region} ${address.postalCode} ${address.countryId}`);
+      });
+    });
+
+    describe('When address information does not exist', () => {
+      it('should return empty string', () => {
+        expect(getDeliveryAddressForCsvRecords({})).toBe('');
+      });
+    });
+  });
+
+  describe('modifyRecordsToExport', () => {
+    it('should return modified records', () => {
+      const records = [
+        {
+          id: 'id_1',
+          instance: {
+            title: 'title_1',
+            contributorNames: [{ name: 'contributor' }],
+          },
+          proxy: {
+            lastName: 'proxyLastName',
+            barcode: 'proxyBarcode',
+          },
+          requester: {
+            lastName: 'requesterLastName_1',
+            barcode: 'requesterBarcode_1',
+          },
+          deliveryAddress: {
+            addressLine1: 'addressLine1',
+          },
+        },
+        {
+          id: 'id_2',
+          instance: {
+            title: 'title_2',
+          },
+          requester: {
+            lastName: 'requesterLastName_2',
+            barcode: 'requesterBarcode_2',
+          },
+        }
+      ];
+      const expectedResult = [
+        {
+          ...records[0],
+          instance: {
+            ...records[0].instance,
+            contributorNames: records[0].instance.contributorNames[0].name,
+          },
+          proxy: {
+            ...records[0].proxy,
+            name: records[0].proxy.lastName,
+          },
+          requester: {
+            ...records[0].requester,
+            name: records[0].requester.lastName,
+          },
+          deliveryAddress: records[0].deliveryAddress.addressLine1,
+        },
+        {
+          ...records[1],
+          requester: {
+            ...records[1].requester,
+            name: records[1].requester.lastName,
+          },
+        }
+      ];
+
+      expect(modifyRecordsToExport(records)).toEqual(expectedResult);
     });
   });
 });

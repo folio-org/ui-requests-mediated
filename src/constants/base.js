@@ -13,6 +13,7 @@ export const ICONS = {
   TIMES_CIRCLE: 'times-circle',
   TIMES_CIRCLE_SOLID: 'times-circle-solid',
   PLUS_SIGN: 'plus-sign',
+  DOWNLOAD: 'download',
 };
 
 export const ENTER_EVENT_KEY = 'Enter';

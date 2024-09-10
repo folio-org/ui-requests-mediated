@@ -318,3 +318,52 @@ export const getProxyInformation = (proxy, proxyIdFromRequest) => {
 };
 
 export const getRequester = (proxy, selectedUser) => proxy || selectedUser;
+
+export const getFullNameForCsvRecords = (user) => {
+  const {
+    firstName = '',
+    middleName = '',
+    lastName = '',
+  } = user;
+
+  return [firstName, middleName, lastName].filter(Boolean).join(' ');
+};
+
+export const getDeliveryAddressForCsvRecords = (address) => {
+  const {
+    addressLine1 = '',
+    city = '',
+    region = '',
+    postalCode = '',
+    countryId = '',
+  } = address;
+
+  return [addressLine1, city, region, postalCode, countryId].filter(Boolean).join(' ');
+};
+
+export const modifyRecordsToExport = (records) => {
+  return records.map(record => {
+    const {
+      instance,
+      proxy,
+      requester,
+      deliveryAddress,
+    } = record;
+
+    if (instance.contributorNames?.length > 0) {
+      instance.contributorNames = instance.contributorNames.map(({ name }) => name).join('; ');
+    }
+
+    if (proxy) {
+      proxy.name = getFullNameForCsvRecords(proxy);
+    }
+
+    if (deliveryAddress) {
+      record.deliveryAddress = getDeliveryAddressForCsvRecords(deliveryAddress);
+    }
+
+    requester.name = getFullNameForCsvRecords(requester);
+
+    return record;
+  });
+};

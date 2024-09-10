@@ -294,3 +294,52 @@ export const ITEM_STATUS_TRANSLATION_KEYS = {
 
 export const STAFF_NOTES_DOMAIN_NAME = 'requests-mediated';
 export const STAFF_NOTES_ENTITY_TYPE = 'request-mediated';
+
+export const FILTER_CONFIG = [
+  {
+    name: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_STATUS,
+    cql: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_STATUS,
+    values: [],
+    operator: '==',
+  },
+  {
+    name: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS,
+    cql: MEDIATED_REQUEST_FILTER_TYPES.MEDIATED_REQUEST_LEVELS,
+    values: [],
+    operator: '==',
+  },
+];
+
+export const SEARCH_FIELDS = [
+  MEDIATED_REQUEST_SEARCH_PARAMS.INSTANCE_TITLE,
+  MEDIATED_REQUEST_SEARCH_PARAMS.ITEM_BARCODE,
+  MEDIATED_REQUEST_SEARCH_PARAMS.REQUESTER_BARCODE,
+  MEDIATED_REQUEST_SEARCH_PARAMS.CALL_NUMBER,
+  MEDIATED_REQUEST_SEARCH_PARAMS.FULL_CALL_NUMBER,
+];
+
+export const REPORT_HEADERS = [
+  'requestType',
+  'status',
+  'requestDate',
+  'item.barcode',
+  'instance.title',
+  'instance.contributorNames',
+  'item.location.libraryName',
+  'item.callNumberComponents.prefix',
+  'item.callNumberComponents.callNumber',
+  'item.callNumberComponents.suffix',
+  'item.volume',
+  'item.enumeration',
+  'item.chronology',
+  'item.copyNumber',
+  'requester.name',
+  'requester.barcode',
+  'requester.patronGroup.group',
+  'fulfillmentPreference',
+  'pickupServicePoint.name',
+  'deliveryAddress',
+  'proxy.name',
+  'proxy.barcode',
+  'patronComments',
+];

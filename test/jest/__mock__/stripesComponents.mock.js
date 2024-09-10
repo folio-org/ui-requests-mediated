@@ -69,6 +69,8 @@ jest.mock('@folio/stripes/components', () => ({
     </div>
   )),
   expandAllSections: jest.fn(),
+  exportToCsv: jest.fn(),
+  filters2cql: jest.fn(),
   FormattedDate: jest.fn(({ value }) => <div>{value}</div>),
   HasCommand: jest.fn(({ children }) => <div>{children}</div>),
   Headline: jest.fn(({ children }) => <div>{ children }</div>),
