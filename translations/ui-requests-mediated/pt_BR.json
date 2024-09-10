@@ -1,8 +1,5 @@
 {
     "meta.title": "Solicitações mediadas",
-    "settings.index.paneTitle": "Solicitações mediadas",
-    "settings.general": "Geral",
-    "settings.general.message": "Estas são as suas configurações gerais de aplicativos.",
     "permission.view": "Solicitações mediadas: Visualizar",
     "permission.view-create-edit": "Solicitações mediadas: visualizar, criar, editar",
     "permission.all": "Solicitações mediadas: todas as permissões",
@@ -128,8 +125,6 @@
     "mediatedRequestStatus.closedFilled": "Fechado - Completo",
     "mediatedRequestStatus.newAwaitingConfirmation": "Novo - Aguardando confirmação",
     "mediatedRequestStatus.openAwaitingPickup": "Aberto - Aguardando retirada",
-    "mediatedRequestStatus.openInProgress": "Aberto - Em andamento",
-    "mediatedRequestStatus.openInTransit": "Aberto - Em trânsito",
     "mediatedRequestStatus.openItemArrived": "Aberto - Item chegou",
     "permission.view-confirm": "Solicitações mediadas: Visualizar, confirmar",
     "permission.confirm-item-arrival": "Solicitações mediadas: Confirmar a chegada do item",
@@ -159,5 +154,9 @@
     "notes.assigned.requestDate": "Data da solicitação: {requestCreateDate}",
     "mediatedRequestInformation.viewDetailsLink": "Ver detalhes em Solicitações",
     "requesterDetails.requester": "Solicitante",
-    "requesterDetails.proxy": "Procurador do solicitante"
+    "requesterDetails.proxy": "Procurador do solicitante",
+    "mediatedRequestStatus.openAwaitingDelivery": "Aberta - Aguardando entrega",
+    "mediatedRequestStatus.openInTransitForApproval": "Aberta - Em trânsito para aprovação",
+    "mediatedRequestStatus.openInTransitToBeCheckedOut": "Aberta - Em trânsito para ser emprestado",
+    "mediatedRequestStatus.openNotYetFilled": "Aberta - Ainda não atendida"
 }
