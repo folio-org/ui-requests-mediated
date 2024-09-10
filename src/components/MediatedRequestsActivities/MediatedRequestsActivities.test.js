@@ -9,17 +9,22 @@ import {
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
+import {
+  exportToCsv,
+  filters2cql,
+} from '@folio/stripes/components';
+
 import MediatedRequestsActivities, {
   getActionMenu,
   getResultPaneSub,
 } from './MediatedRequestsActivities';
 import NavigationMenu from '../NavigationMenu';
 import MediatedRequestsFilters from './components/MediatedRequestsFilters';
-
 import {
   getMediatedRequestsActivitiesUrl,
   MODULE_ROUTE,
   MEDIATED_REQUESTS_ACTIVITIES,
+  FILTER_CONFIG, SEARCH_FIELDS,
 } from '../../constants';
 
 jest.mock('../NavigationMenu', () => jest.fn((props) => (<div {...props} />)));
@@ -33,6 +38,8 @@ const testIds = {
 const labelIds = {
   paneTitle: 'ui-requests-mediated.app.mediatedRequestsActivities.paneTitle',
   newMediatedRequestButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.newMediatedRequest',
+  exportToSCVButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.exportResults',
+  reportPendingButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.reportPending',
   searchCriteria: 'stripes-smart-components.searchCriteria',
   searchResultsCount: 'stripes-smart-components.searchResultsCountHeader',
 };
@@ -50,11 +57,15 @@ jest.mock('@folio/stripes/smart-components', () => ({
     </div>
   )),
 }));
-
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: jest.fn(),
   useHistory: jest.fn(),
+}));
+jest.mock('../../utils', () => ({
+  ...jest.requireActual('../../utils'),
+  getDeliveryAddressForCsvRecords: jest.fn(address => address.addressLine1),
+  getFullNameForCsvRecords: jest.fn(user => user.lastName),
 }));
 
 describe('MediatedRequestsActivities', () => {
@@ -125,27 +136,226 @@ describe('MediatedRequestsActivities', () => {
 });
 
 describe('getActionMenu', () => {
-  const renderColumnsMenu = 'renderColumnsMenu';
-  const push = jest.fn();
+  const onToggle = jest.fn();
+  const mediatedRequests = [
+    {
+      id: 'id_1',
+      instance: {
+        title: 'title_1',
+        contributorNames: [{ name: 'contributor' }],
+      },
+      proxy: {
+        lastName: 'proxyLastName',
+        barcode: 'proxyBarcode',
+      },
+      requester: {
+        lastName: 'requesterLastName_1',
+        barcode: 'requesterBarcode_1',
+      },
+      deliveryAddress: {
+        addressLine1: 'addressLine1',
+      },
+    },
+    {
+      id: 'id_2',
+      instance: {
+        title: 'title_2',
+      },
+      requester: {
+        lastName: 'requesterLastName_2',
+        barcode: 'requesterBarcode_2',
+      },
+    }
+  ];
+  const actionData = {
+    renderColumnsMenu: 'renderColumnsMenu',
+    mediatedRequests,
+    searchValue: {
+      query: 'searchQuery',
+    },
+    activeFilters: {
+      string: 'requestLevel.Title',
+    },
+    reportRecords: {
+      GET: jest.fn(),
+      reset: jest.fn(),
+    },
+    callout: {
+      sendCallout: jest.fn(),
+    },
+    history: {
+      push: jest.fn(),
+    },
+    isLoadingReport: false,
+    setIsLoadingReport: jest.fn(),
+    formatMessage: jest.fn(({ id }) => id),
+  };
 
-  beforeEach(() => {
-    render(getActionMenu(renderColumnsMenu, { push })());
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  it('should render new mediated request button', () => {
-    expect(screen.getByText(labelIds.newMediatedRequestButton)).toBeInTheDocument();
+  describe('Action menu', () => {
+    beforeEach(() => {
+      render(getActionMenu(actionData)({ onToggle }));
+    });
+
+    it('should render new mediated request button', () => {
+      expect(screen.getByText(labelIds.newMediatedRequestButton)).toBeInTheDocument();
+    });
+
+    it('should render columns menu', async () => {
+      expect(await screen.findByText(actionData.renderColumnsMenu)).toBeInTheDocument();
+    });
+
+    it('should redirect to new mediated request form', () => {
+      const newMediatedRequestButton = screen.getByText(labelIds.newMediatedRequestButton);
+
+      fireEvent.click(newMediatedRequestButton);
+
+      expect(actionData.history.push).toHaveBeenCalledWith(`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/create`);
+    });
+
+    it('should render export to CSV button', () => {
+      expect(screen.getByText(labelIds.exportToSCVButton)).toBeInTheDocument();
+    });
   });
 
-  it('should render columns menu', async () => {
-    expect(await screen.findByText(renderColumnsMenu)).toBeInTheDocument();
-  });
+  describe('Export to CSV action', () => {
+    describe('When data to export received successfully', () => {
+      const dataToReport = [...mediatedRequests];
 
-  it('should redirect to new mediated request form', () => {
-    const newMediatedRequestButton = screen.getByText(labelIds.newMediatedRequestButton);
+      beforeEach(() => {
+        filters2cql.mockImplementationOnce((config, filters) => filters);
+        actionData.reportRecords.GET.mockResolvedValueOnce(dataToReport);
+        render(getActionMenu(actionData)({ onToggle }));
 
-    fireEvent.click(newMediatedRequestButton);
+        const exportToCSVButton = screen.getByText(labelIds.exportToSCVButton);
 
-    expect(push).toHaveBeenCalledWith(`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/create`);
+        fireEvent.click(exportToCSVButton);
+      });
+
+      it('should toggle action menu after clicking on export button', () => {
+        expect(onToggle).toHaveBeenCalled();
+      });
+
+      it('should send callout', () => {
+        expect(actionData.callout.sendCallout).toHaveBeenCalled();
+      });
+
+      it('should transform filter params', () => {
+        expect(filters2cql).toHaveBeenCalledWith(FILTER_CONFIG, actionData.activeFilters.string);
+      });
+
+      it('should export data to CSV', () => {
+        const dataToExport = [
+          {
+            ...mediatedRequests[0],
+            instance: {
+              ...mediatedRequests[0].instance,
+              contributorNames: 'contributor',
+            },
+            proxy: {
+              ...mediatedRequests[0].proxy,
+              name: 'proxyLastName',
+            },
+            requester: {
+              ...mediatedRequests[0].requester,
+              name: 'requesterLastName_1',
+            },
+            deliveryAddress: 'addressLine1',
+          },
+          {
+            ...mediatedRequests[1],
+            requester: {
+              ...mediatedRequests[1].requester,
+              name: 'requesterLastName_2',
+            },
+          }
+        ];
+
+        expect(exportToCsv).toHaveBeenCalledWith(dataToExport, {
+          onlyFields: expect.any(Array),
+        });
+      });
+    });
+
+    describe('When only search query is provided', () => {
+      const actionMenuData = {
+        ...actionData,
+        activeFilters: {},
+      };
+
+      beforeEach(() => {
+        filters2cql.mockImplementationOnce((config, filters) => filters);
+        render(getActionMenu(actionMenuData)({ onToggle }));
+
+        const exportToCSVButton = screen.getByText(labelIds.exportToSCVButton);
+
+        fireEvent.click(exportToCSVButton);
+      });
+
+      it('should get data to report with correct query', () => {
+        const query = SEARCH_FIELDS.map(searchSubQuery => `${searchSubQuery}==${actionMenuData.searchValue.query}*`).join(' or ');
+
+        expect(actionMenuData.reportRecords.GET).toHaveBeenCalledWith({
+          params: {
+            query: `(${query})`,
+            limit: 1000,
+            offset: 0,
+          },
+        });
+      });
+    });
+
+    describe('When only filter query is provided', () => {
+      const actionMenuData = {
+        ...actionData,
+        searchValue: {},
+      };
+
+      beforeEach(() => {
+        filters2cql.mockImplementationOnce((config, filters) => filters);
+        render(getActionMenu(actionMenuData)({ onToggle }));
+
+        const exportToCSVButton = screen.getByText(labelIds.exportToSCVButton);
+
+        fireEvent.click(exportToCSVButton);
+      });
+
+      it('should get data to report with correct query', () => {
+        expect(actionMenuData.reportRecords.GET).toHaveBeenCalledWith({
+          params: {
+            query: actionMenuData.activeFilters.string,
+            limit: 1000,
+            offset: 0,
+          },
+        });
+      });
+    });
+
+    describe('When report is loading', () => {
+      beforeEach(() => {
+        const actionMenuData = {
+          ...actionData,
+          isLoadingReport: true,
+        };
+
+        render(getActionMenu(actionMenuData)({ onToggle }));
+      });
+
+      it('should render report pending button', () => {
+        const reportPendingButton = screen.getByText(labelIds.reportPendingButton);
+
+        expect(reportPendingButton).toBeInTheDocument();
+      });
+
+      it('should hide export results button', () => {
+        const exportToSCVButton = screen.queryByText(labelIds.exportToSCVButton);
+
+        expect(exportToSCVButton).not.toBeInTheDocument();
+      });
+    });
   });
 });
 

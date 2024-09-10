@@ -318,3 +318,25 @@ export const getProxyInformation = (proxy, proxyIdFromRequest) => {
 };
 
 export const getRequester = (proxy, selectedUser) => proxy || selectedUser;
+
+export const getFullNameForCsvRecords = (user) => {
+  const {
+    firstName = '',
+    middleName = '',
+    lastName = '',
+  } = user;
+
+  return [firstName, middleName, lastName].filter(Boolean).join(' ');
+};
+
+export const getDeliveryAddressForCsvRecords = (address) => {
+  const {
+    addressLine1 = '',
+    city = '',
+    region = '',
+    postalCode = '',
+    countryId = '',
+  } = address;
+
+  return [addressLine1, city, region, postalCode, countryId].filter(Boolean).join(' ');
+};
