@@ -36,7 +36,7 @@ const testIds = {
   mediatedRequestsActivitiesPane: 'mediatedRequestsActivitiesPane',
 };
 const labelIds = {
-  paneTitle: 'ui-requests-mediated.app.mediatedRequestsActivities.paneTitle',
+  paneTitle: 'ui-requests-mediated.mediatedRequestsActivities.paneTitle',
   newMediatedRequestButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.newMediatedRequest',
   exportToSCVButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.exportResults',
   reportPendingButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.reportPending',

@@ -1,32 +1,39 @@
-import { FormattedMessage } from 'react-intl';
+import {
+  useState,
+} from 'react';
+import { useIntl } from 'react-intl';
+
+import ConfirmItem from '../ConfirmItem';
+import ErrorModal from '../ErrorModal';
 
 import {
-  Pane,
-  Paneset,
-} from '@folio/stripes/components';
-
-import NavigationMenu from '../NavigationMenu';
-
-import {
-  FILTER_PANE_WIDTH,
+  CONFIRM_ITEM_TYPES,
   getSendItemInTransitUrl,
 } from '../../constants';
 
 const SendItemInTransit = () => {
+  const intl = useIntl();
+  const [contentData] = useState([]);
+  const [isErrorModalOpen, setErrorModalOpen] = useState(false);
+  const onCloseErrorModal = () => (setErrorModalOpen(false));
+  const handleSubmit = () => {};
+
   return (
-    <Paneset data-testid="sendItemInTransitPaneSet">
-      <Pane
-        data-testid="sendItemInTransitPane"
-        defaultWidth={FILTER_PANE_WIDTH}
-        paneTitle={<FormattedMessage id="ui-requests-mediated.app.filterPane.selectActivity" />}
-      >
-        <NavigationMenu value={getSendItemInTransitUrl()} />
-      </Pane>
-      <Pane
-        defaultWidth="fill"
-        paneTitle={<FormattedMessage id="ui-requests-mediated.app.sendItemInTransit.paneTitle" />}
+    <>
+      <ConfirmItem
+        paneTitle={intl.formatMessage({ id: 'ui-requests-mediated.sendItemInTransit.paneTitle' })}
+        navigationMenuFunction={getSendItemInTransitUrl()}
+        confirmItemType={CONFIRM_ITEM_TYPES.SEND_ITEM_IN_TRANSIT}
+        contentData={contentData}
+        onSubmit={handleSubmit}
       />
-    </Paneset>
+      <ErrorModal
+        title={intl.formatMessage({ id: 'ui-requests-mediated.confirmItem.errorModal.sendItemInTransit.title' })}
+        message={intl.formatMessage({ id: 'ui-requests-mediated.confirmItem.errorModal.sendItemInTransit.message' })}
+        open={isErrorModalOpen}
+        onClose={onCloseErrorModal}
+      />
+    </>
   );
 };
 
