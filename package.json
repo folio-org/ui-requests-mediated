@@ -173,7 +173,8 @@
         "permissionName": "ui-requests-mediated.send-item-in-transit",
         "displayName": "Mediated requests: Send item in transit",
         "subPermissions": [
-          "ui-requests-mediated.view"
+          "ui-requests-mediated.view",
+          "requests-mediated.send-item-in-transit.post"
         ],
         "visible": true
       },
