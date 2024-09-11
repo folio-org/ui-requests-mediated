@@ -32,9 +32,18 @@ const ConfirmItem = ({
   confirmItemType,
   contentData,
   handleSubmit,
+  form,
 }) => {
   const intl = useIntl();
   const itemBarcodeInputPlaceholder = intl.formatMessage({ id: 'ui-requests-mediated.confirmItem.mainSection.itemBarcodeInput.placeholder' });
+  const onSubmit = (e) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    handleSubmit();
+
+    form.change('itemBarcode', '');
+  };
 
   return (
     <Paneset data-testid="confirmItemPaneSet">
@@ -50,7 +59,7 @@ const ConfirmItem = ({
         defaultWidth="fill"
         paneTitle={<FormattedMessage id="ui-requests-mediated.confirmItem.mainSection.paneTitle" />}
       >
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={onSubmit}>
           <Row>
             <Col xs={9} sm={4}>
               <Field
@@ -96,6 +105,7 @@ ConfirmItem.propTypes = {
   confirmItemType: PropTypes.oneOf([CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL, CONFIRM_ITEM_TYPES.SEND_ITEM_IN_TRANSIT]).isRequired,
   contentData: PropTypes.arrayOf(PropTypes.object),
   handleSubmit: PropTypes.func.isRequired,
+  form: PropTypes.object.isRequired,
 };
 
 export default stripesFinalForm({
