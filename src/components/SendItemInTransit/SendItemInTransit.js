@@ -14,8 +14,8 @@ import {
 const SendItemInTransit = () => {
   const intl = useIntl();
   const [contentData] = useState([]);
-  const [isErrorModalOpen, setErrorModalOpen] = useState(false);
-  const onCloseErrorModal = () => (setErrorModalOpen(false));
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const onCloseErrorModal = () => setIsErrorModalOpen(false);
   const handleSubmit = () => {};
 
   return (

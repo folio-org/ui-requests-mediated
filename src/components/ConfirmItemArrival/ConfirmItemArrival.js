@@ -19,8 +19,8 @@ const ConfirmItemArrival = () => {
   const intl = useIntl();
   const ky = useOkapiKy();
   const [contentData, setContentData] = useState([]);
-  const [isErrorModalOpen, setErrorModalOpen] = useState(false);
-  const onCloseErrorModal = () => (setErrorModalOpen(false));
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const onCloseErrorModal = () => setIsErrorModalOpen(false);
   const handleSubmit = ({ itemBarcode }) => {
     ky.post('requests-mediated/confirm-item-arrival', {
       json: { itemBarcode },
@@ -29,7 +29,7 @@ const ConfirmItemArrival = () => {
         setContentData([resp].concat(contentData));
       })
       .catch(() => {
-        setErrorModalOpen(true);
+        setIsErrorModalOpen(true);
       });
   };
 

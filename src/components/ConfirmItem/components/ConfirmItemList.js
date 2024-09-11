@@ -110,7 +110,6 @@ const ConfirmItem = ({
   return (
     <MultiColumnList
       id="confirmItemList"
-      data-testid="confirmItemList"
       fullWidth
       visibleColumns={CONFIRM_ITEM_COLUMNS_NAME}
       columnWidths={COLUMN_WIDTHS}
