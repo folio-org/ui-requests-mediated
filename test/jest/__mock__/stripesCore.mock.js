@@ -41,5 +41,7 @@ jest.mock('@folio/stripes/core', () => ({
   TitleManager: jest.fn(() => <div />),
   useStripes: jest.fn(() => ({
     connect: Component => Component,
+    hasInterface: jest.fn().mockReturnValue(true),
+    hasPerm: jest.fn().mockReturnValue(true),
   })),
 }));

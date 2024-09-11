@@ -10,14 +10,37 @@
   "permission.all": "Mediated requests: All permissions",
 
   "app.filterPane.selectActivity": "Select activity",
+  "app.filterPane.confirmItemArrival": "Confirm item arrival",
+  "app.filterPane.sendItemInTransit": "Send item in transit",
 
   "app.confirmItemArrival.navigation": "Confirm item arrival",
   "app.mediatedRequestsActivities.navigation": "Mediated requests activities",
   "app.sendItemInTransit.navigation": "Send item in transit",
 
-  "app.confirmItemArrival.paneTitle": "Confirm item arrival",
-  "app.mediatedRequestsActivities.paneTitle": "Mediated requests",
-  "app.sendItemInTransit.paneTitle": "Send item in transit",
+  "confirmItemArrival.paneTitle": "Confirm item arrival",
+  "mediatedRequestsActivities.paneTitle": "Mediated requests",
+  "sendItemInTransit.paneTitle": "Send item in transit",
+
+  "confirmItem.mainSection.paneTitle": "Scan items",
+  "confirmItem.mainSection.itemBarcodeInput.placeholder": "Scan or enter item barcode",
+  "confirmItem.mainSection.enter": "Enter",
+
+  "confirmItem.mainSection.listItems.isEmptyMessage": "No items have been entered yet",
+
+  "confirmItem.errorModal.confirmItemArrival.title": "Item not confirmed as arrived",
+  "confirmItem.errorModal.confirmItemArrival.message": "No \"Confirm item arrival\" transaction could be found for this item",
+  "confirmItem.errorModal.sendItemInTransit.title": "Item not sent in transit",
+  "confirmItem.errorModal.sendItemInTransit.message": "No \"Send item in transit\" transaction could be found for this item",
+  "confirmItem.errorModal.close": "Close",
+
+  "confirmItemList.columnName.arrivalDate": "Arrival date",
+  "confirmItemList.columnName.inTransitDate": "In transit date",
+  "confirmItemList.columnName.title": "Title",
+  "confirmItemList.columnName.itemBarcode": "Item barcode",
+  "confirmItemList.columnName.effectiveCallNumber": "Effective call number string",
+  "confirmItemList.columnName.mediatedRequestStatus": "Mediated request status",
+  "confirmItemList.columnName.requester": "Requester",
+  "confirmItemList.columnName.requesterBarcode": "Requester barcode",
 
   "filters.mediatedRequestStatus.accordionTitle": "Mediated request status",
   "filters.mediatedRequestLevel.accordionTitle": "Mediated request level",
@@ -39,7 +62,7 @@
   "mediatedRequestList.columnName.title": "Title",
   "mediatedRequestList.columnName.itemBarcode": "Item barcode",
   "mediatedRequestList.columnName.effectiveCallNumber": "Effective call number string",
-  "mediatedRequestList.columnName.mediatedRequestStatus": "Meditated request status",
+  "mediatedRequestList.columnName.mediatedRequestStatus": "Mediated request status",
   "mediatedRequestList.columnName.requester": "Requester",
   "mediatedRequestList.columnName.requesterBarcode": "Requester barcode",
 

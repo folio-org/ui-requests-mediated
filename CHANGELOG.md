@@ -25,6 +25,7 @@
 * Remove mediated requests from settings. Refs UIREQMED-41.
 * Update Filters for Mediated requests page. Refs UIREQMED-37.
 * Add Export Action to Mediated requests. Refs UIREQMED-34.
+* Mediated requests activities - Add Content for Confirm item arrival. Refs UIREQMED-8.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.

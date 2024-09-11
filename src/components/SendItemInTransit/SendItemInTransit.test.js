@@ -1,21 +1,23 @@
 import {
   render,
-  screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import SendItemInTransit from './SendItemInTransit';
-import NavigationMenu from '../NavigationMenu';
+import ConfirmItem from '../ConfirmItem';
+import ErrorModal from '../ErrorModal';
 
-import { getSendItemInTransitUrl } from '../../constants';
+import {
+  CONFIRM_ITEM_TYPES,
+  getSendItemInTransitUrl,
+} from '../../constants';
 
-jest.mock('../NavigationMenu', () => jest.fn((props) => (<div {...props} />)));
+jest.mock('../ConfirmItem', () => jest.fn((props) => (<div {...props} />)));
+jest.mock('../ErrorModal', () => jest.fn((props) => (<div {...props} />)));
 
-const testIds = {
-  sendItemInTransitPaneSet: 'sendItemInTransitPaneSet',
-  sendItemInTransitPane: 'sendItemInTransitPane',
-};
-const labelIds = {
-  paneTitle: 'ui-requests-mediated.app.sendItemInTransit.paneTitle',
+const messageIds = {
+  paneTitle: 'ui-requests-mediated.sendItemInTransit.paneTitle',
+  title: 'ui-requests-mediated.confirmItem.errorModal.sendItemInTransit.title',
+  message: 'ui-requests-mediated.confirmItem.errorModal.sendItemInTransit.message',
 };
 
 describe('SendItemInTransit', () => {
@@ -23,21 +25,22 @@ describe('SendItemInTransit', () => {
     render(<SendItemInTransit />);
   });
 
-  it('should render pane set', () => {
-    expect(screen.getByTestId(testIds.sendItemInTransitPaneSet)).toBeInTheDocument();
+  it('should render ConfirmItem with correct props', () => {
+    expect(ConfirmItem).toHaveBeenCalledWith(expect.objectContaining({
+      paneTitle: messageIds.paneTitle,
+      navigationMenuFunction: getSendItemInTransitUrl(),
+      confirmItemType: CONFIRM_ITEM_TYPES.SEND_ITEM_IN_TRANSIT,
+      contentData: [],
+      onSubmit: expect.any(Function),
+    }), {});
   });
 
-  it('should render pane', () => {
-    expect(screen.getByTestId(testIds.sendItemInTransitPane)).toBeInTheDocument();
-  });
-
-  it('should render pane title', () => {
-    expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
-  });
-
-  it('should trigger navigation menu with correct props', () => {
-    expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
-      value: getSendItemInTransitUrl(),
+  it('should render ErrorModal with correct props', () => {
+    expect(ErrorModal).toHaveBeenCalledWith(expect.objectContaining({
+      title: messageIds.title,
+      message: messageIds.message,
+      open: false,
+      onClose: expect.any(Function),
     }), {});
   });
 });

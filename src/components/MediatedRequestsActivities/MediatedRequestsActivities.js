@@ -310,7 +310,7 @@ const MediatedRequestsActivities = ({
                 padContent={false}
                 noOverflow
                 appIcon={<AppIcon app={APP_ICON_NAME} />}
-                paneTitle={<FormattedMessage id="ui-requests-mediated.app.mediatedRequestsActivities.paneTitle" />}
+                paneTitle={<FormattedMessage id="ui-requests-mediated.mediatedRequestsActivities.paneTitle" />}
                 paneSub={getResultPaneSub(source)}
                 firstMenu={renderResultsFirstMenu(activeFilters)}
                 actionMenu={

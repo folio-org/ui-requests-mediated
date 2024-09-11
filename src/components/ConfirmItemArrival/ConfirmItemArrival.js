@@ -1,32 +1,54 @@
-import { FormattedMessage } from 'react-intl';
+import {
+  useState,
+} from 'react';
+import { useIntl } from 'react-intl';
 
 import {
-  Pane,
-  Paneset,
-} from '@folio/stripes/components';
+  useOkapiKy,
+} from '@folio/stripes/core';
 
-import NavigationMenu from '../NavigationMenu';
+import ConfirmItem from '../ConfirmItem';
+import ErrorModal from '../ErrorModal';
 
 import {
-  FILTER_PANE_WIDTH,
+  CONFIRM_ITEM_TYPES,
   getConfirmItemArrivalUrl,
 } from '../../constants';
 
 const ConfirmItemArrival = () => {
+  const intl = useIntl();
+  const ky = useOkapiKy();
+  const [contentData, setContentData] = useState([]);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const onCloseErrorModal = () => setIsErrorModalOpen(false);
+  const handleSubmit = ({ itemBarcode }) => {
+    ky.post('requests-mediated/confirm-item-arrival', {
+      json: { itemBarcode },
+    }).json()
+      .then((resp) => {
+        setContentData([resp].concat(contentData));
+      })
+      .catch(() => {
+        setIsErrorModalOpen(true);
+      });
+  };
+
   return (
-    <Paneset data-testid="confirmItemArrivalPaneSet">
-      <Pane
-        data-testid="confirmItemArrivalPane"
-        defaultWidth={FILTER_PANE_WIDTH}
-        paneTitle={<FormattedMessage id="ui-requests-mediated.app.filterPane.selectActivity" />}
-      >
-        <NavigationMenu value={getConfirmItemArrivalUrl()} />
-      </Pane>
-      <Pane
-        defaultWidth="fill"
-        paneTitle={<FormattedMessage id="ui-requests-mediated.app.confirmItemArrival.paneTitle" />}
+    <>
+      <ConfirmItem
+        paneTitle={intl.formatMessage({ id: 'ui-requests-mediated.confirmItemArrival.paneTitle' })}
+        navigationMenuFunction={getConfirmItemArrivalUrl()}
+        confirmItemType={CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL}
+        contentData={contentData}
+        onSubmit={handleSubmit}
       />
-    </Paneset>
+      <ErrorModal
+        title={intl.formatMessage({ id: 'ui-requests-mediated.confirmItem.errorModal.confirmItemArrival.title' })}
+        message={intl.formatMessage({ id: 'ui-requests-mediated.confirmItem.errorModal.confirmItemArrival.message' })}
+        open={isErrorModalOpen}
+        onClose={onCloseErrorModal}
+      />
+    </>
   );
 };
 

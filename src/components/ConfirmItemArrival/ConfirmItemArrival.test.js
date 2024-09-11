@@ -1,21 +1,23 @@
 import {
   render,
-  screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import ConfirmItemArrival from './ConfirmItemArrival';
-import NavigationMenu from '../NavigationMenu';
+import ConfirmItem from '../ConfirmItem';
+import ErrorModal from '../ErrorModal';
 
-import { getConfirmItemArrivalUrl } from '../../constants';
+import {
+  CONFIRM_ITEM_TYPES,
+  getConfirmItemArrivalUrl,
+} from '../../constants';
 
-jest.mock('../NavigationMenu', () => jest.fn((props) => (<div {...props} />)));
+jest.mock('../ConfirmItem', () => jest.fn((props) => (<div {...props} />)));
+jest.mock('../ErrorModal', () => jest.fn((props) => (<div {...props} />)));
 
-const testIds = {
-  confirmItemArrivalPaneSet: 'confirmItemArrivalPaneSet',
-  confirmItemArrivalPane: 'confirmItemArrivalPane',
-};
-const labelIds = {
-  paneTitle: 'ui-requests-mediated.app.confirmItemArrival.paneTitle',
+const messageIds = {
+  paneTitle: 'ui-requests-mediated.confirmItemArrival.paneTitle',
+  title: 'ui-requests-mediated.confirmItem.errorModal.confirmItemArrival.title',
+  message: 'ui-requests-mediated.confirmItem.errorModal.confirmItemArrival.message',
 };
 
 describe('ConfirmItemArrival', () => {
@@ -23,21 +25,22 @@ describe('ConfirmItemArrival', () => {
     render(<ConfirmItemArrival />);
   });
 
-  it('should render pane set', () => {
-    expect(screen.getByTestId(testIds.confirmItemArrivalPaneSet)).toBeInTheDocument();
+  it('should render ConfirmItem with correct props', () => {
+    expect(ConfirmItem).toHaveBeenCalledWith(expect.objectContaining({
+      paneTitle: messageIds.paneTitle,
+      navigationMenuFunction: getConfirmItemArrivalUrl(),
+      confirmItemType: CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL,
+      contentData: [],
+      onSubmit: expect.any(Function),
+    }), {});
   });
 
-  it('should render pane', () => {
-    expect(screen.getByTestId(testIds.confirmItemArrivalPane)).toBeInTheDocument();
-  });
-
-  it('should render pane title', () => {
-    expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
-  });
-
-  it('should trigger navigation menu with correct props', () => {
-    expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
-      value: getConfirmItemArrivalUrl(),
+  it('should render ErrorModal with correct props', () => {
+    expect(ErrorModal).toHaveBeenCalledWith(expect.objectContaining({
+      title: messageIds.title,
+      message: messageIds.message,
+      open: false,
+      onClose: expect.any(Function),
     }), {});
   });
 });

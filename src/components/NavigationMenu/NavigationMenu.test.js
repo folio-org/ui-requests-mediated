@@ -1,6 +1,7 @@
 import { useIntl } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 
+import { useStripes } from '@folio/stripes/core';
 import { Select } from '@folio/stripes/components';
 
 import {
@@ -18,6 +19,7 @@ import {
 import NavigationMenu, {
   getDataOptions,
   handleChangeMenu,
+  isNavigationMenuDisabled,
 } from './NavigationMenu';
 
 const testIds = {
@@ -90,9 +92,18 @@ describe('NavigationMenu', () => {
 
   describe('getDataOptions', () => {
     const intl = useIntl();
+    const stripes = useStripes();
 
     it('should return data options', () => {
-      expect(getDataOptions(intl)).toEqual(dataOptions);
+      expect(getDataOptions(intl, stripes)).toEqual(dataOptions);
+    });
+  });
+
+  describe('isNavigationMenuDisabled', () => {
+    const stripes = useStripes();
+
+    it('should return false when have perm', () => {
+      expect(isNavigationMenuDisabled(stripes)).toBeFalsy();
     });
   });
 
