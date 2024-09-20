@@ -1,5 +1,6 @@
 {
   "meta.title": "Mediated requests",
+  "meta.searchTitle": "Mediated requests - {query} - Search",
 
   "permission.view": "Mediated requests: View",
   "permission.view-create-edit": "Mediated requests: View, create, edit",

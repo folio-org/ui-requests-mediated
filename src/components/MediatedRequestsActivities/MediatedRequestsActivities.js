@@ -4,13 +4,18 @@ import {
   FormattedMessage,
   useIntl,
 } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import {
+  useHistory,
+  useLocation,
+} from 'react-router-dom';
 import { cloneDeep } from 'lodash';
+import { parse } from 'query-string';
 
 import {
   IfPermission,
   AppIcon,
   useCallout,
+  TitleManager,
 } from '@folio/stripes/core';
 import {
   Button,
@@ -223,6 +228,7 @@ const MediatedRequestsActivities = ({
 }) => {
   const [filterPaneIsVisible, setFilterPaneIsVisible] = useState(true);
   const history = useHistory();
+  const location = useLocation();
   const callout = useCallout();
   const [isLoadingReport, setIsLoadingReport] = useState(false);
   const { formatMessage } = useIntl();
@@ -248,28 +254,44 @@ const MediatedRequestsActivities = ({
     );
   };
 
+  const getPageTitle = () => {
+    const query = parse(location.search)?.query;
+
+    if (query) {
+      return formatMessage(
+        { id: 'ui-requests-mediated.meta.searchTitle' },
+        { query },
+      );
+    }
+
+    return formatMessage({ id: 'ui-requests-mediated.meta.title' });
+  };
+
   const mediatedRequests = resources[MEDIATED_REQUESTS_RECORDS_NAME]?.records ?? [];
   const query = queryGetter ? queryGetter() || {} : {};
+  const pageTitle = getPageTitle();
 
   return (
-    <SearchAndSortQuery
-      data-testid="mediatedRequestsActivitiesSearchAndSortQuery"
-      initialSearchState={{ query: '' }}
-      syncToLocationSearch={false}
-      querySetter={querySetter}
-      queryGetter={queryGetter}
-    >
-      {({
-        activeFilters,
-        getSearchHandlers,
-        getFilterHandlers,
-        searchValue,
-        onSort,
-        onSubmitSearch,
-        resetAll,
-      }) => (
-        <Paneset data-testid="mediatedRequestsActivitiesPaneSet">
-          {filterPaneIsVisible &&
+    <>
+      <TitleManager page={pageTitle} />
+      <SearchAndSortQuery
+        data-testid="mediatedRequestsActivitiesSearchAndSortQuery"
+        initialSearchState={{ query: '' }}
+        syncToLocationSearch={false}
+        querySetter={querySetter}
+        queryGetter={queryGetter}
+      >
+        {({
+          activeFilters,
+          getSearchHandlers,
+          getFilterHandlers,
+          searchValue,
+          onSort,
+          onSubmitSearch,
+          resetAll,
+        }) => (
+          <Paneset data-testid="mediatedRequestsActivitiesPaneSet">
+            {filterPaneIsVisible &&
             <Pane
               data-testid="mediatedRequestsActivitiesPane"
               defaultWidth={FILTER_PANE_WIDTH}
@@ -298,51 +320,52 @@ const MediatedRequestsActivities = ({
                 settings={settings}
               />
             </Pane>
-          }
-          <ColumnManager
-            id="mediatedRequestsActivitiesColumnManager"
-            columnMapping={MEDIATED_REQUESTS_RECORD_TRANSLATIONS}
-            excludeKeys={[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]}
-          >
-            {({ renderColumnsMenu, visibleColumns }) => (
-              <Pane
-                defaultWidth="fill"
-                padContent={false}
-                noOverflow
-                appIcon={<AppIcon app={APP_ICON_NAME} />}
-                paneTitle={<FormattedMessage id="ui-requests-mediated.mediatedRequestsActivities.paneTitle" />}
-                paneSub={getResultPaneSub(source)}
-                firstMenu={renderResultsFirstMenu(activeFilters)}
-                actionMenu={
-                  getActionMenu({
-                    renderColumnsMenu,
-                    mediatedRequests,
-                    searchValue,
-                    activeFilters,
-                    reportRecords,
-                    callout,
-                    history,
-                    isLoadingReport,
-                    setIsLoadingReport,
-                    formatMessage,
-                  })
-                }
-              >
-                <MediatedRequestsList
-                  visibleColumns={visibleColumns}
-                  contentData={mediatedRequests}
-                  source={source}
-                  query={query}
-                  onSort={onSort}
-                  onNeedMoreData={onNeedMoreData}
-                />
-              </Pane>
-            )}
-          </ColumnManager>
-          { children }
-        </Paneset>
-      )}
-    </SearchAndSortQuery>
+            }
+            <ColumnManager
+              id="mediatedRequestsActivitiesColumnManager"
+              columnMapping={MEDIATED_REQUESTS_RECORD_TRANSLATIONS}
+              excludeKeys={[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]}
+            >
+              {({ renderColumnsMenu, visibleColumns }) => (
+                <Pane
+                  defaultWidth="fill"
+                  padContent={false}
+                  noOverflow
+                  appIcon={<AppIcon app={APP_ICON_NAME} />}
+                  paneTitle={<FormattedMessage id="ui-requests-mediated.mediatedRequestsActivities.paneTitle" />}
+                  paneSub={getResultPaneSub(source)}
+                  firstMenu={renderResultsFirstMenu(activeFilters)}
+                  actionMenu={
+                    getActionMenu({
+                      renderColumnsMenu,
+                      mediatedRequests,
+                      searchValue,
+                      activeFilters,
+                      reportRecords,
+                      callout,
+                      history,
+                      isLoadingReport,
+                      setIsLoadingReport,
+                      formatMessage,
+                    })
+                  }
+                >
+                  <MediatedRequestsList
+                    visibleColumns={visibleColumns}
+                    contentData={mediatedRequests}
+                    source={source}
+                    query={query}
+                    onSort={onSort}
+                    onNeedMoreData={onNeedMoreData}
+                  />
+                </Pane>
+              )}
+            </ColumnManager>
+            { children }
+          </Paneset>
+        )}
+      </SearchAndSortQuery>
+    </>
   );
 };
 
