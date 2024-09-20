@@ -1,6 +1,7 @@
 import {
   MemoryRouter,
   useHistory,
+  useLocation,
 } from 'react-router-dom';
 
 import {
@@ -13,6 +14,7 @@ import {
   exportToCsv,
   filters2cql,
 } from '@folio/stripes/components';
+import { TitleManager } from '@folio/stripes/core';
 
 import MediatedRequestsActivities, {
   getActionMenu,
@@ -42,6 +44,8 @@ const labelIds = {
   reportPendingButton: 'ui-requests-mediated.mediatedRequestList.actionMenu.reportPending',
   searchCriteria: 'stripes-smart-components.searchCriteria',
   searchResultsCount: 'stripes-smart-components.searchResultsCountHeader',
+  pageTitle: 'ui-requests-mediated.meta.title',
+  searchTitle: 'ui-requests-mediated.meta.searchTitle',
 };
 
 jest.mock('@folio/stripes/smart-components', () => ({
@@ -61,6 +65,9 @@ jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: jest.fn(),
   useHistory: jest.fn(),
+}));
+jest.mock('query-string', () => ({
+  parse: jest.fn(search => search),
 }));
 jest.mock('../../utils', () => ({
   ...jest.requireActual('../../utils'),
@@ -87,50 +94,88 @@ describe('MediatedRequestsActivities', () => {
     totalCount: jest.fn(),
   };
   const settings = {};
+  const basicProps = {
+    querySetter,
+    queryGetter,
+    source,
+    resources,
+    mutator,
+    settings,
+  };
 
-  beforeEach(() => {
-    useHistory.mockReturnValueOnce({ push: jest.fn() });
+  describe('When search term is entered', () => {
+    const query = 'searchQuery';
 
-    render(
-      <MemoryRouter>
+    beforeEach(() => {
+      useLocation.mockReturnValueOnce({
+        search: {
+          query,
+        },
+      });
+      useHistory.mockReturnValueOnce({ push: jest.fn() });
+
+      render(
+        <MemoryRouter>
+          <MediatedRequestsActivities
+            {...basicProps}
+          />
+        </MemoryRouter>
+      );
+    });
+
+    it('should trigger TitleManager with correct props', () => {
+      expect(TitleManager).toHaveBeenCalledWith({
+        page: labelIds.searchTitle,
+      }, {});
+    });
+
+    it('should render search and sort query', () => {
+      expect(screen.getByTestId(testIds.mediatedRequestsActivitiesSearchAndSortQuery)).toBeInTheDocument();
+    });
+
+    it('should render pane set', () => {
+      expect(screen.getByTestId(testIds.mediatedRequestsActivitiesPaneSet)).toBeInTheDocument();
+    });
+
+    it('should render pane', () => {
+      expect(screen.getByTestId(testIds.mediatedRequestsActivitiesPane)).toBeInTheDocument();
+    });
+
+    it('should render pane title', () => {
+      expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
+    });
+
+    it('should trigger navigation menu with correct props', () => {
+      expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
+        value: getMediatedRequestsActivitiesUrl(),
+      }), {});
+    });
+
+    it('should trigger mediated requests filters with correct props', () => {
+      expect(MediatedRequestsFilters).toHaveBeenCalledWith(expect.objectContaining({
+        settings,
+      }), {});
+    });
+  });
+
+  describe('When search term is not entered', () => {
+    beforeEach(() => {
+      useLocation.mockReturnValueOnce({
+        search: '',
+      });
+
+      render(
         <MediatedRequestsActivities
-          querySetter={querySetter}
-          queryGetter={queryGetter}
-          source={source}
-          resources={resources}
-          mutator={mutator}
-          settings={settings}
+          {...basicProps}
         />
-      </MemoryRouter>
-    );
-  });
+      );
+    });
 
-  it('should render search and sort query', () => {
-    expect(screen.getByTestId(testIds.mediatedRequestsActivitiesSearchAndSortQuery)).toBeInTheDocument();
-  });
-
-  it('should render pane set', () => {
-    expect(screen.getByTestId(testIds.mediatedRequestsActivitiesPaneSet)).toBeInTheDocument();
-  });
-
-  it('should render pane', () => {
-    expect(screen.getByTestId(testIds.mediatedRequestsActivitiesPane)).toBeInTheDocument();
-  });
-
-  it('should render pane title', () => {
-    expect(screen.getByText(labelIds.paneTitle)).toBeVisible();
-  });
-
-  it('should trigger navigation menu with correct props', () => {
-    expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
-      value: getMediatedRequestsActivitiesUrl(),
-    }), {});
-  });
-
-  it('should trigger mediated requests filters with correct props', () => {
-    expect(MediatedRequestsFilters).toHaveBeenCalledWith(expect.objectContaining({
-      settings,
-    }), {});
+    it('should trigger TitleManager with correct props', () => {
+      expect(TitleManager).toHaveBeenCalledWith({
+        page: labelIds.pageTitle,
+      }, {});
+    });
   });
 });
 
