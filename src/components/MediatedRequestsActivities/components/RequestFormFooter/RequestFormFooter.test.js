@@ -8,8 +8,8 @@ import RequestFormFooter from './RequestFormFooter';
 
 const basicProps = {
   onCancel: jest.fn(),
-  isSubmittingDisabled: false,
-  footerClass: 'footerClass',
+  isSaveAndCloseButtonDisabled: false,
+  isConfirmButtonDisabled: false,
 };
 const labelIds = {
   cancelButton: 'ui-requests-mediated.form.cancelButton',

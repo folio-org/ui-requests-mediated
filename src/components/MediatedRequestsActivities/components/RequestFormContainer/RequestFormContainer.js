@@ -138,6 +138,8 @@ const RequestFormContainer = ({
   const handleSubmit = (data) => {
     const requestData = cloneDeep(data);
     const userData = requestData.requester;
+    const isSaveAndCloseAction = submitInitiator === SAVE_BUTTON_ID;
+    const requestUrl = isSaveAndCloseAction ? 'requests-mediated/mediated-requests' : 'circulation-bff/mediated-requests/confirm';
 
     requestData.requestDate = moment.tz(intl.timeZone).toISOString();
     requestData.requestLevel = getRequestLevelValue(requestData.createTitleLevelRequest);
@@ -171,12 +173,12 @@ const RequestFormContainer = ({
     unset(requestData, 'keyOfInstanceIdField');
     unset(requestData, 'keyOfRequestTypeField');
 
-    return ky.post('circulation/requests', {
-      json: { ...requestData },
+    return ky.post(requestUrl, {
+      json: requestData,
     })
       .json()
-      .then(() => {
-        if (submitInitiator === SAVE_BUTTON_ID) {
+      .then((res) => {
+        if (isSaveAndCloseAction) {
           callout.sendCallout({
             message: <FormattedMessage id="ui-requests-mediated.form.saveRequest.success" />,
           });
@@ -195,7 +197,9 @@ const RequestFormContainer = ({
           });
         }
 
-        handleClose();
+        const url = `${getMediatedRequestsActivitiesUrl()}/preview/${res.id}`;
+
+        history.push(url);
       })
       .catch(() => {
         callout.sendCallout({

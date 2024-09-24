@@ -672,6 +672,7 @@ class RequestForm extends React.Component {
     }
 
     this.setState({ isRequestTypeLoading: true });
+    this.resetDeliveryPoint();
 
     findResource(RESOURCE_TYPES.REQUEST_TYPES, requestParams)
       .then(requestTypes => {
@@ -683,6 +684,8 @@ class RequestForm extends React.Component {
         } else {
           this.setState({ isRequestTypesReceived: true }, this.triggerRequestTypeValidation);
         }
+
+        console.log('PROPS: ', this.props);
       })
       .catch(() => {
         this.setState({ requestTypes: {} });
@@ -708,6 +711,13 @@ class RequestForm extends React.Component {
       this.updateRequestPreferencesFields();
     });
   }
+
+  resetDeliveryPoint = () => {
+    const { form } = this.props;
+
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, '');
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, '');
+  };
 
   sendData = (isValidationRequired) => {
     const {
@@ -786,6 +796,8 @@ class RequestForm extends React.Component {
       deliveryLocations,
       deliveryLocationsDetail,
     } = getDeliveryInformation(requester, addressTypes);
+    const isSaveAndCloseButtonDisabled = isSubmittingDisabled || !(isTitleLevelRequest ? selectedInstance?.id : selectedItem?.id) || !selectedUser?.id;
+    const isConfirmButtonDisabled = isSaveAndCloseButtonDisabled || !(deliverySelected ? (values?.requestType && values?.deliveryAddressTypeId) : values?.pickupServicePointId);
 
     if (selectedAddressTypeId) {
       addressDetail = <AddressDetails address={deliveryLocationsDetail[selectedAddressTypeId]} />;
@@ -814,8 +826,8 @@ class RequestForm extends React.Component {
               footer={
                 <RequestFormFooter
                   onCancel={onCancel}
-                  isSubmittingDisabled={isSubmittingDisabled}
-                  footerClass={css.footerContent}
+                  isSaveAndCloseButtonDisabled={isSaveAndCloseButtonDisabled}
+                  isConfirmButtonDisabled={isConfirmButtonDisabled}
                 />
               }
             >

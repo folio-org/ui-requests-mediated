@@ -209,7 +209,7 @@ describe('RequestFormContainer', () => {
 
         it('should send correct data to save', () => {
           const expectedArguments = [
-            'circulation/requests',
+            'requests-mediated/mediated-requests',
             {
               json: expect.objectContaining({
                 itemId: basicDataToSend.itemId,
@@ -248,7 +248,7 @@ describe('RequestFormContainer', () => {
 
         it('should send correct data to save', () => {
           const expectedArguments = [
-            'circulation/requests',
+            'requests-mediated/mediated-requests',
             {
               json: expect.objectContaining({
                 deliveryAddressTypeId: dataToSubmit.deliveryAddressTypeId,

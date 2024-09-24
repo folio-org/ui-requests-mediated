@@ -189,8 +189,21 @@ jest.mock('@folio/stripes/components', () => ({
       </div>
     );
   }),
-  PaneFooter: jest.fn(({ ref, children, ...rest }) => (
-    <div ref={ref} {...rest}>{children}</div>
+  PaneFooter: jest.fn(({
+    ref,
+    children,
+    renderStart,
+    renderEnd,
+    ...rest
+  }) => (
+    <div
+      ref={ref}
+      {...rest}
+    >
+      {renderStart}
+      {renderEnd}
+      {children}
+    </div>
   )),
   PaneHeader: jest.fn(({ paneTitle, firstMenu, lastMenu }) => (
     <div>
