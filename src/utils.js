@@ -367,3 +367,25 @@ export const modifyRecordsToExport = (records) => {
     return record;
   });
 };
+
+export const handleConfirmItemSubmit = async (itemBarcode, confirmItemState, confirmItemProps) => {
+  const {
+    contentData,
+    setContentData,
+    setIsErrorModalOpen,
+  } = confirmItemState;
+  const {
+    ky,
+    url,
+  } = confirmItemProps;
+
+  await ky.post(url, {
+    json: { itemBarcode },
+  }).json()
+    .then((resp) => {
+      setContentData([resp].concat(contentData));
+    })
+    .catch(() => {
+      setIsErrorModalOpen(true);
+    });
+};
