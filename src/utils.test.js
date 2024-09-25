@@ -39,6 +39,7 @@ import {
   getFullNameForCsvRecords,
   getDeliveryAddressForCsvRecords,
   modifyRecordsToExport,
+  handleConfirmItemSubmit,
 } from './utils';
 import {
   FULFILMENT_TYPES,
@@ -1016,5 +1017,53 @@ describe('utils', () => {
 
       expect(modifyRecordsToExport(records)).toEqual(expectedResult);
     });
+  });
+});
+
+describe('handleConfirmItemSubmit', () => {
+  const itemBarcode = '7777777';
+  const response = {
+    id: '10',
+  };
+  const ky = {
+    post: jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue(response) }),
+  };
+  const confirmItemState = {
+    contentData: [],
+    setContentData: jest.fn(),
+    setIsErrorModalOpen: jest.fn(),
+  };
+  const confirmItemProps = {
+    ky,
+    url: 'confirm-item-props-url',
+  };
+
+  it('should trigger "ky.post" with correct props', async () => {
+    await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemProps);
+
+    expect(ky.post).toHaveBeenCalledWith('confirm-item-props-url', {
+      json: {
+        itemBarcode,
+      },
+    });
+  });
+
+  it('should trigger "setContentData" on success', async () => {
+    await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemProps);
+
+    expect(confirmItemState.setContentData).toHaveBeenCalledWith([response]);
+  });
+
+  it('should trigger "setIsErrorModalOpen" on errors', async () => {
+    const confirmItemPropsWithErrors = {
+      ...confirmItemProps,
+      ky: {
+        post: jest.fn().mockReturnValue({ json: jest.fn().mockRejectedValue('errors') }),
+      },
+    };
+
+    await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemPropsWithErrors);
+
+    expect(confirmItemState.setIsErrorModalOpen).toHaveBeenCalledWith(true);
   });
 });
