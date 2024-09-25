@@ -253,7 +253,7 @@ describe('MediatedRequestsDetail', () => {
   });
 
   describe('isEditAndConfirmButtonVisible', () => {
-    it('should return true when user have view-confirm and view-create-edit', () => {
+    it('should return true when user has view-confirm and view-create-edit', () => {
       const stripes = {
         hasPerm: (currentPerm) => {
           const hasPerm = {
@@ -268,7 +268,7 @@ describe('MediatedRequestsDetail', () => {
       expect(isEditAndConfirmButtonVisible(stripes)).toBe(true);
     });
 
-    it('should return true when user have view-confirm', () => {
+    it('should return true when user has view-confirm', () => {
       const stripes = {
         hasPerm: (currentPerm) => {
           const hasPerm = {
@@ -283,7 +283,7 @@ describe('MediatedRequestsDetail', () => {
       expect(isEditAndConfirmButtonVisible(stripes)).toBe(true);
     });
 
-    it('should return true when user have view-create-edit', () => {
+    it('should return true when user has view-create-edit', () => {
       const stripes = {
         hasPerm: (currentPerm) => {
           const hasPerm = {
@@ -298,7 +298,7 @@ describe('MediatedRequestsDetail', () => {
       expect(isEditAndConfirmButtonVisible(stripes)).toBe(true);
     });
 
-    it('should return false when user do not have view-confirm and view-create-edit', () => {
+    it('should return false when user does not have view-confirm and view-create-edit', () => {
       const stripes = {
         hasPerm: (currentPerm) => {
           const hasPerm = {
