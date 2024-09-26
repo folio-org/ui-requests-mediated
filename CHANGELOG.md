@@ -29,6 +29,7 @@
 * Update upload-artifact actions from v1 and v2 to v4. Refs UIREQMED-43.
 * Update HTML page title with search term entered. Refs UIREQMED-17.
 * Mediated requests activities - Add Content for Send item in transit. Refs UIREQMED-9.
+* Update Mediated requests permissions in Closed stories. Refs UIREQMED-36.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.
