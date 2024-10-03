@@ -204,5 +204,5 @@
     "confirmItemList.columnName.mediatedRequestStatus": "Status da solicitação mediada",
     "confirmItemList.columnName.requester": "Solicitante",
     "confirmItemList.columnName.requesterBarcode": "Código de barras do solicitante",
-    "meta.searchTitle": "Mediated requests - {query} - Search"
+    "meta.searchTitle": "Solicitações mediadas - {query} - Buscar"
 }

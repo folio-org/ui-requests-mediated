@@ -5,7 +5,9 @@ import {
 import { NotesSmartAccordion } from '@folio/stripes/smart-components';
 import { TitleManager } from '@folio/stripes/core';
 
-import MediatedRequestsDetail from './MediatedRequestsDetail';
+import MediatedRequestsDetail, {
+  isEditAndConfirmButtonVisible,
+} from './MediatedRequestsDetail';
 import TitleInformation from '../TitleInformation';
 import MediatedRequestInformation from '../MediatedRequestInformation';
 import ItemDetail from '../ItemDetail';
@@ -247,6 +249,68 @@ describe('MediatedRequestsDetail', () => {
       const noItemInfoMessage = screen.getByText(labelIds.noItemInformation);
 
       expect(noItemInfoMessage).toBeInTheDocument();
+    });
+  });
+
+  describe('isEditAndConfirmButtonVisible', () => {
+    it('should return true when user has view-confirm and view-create-edit', () => {
+      const stripes = {
+        hasPerm: (currentPerm) => {
+          const hasPerm = {
+            'ui-requests-mediated.view-confirm': true,
+            'ui-requests-mediated.view-create-edit': true,
+          };
+
+          return hasPerm[currentPerm];
+        },
+      };
+
+      expect(isEditAndConfirmButtonVisible(stripes)).toBe(true);
+    });
+
+    it('should return true when user has view-confirm', () => {
+      const stripes = {
+        hasPerm: (currentPerm) => {
+          const hasPerm = {
+            'ui-requests-mediated.view-confirm': true,
+            'ui-requests-mediated.view-create-edit': false,
+          };
+
+          return hasPerm[currentPerm];
+        },
+      };
+
+      expect(isEditAndConfirmButtonVisible(stripes)).toBe(true);
+    });
+
+    it('should return true when user has view-create-edit', () => {
+      const stripes = {
+        hasPerm: (currentPerm) => {
+          const hasPerm = {
+            'ui-requests-mediated.view-confirm': false,
+            'ui-requests-mediated.view-create-edit': true,
+          };
+
+          return hasPerm[currentPerm];
+        },
+      };
+
+      expect(isEditAndConfirmButtonVisible(stripes)).toBe(true);
+    });
+
+    it('should return false when user does not have view-confirm and view-create-edit', () => {
+      const stripes = {
+        hasPerm: (currentPerm) => {
+          const hasPerm = {
+            'ui-requests-mediated.view-confirm': false,
+            'ui-requests-mediated.view-create-edit': false,
+          };
+
+          return hasPerm[currentPerm];
+        },
+      };
+
+      expect(isEditAndConfirmButtonVisible(stripes)).toBe(false);
     });
   });
 });
