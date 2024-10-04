@@ -53,7 +53,7 @@ class ItemInformation extends Component {
     };
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps) {
     const {
       isItemFromItemsDialog,
       selectedItem,

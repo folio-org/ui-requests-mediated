@@ -87,6 +87,7 @@ class RequestForm extends React.Component {
     form: PropTypes.object.isRequired,
     onSetSelectedItem: PropTypes.func.isRequired,
     onSetSelectedUser: PropTypes.func.isRequired,
+    onSetSelectedProxy: PropTypes.func.isRequired,
     onSetSelectedInstance: PropTypes.func.isRequired,
     pristine: PropTypes.bool,
     submitting: PropTypes.bool,

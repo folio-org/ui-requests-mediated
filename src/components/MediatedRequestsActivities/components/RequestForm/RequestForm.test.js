@@ -30,6 +30,7 @@ const basicProps = {
   onCancel: jest.fn(),
   onSetSelectedItem: jest.fn(),
   onSetSelectedUser: jest.fn(),
+  onSetSelectedProxy: jest.fn(),
   onSetSelectedInstance: jest.fn(),
   request: {},
   initialValues: {},

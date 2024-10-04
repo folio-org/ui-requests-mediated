@@ -56,6 +56,10 @@ import {
 
 const DETAIL_PANE_WIDTH = '44%';
 
+export const isEditAndConfirmButtonVisible = (stripes) => (
+  stripes.hasPerm('ui-requests-mediated.view-confirm') || stripes.hasPerm('ui-requests-mediated.view-create-edit')
+);
+
 const MediatedRequestsDetail = ({
   stripes,
   patronGroups,
@@ -74,7 +78,7 @@ const MediatedRequestsDetail = ({
 
   const isActionMenuVisible = () => (
     get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS], DEFAULT_VIEW_VALUE) === MEDIATED_REQUEST_STATUS.NEW_AWAITING_CONFIRMATION
-      ? stripes.hasPerm('ui-requests-mediated.view-create-edit') || stripes.hasPerm('ui-requests-mediated.view-decline')
+      ? stripes.hasPerm('ui-requests-mediated.view-confirm') || stripes.hasPerm('ui-requests-mediated.view-create-edit') || stripes.hasPerm('ui-requests-mediated.view-decline')
       : false
   );
   const showActionMenu = isActionMenuVisible();
@@ -86,7 +90,7 @@ const MediatedRequestsDetail = ({
   const actionMenu = ({ onToggle }) => {
     return (
       <>
-        <IfPermission perm="ui-requests-mediated.view-create-edit">
+        {isEditAndConfirmButtonVisible(stripes) &&
           <Button
             buttonStyle="dropdownItem"
             marginBottom0
@@ -96,7 +100,7 @@ const MediatedRequestsDetail = ({
               <FormattedMessage id="ui-requests-mediated.mediatedRequestDetails.actionMenu.editAndConfirm" />
             </Icon>
           </Button>
-        </IfPermission>
+        }
         <IfPermission perm="ui-requests-mediated.view-decline">
           <Button
             buttonStyle="dropdownItem"

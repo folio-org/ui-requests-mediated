@@ -53,7 +53,7 @@ class InstanceInformation extends Component {
     };
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps) {
     const {
       isInstanceFromItem,
       selectedInstance,
