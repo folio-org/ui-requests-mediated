@@ -37,6 +37,7 @@ class ItemInformation extends Component {
     submitting: PropTypes.bool.isRequired,
     isItemIdRequest: PropTypes.bool.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
+    isItemFromItemsDialog: PropTypes.bool.isRequired,
     selectedLoan: PropTypes.object,
     selectedItem: PropTypes.object,
   };
@@ -50,6 +51,17 @@ class ItemInformation extends Component {
       isItemBlurred: false,
       validatedBarcode: null,
     };
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    const {
+      isItemFromItemsDialog,
+      selectedItem,
+    } = this.props;
+
+    if (isItemFromItemsDialog && isItemFromItemsDialog !== prevProps.isItemFromItemsDialog) {
+      this.setState({ validatedBarcode: selectedItem.barcode });
+    }
   }
 
   validate = memoizeValidation(async (barcode) => {
@@ -102,10 +114,14 @@ class ItemInformation extends Component {
   };
 
   handleBlur = (input) => () => {
-    const { triggerValidation } = this.props;
+    const {
+      triggerValidation,
+      onSetSelectedItem,
+    } = this.props;
     const { validatedBarcode } = this.state;
 
     if (input.value && input.value !== validatedBarcode) {
+      onSetSelectedItem(null);
       this.setState({
         shouldValidate: true,
         isItemBlurred: true,
@@ -115,6 +131,7 @@ class ItemInformation extends Component {
         triggerValidation();
       });
     } else if (!input.value) {
+      onSetSelectedItem(null);
       input.onBlur();
     }
   }
@@ -142,7 +159,10 @@ class ItemInformation extends Component {
       findItem(RESOURCE_KEYS.BARCODE, barcode);
 
       if (eventKey === ENTER_EVENT_KEY) {
-        this.setState({ shouldValidate: true }, triggerValidation);
+        this.setState({
+          shouldValidate: true,
+          validatedBarcode: barcode,
+        }, triggerValidation);
       }
     }
   }
