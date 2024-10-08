@@ -39,6 +39,7 @@ const basicProps = {
   findUser: jest.fn(() => null),
   getUserValidationData: jest.fn(() => null),
   onSetSelectedUser: jest.fn(),
+  onSetSelectedProxy: jest.fn(),
   form: {
     change: jest.fn(),
   },

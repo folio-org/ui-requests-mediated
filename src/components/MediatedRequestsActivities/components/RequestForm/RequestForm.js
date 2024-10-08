@@ -87,6 +87,7 @@ class RequestForm extends React.Component {
     form: PropTypes.object.isRequired,
     onSetSelectedItem: PropTypes.func.isRequired,
     onSetSelectedUser: PropTypes.func.isRequired,
+    onSetSelectedProxy: PropTypes.func.isRequired,
     onSetSelectedInstance: PropTypes.func.isRequired,
     pristine: PropTypes.bool,
     submitting: PropTypes.bool,
@@ -94,6 +95,7 @@ class RequestForm extends React.Component {
     selectedItem: PropTypes.object,
     selectedInstance: PropTypes.object,
     selectedUser: PropTypes.object,
+    selectedProxy: PropTypes.object,
   };
 
   static defaultProps = {
@@ -113,10 +115,11 @@ class RequestForm extends React.Component {
     const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.items[0]?.value);
 
     this.state = {
-      proxy: null,
       selectedLoan: loan,
       isItemOrInstanceLoading: false,
       isItemsDialogOpen: false,
+      isItemFromItemsDialog: false, // is item received from items dialog
+      isInstanceFromItem: false, // is instance received after clicking on TLR checkbox
       isItemIdRequest: this.isItemIdProvided(),
       requestTypes: {},
       isRequestTypesReceived: false,
@@ -233,14 +236,15 @@ class RequestForm extends React.Component {
     const {
       form,
       selectedUser,
+      onSetSelectedProxy,
     } = this.props;
 
     if (selectedUser.id !== proxy.id) {
       this.setState({
-        proxy,
         requestTypes: {},
         isRequestTypesReceived: false,
       });
+      onSetSelectedProxy(proxy);
       form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, proxy.id);
       form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, selectedUser.id);
       this.findRequestPreferences(proxy.id);
@@ -249,7 +253,7 @@ class RequestForm extends React.Component {
   }
 
   handleCloseProxy = () => {
-    this.setState({ proxy: null });
+    this.props.onSetSelectedProxy(null);
   };
 
   findUser = (fieldName, value) => {
@@ -257,14 +261,15 @@ class RequestForm extends React.Component {
       form,
       findResource,
       onSetSelectedUser,
+      onSetSelectedProxy,
     } = this.props;
 
     this.setState({
       isUserLoading: true,
       requestTypes: {},
       isRequestTypesReceived: false,
-      proxy: null,
     });
+    onSetSelectedProxy(null);
 
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
@@ -348,19 +353,20 @@ class RequestForm extends React.Component {
   findItem = (key, value, isBarcodeRequired = false) => {
     const {
       isItemOrInstanceLoading,
-      proxy,
     } = this.state;
     const {
       findResource,
       form,
       onSetSelectedItem,
       selectedUser,
+      selectedProxy,
     } = this.props;
 
     this.setState({
       isItemOrInstanceLoading: true,
       requestTypes: {},
       isRequestTypesReceived: false,
+      isItemFromItemsDialog: false,
     });
 
     return findResource(RESOURCE_TYPES.ITEM, value, key)
@@ -388,7 +394,7 @@ class RequestForm extends React.Component {
       })
       .then(item => {
         if (item && selectedUser?.id) {
-          const requester = getRequester(proxy, selectedUser);
+          const requester = getRequester(selectedProxy, selectedUser);
           this.findRequestTypes(item.id, requester.id, ID_TYPE_MAP.ITEM_ID);
         }
 
@@ -418,19 +424,20 @@ class RequestForm extends React.Component {
   findInstance = async (instanceId) => {
     const {
       isItemOrInstanceLoading,
-      proxy,
     } = this.state;
     const {
       findResource,
       form,
       onSetSelectedInstance,
       selectedUser,
+      selectedProxy,
     } = this.props;
 
     this.setState({
       isItemOrInstanceLoading: true,
       requestTypes: {},
       isRequestTypesReceived: false,
+      isInstanceFromItem: false,
     });
 
     return findResource(RESOURCE_TYPES.INSTANCE, instanceId)
@@ -454,7 +461,7 @@ class RequestForm extends React.Component {
       })
       .then(instance => {
         if (instance && selectedUser?.id) {
-          const requester = getRequester(proxy, selectedUser);
+          const requester = getRequester(selectedProxy, selectedUser);
           this.findRequestTypes(instance.id, requester.id, ID_TYPE_MAP.INSTANCE_ID);
         }
 
@@ -525,7 +532,10 @@ class RequestForm extends React.Component {
       });
 
       if (selectedItem) {
-        this.findInstance(selectedItem.instanceId);
+        this.findInstance(selectedItem.instanceId)
+          .then(() => {
+            this.setState({ isInstanceFromItem: true });
+          });
       }
 
       onSetSelectedItem(undefined);
@@ -569,7 +579,10 @@ class RequestForm extends React.Component {
       this.setState({ isItemIdRequest: false });
     }
 
-    this.findItem(RESOURCE_KEYS.ID, item.id, isBarcodeRequired);
+    this.findItem(RESOURCE_KEYS.ID, item.id, isBarcodeRequired)
+      .then(() => {
+        this.setState({ isItemFromItemsDialog: true });
+      });
   }
 
   handleCancelAndClose = () => {
@@ -672,6 +685,7 @@ class RequestForm extends React.Component {
     }
 
     this.setState({ isRequestTypeLoading: true });
+    this.resetDeliveryPoint();
 
     findResource(RESOURCE_TYPES.REQUEST_TYPES, requestParams)
       .then(requestTypes => {
@@ -708,6 +722,13 @@ class RequestForm extends React.Component {
       this.updateRequestPreferencesFields();
     });
   }
+
+  resetDeliveryPoint = () => {
+    const { form } = this.props;
+
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, '');
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, '');
+  };
 
   sendData = (isValidationRequired) => {
     const {
@@ -752,7 +773,8 @@ class RequestForm extends React.Component {
       hasDelivery,
       defaultDeliveryAddressTypeId,
       shouldValidate,
-      proxy,
+      isItemFromItemsDialog,
+      isInstanceFromItem,
     } = this.state;
     const {
       handleSubmit,
@@ -762,6 +784,7 @@ class RequestForm extends React.Component {
       submitting,
       selectedItem,
       selectedUser,
+      selectedProxy,
       selectedInstance,
       values,
       onCancel,
@@ -769,12 +792,13 @@ class RequestForm extends React.Component {
       onSetSelectedItem,
       onSetSelectedInstance,
       onSetSelectedUser,
+      onSetSelectedProxy,
       addressTypes,
     } = this.props;
     let addressDetail;
     const isEditForm = isFormEditing(request);
     const { createTitleLevelRequest } = values;
-    const requester = getRequester(proxy, selectedUser);
+    const requester = getRequester(selectedProxy, selectedUser);
     const patronGroup = getPatronGroup(requester, patronGroups);
     const isSubmittingDisabled = isSubmittingButtonDisabled(pristine, submitting);
     const isTitleLevelRequest = createTitleLevelRequest || request?.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE;
@@ -786,6 +810,8 @@ class RequestForm extends React.Component {
       deliveryLocations,
       deliveryLocationsDetail,
     } = getDeliveryInformation(requester, addressTypes);
+    const isSaveAndCloseButtonDisabled = isSubmittingDisabled || !(isTitleLevelRequest ? selectedInstance?.id : selectedItem?.id) || !selectedUser?.id;
+    const isConfirmButtonDisabled = isSaveAndCloseButtonDisabled || !values?.requestType || !(deliverySelected ? values?.deliveryAddressTypeId : values?.pickupServicePointId);
 
     if (selectedAddressTypeId) {
       addressDetail = <AddressDetails address={deliveryLocationsDetail[selectedAddressTypeId]} />;
@@ -814,8 +840,8 @@ class RequestForm extends React.Component {
               footer={
                 <RequestFormFooter
                   onCancel={onCancel}
-                  isSubmittingDisabled={isSubmittingDisabled}
-                  footerClass={css.footerContent}
+                  isSaveAndCloseButtonDisabled={isSaveAndCloseButtonDisabled}
+                  isConfirmButtonDisabled={isConfirmButtonDisabled}
                 />
               }
             >
@@ -850,6 +876,7 @@ class RequestForm extends React.Component {
                           <InstanceInformation
                             request={request}
                             selectedInstance={selectedInstance}
+                            isInstanceFromItem={isInstanceFromItem}
                             triggerValidation={this.triggerInstanceIdValidation}
                             findInstance={this.findInstance}
                             getInstanceValidationData={this.getInstanceValidationData}
@@ -871,6 +898,7 @@ class RequestForm extends React.Component {
                             request={request}
                             form={form}
                             selectedItem={selectedItem}
+                            isItemFromItemsDialog={isItemFromItemsDialog}
                             isItemIdRequest={isItemIdRequest}
                             triggerValidation={this.triggerItemBarcodeValidation}
                             findItem={this.findItem}
@@ -896,12 +924,13 @@ class RequestForm extends React.Component {
                       values={values}
                       selectedUser={selectedUser}
                       onSetSelectedUser={onSetSelectedUser}
+                      onSetSelectedProxy={onSetSelectedProxy}
                       patronGroup={patronGroup}
                       isLoading={isUserLoading}
                       findUser={this.findUser}
                       selectProxy={this.selectProxy}
                       handleCloseProxy={this.handleCloseProxy}
-                      proxy={proxy}
+                      proxy={selectedProxy}
                       getUserValidationData={this.getUserValidationData}
                       triggerUserBarcodeValidation={this.triggerUserBarcodeValidation}
                       enterButtonClass={css.enterButton}

@@ -24,6 +24,8 @@ import {
   DEFAULT_REQUEST_TYPE_VALUE,
   FULFILMENT_TYPES,
   MEDIATED_REQUEST_LEVEL,
+  MEDIATED_REQUEST_TYPES,
+  SAVE_BUTTON_ID,
 } from '../../../../constants';
 
 const basicProps = {
@@ -87,10 +89,26 @@ jest.mock('../RequestForm', () => jest.fn(({
   );
 }));
 
-const mockSubmitFunctionality = (dataToSubmit) => {
-  RequestForm.mockImplementationOnce(({
+const mockedProxy = {
+  personal: {
+    firstName: 'proxyFirstName',
+    lastName: 'proxyLastName',
+  },
+};
+const mockSubmitFunctionality = (dataToSubmit, isSavingRequest, isProxy) => {
+  RequestForm.mockImplementation(({
     onSubmit,
+    onSetSubmitInitiator,
+    onSetSelectedProxy,
   }) => {
+    if (isSavingRequest) {
+      onSetSubmitInitiator(SAVE_BUTTON_ID);
+    }
+
+    if (isProxy) {
+      onSetSelectedProxy(mockedProxy);
+    }
+
     const submitData = () => {
       onSubmit(dataToSubmit);
     };
@@ -120,6 +138,10 @@ const mockSubmitFunctionality = (dataToSubmit) => {
 };
 
 describe('RequestFormContainer', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('Component', () => {
     describe('Initial render', () => {
       const history = {
@@ -153,6 +175,7 @@ describe('RequestFormContainer', () => {
           onSubmit: expect.any(Function),
           onCancel: expect.any(Function),
           onSetSubmitInitiator: expect.any(Function),
+          onSetSelectedProxy: expect.any(Function),
           addressTypes,
         };
 
@@ -194,6 +217,7 @@ describe('RequestFormContainer', () => {
             lastName: 'lastName',
           },
         },
+        requestType: MEDIATED_REQUEST_TYPES.HOLD,
       };
 
       describe('When fulfilment preference is hold shelf', () => {
@@ -209,7 +233,7 @@ describe('RequestFormContainer', () => {
 
         it('should send correct data to save', () => {
           const expectedArguments = [
-            'circulation/requests',
+            'circulation-bff/mediated-requests/confirm',
             {
               json: expect.objectContaining({
                 itemId: basicDataToSend.itemId,
@@ -248,7 +272,7 @@ describe('RequestFormContainer', () => {
 
         it('should send correct data to save', () => {
           const expectedArguments = [
-            'circulation/requests',
+            'circulation-bff/mediated-requests/confirm',
             {
               json: expect.objectContaining({
                 deliveryAddressTypeId: dataToSubmit.deliveryAddressTypeId,
@@ -269,7 +293,68 @@ describe('RequestFormContainer', () => {
         });
       });
 
-      describe('When error saving issue', () => {
+      describe('When request type is not provided', () => {
+        const dataToSubmit = {
+          ...basicDataToSend,
+          requestType: undefined,
+          requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
+        };
+
+        beforeEach(() => {
+          mockSubmitFunctionality(dataToSubmit);
+        });
+
+        it('should send correct data to save', () => {
+          const expectedArguments = [
+            'circulation-bff/mediated-requests/confirm',
+            {
+              json: expect.objectContaining({
+                itemId: basicDataToSend.itemId,
+                item: basicDataToSend.item,
+                requestDate: expect.any(String),
+                requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
+              }),
+            }
+          ];
+
+          expect(useOkapiKy().post).toHaveBeenCalledWith(...expectedArguments);
+        });
+      });
+
+      describe('When request saving for proxy user', () => {
+        const dataToSubmit = {
+          ...basicDataToSend,
+          requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
+        };
+
+        beforeEach(() => {
+          mockSubmitFunctionality(dataToSubmit, true, true);
+        });
+
+        it('should send correct data to save', () => {
+          const expectedArguments = [
+            'requests-mediated/mediated-requests',
+            {
+              json: expect.objectContaining({
+                itemId: basicDataToSend.itemId,
+                item: basicDataToSend.item,
+                requestDate: expect.any(String),
+                requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
+              }),
+            }
+          ];
+
+          expect(useOkapiKy().post).toHaveBeenCalledWith(...expectedArguments);
+        });
+
+        it('should send callout', async () => {
+          await waitFor(() => {
+            expect(useCallout().sendCallout).toHaveBeenCalled();
+          });
+        });
+      });
+
+      describe('When issue during request confirming', () => {
         const dataToSubmit = {
           ...basicDataToSend,
           fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
@@ -282,6 +367,24 @@ describe('RequestFormContainer', () => {
         beforeEach(() => {
           useOkapiKy().post().json.mockRejectedValueOnce({});
           mockSubmitFunctionality(dataToSubmit);
+        });
+
+        it('should send error callout', async () => {
+          await waitFor(() => {
+            expect(useCallout().sendCallout).toHaveBeenCalledWith(expect.objectContaining({ type: 'error' }));
+          });
+        });
+      });
+
+      describe('When issue during request saving', () => {
+        const dataToSubmit = {
+          ...basicDataToSend,
+          requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
+        };
+
+        beforeEach(() => {
+          useOkapiKy().post().json.mockRejectedValueOnce({});
+          mockSubmitFunctionality(dataToSubmit, true, true);
         });
 
         it('should send error callout', async () => {

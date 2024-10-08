@@ -49,6 +49,7 @@ const basicProps = {
   },
   isLoading: false,
   submitting: false,
+  isInstanceFromItem: false,
 };
 const labelIds = {
   inputPlaceholder: 'ui-requests-mediated.form.instance.inputPlaceholder',
@@ -79,11 +80,13 @@ const renderInstanceInfoWithHrid = (onBlur) => {
     });
   }));
 
-  render(
+  const { rerender } = render(
     <InstanceInformation
       {...basicProps}
     />
   );
+
+  return rerender;
 };
 
 describe('InstanceInformation', () => {
@@ -351,7 +354,7 @@ describe('InstanceInformation', () => {
         const props = {
           ...basicProps,
           selectedInstance: {
-            id: 'hrid',
+            id: 'id',
           },
         };
 
@@ -624,6 +627,36 @@ describe('InstanceInformation', () => {
       it('should not trigger "TitleInformation"', () => {
         expect(TitleInformation).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('Component updating', () => {
+    const onBlur = jest.fn();
+
+    beforeEach(() => {
+      const rerender = renderInstanceInfoWithHrid(onBlur);
+      const newProps = {
+        ...basicProps,
+        isInstanceFromItem: true,
+        selectedInstance: {
+          hrid: 'hrid',
+        },
+      };
+
+      rerender(
+        <InstanceInformation
+          {...newProps}
+        />
+      );
+    });
+
+    it('should not trigger onBlur handler', () => {
+      const instanceHridField = screen.getByTestId(testIds.instanceHridField);
+
+      fireEvent.click(instanceHridField);
+      fireEvent.blur(instanceHridField);
+
+      expect(onBlur).not.toHaveBeenCalled();
     });
   });
 });

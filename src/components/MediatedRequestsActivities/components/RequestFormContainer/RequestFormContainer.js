@@ -8,7 +8,6 @@ import {
 import {
   cloneDeep,
   unset,
-  isString,
 } from 'lodash';
 import { stringify } from 'query-string';
 import moment from 'moment-timezone';
@@ -99,23 +98,15 @@ const RequestFormContainer = ({
   settings,
   patronGroups,
 }) => {
-  const {
-    requester,
-    requesterId,
-    item,
-    instance,
-  } = request || {};
   const ky = useOkapiKy();
   const intl = useIntl();
   const history = useHistory();
   const callout = useCallout();
   const { addressTypes } = useAddressTypes();
-  const [selectedItem, setSelectedItem] = useState(item);
-  const [selectedInstance, setSelectedInstance] = useState(instance);
-  const [selectedUser, setSelectedUser] = useState({
-    ...requester,
-    id: requesterId,
-  });
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [selectedInstance, setSelectedInstance] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedProxy, setSelectedProxy] = useState(null);
   const [submitInitiator, setSubmitInitiator] = useState(null);
   const initialValues = {
     requestType: DEFAULT_REQUEST_TYPE_VALUE,
@@ -137,16 +128,31 @@ const RequestFormContainer = ({
 
   const handleSubmit = (data) => {
     const requestData = cloneDeep(data);
-    const userData = requestData.requester;
+    const isSaveAndCloseAction = submitInitiator === SAVE_BUTTON_ID;
+    const requestUrl = isSaveAndCloseAction ? 'requests-mediated/mediated-requests' : 'circulation-bff/mediated-requests/confirm';
+    let userData;
 
     requestData.requestDate = moment.tz(intl.timeZone).toISOString();
     requestData.requestLevel = getRequestLevelValue(requestData.createTitleLevelRequest);
 
-    if (requestData.fulfillmentPreference === FULFILMENT_TYPES.HOLD_SHELF && isString(requestData.deliveryAddressTypeId)) {
+    if (selectedProxy) {
+      userData = selectedProxy;
+    } else {
+      userData = requestData.requester;
+    }
+
+    if (!requestData.requestType) {
+      unset(requestData, 'requestType');
+      unset(requestData, 'fulfillmentPreference');
+      unset(requestData, 'deliveryAddressTypeId');
+      unset(requestData, 'pickupServicePointId');
+    }
+
+    if (requestData.fulfillmentPreference === FULFILMENT_TYPES.HOLD_SHELF || requestData.deliveryAddressTypeId === '') {
       unset(requestData, 'deliveryAddressTypeId');
     }
 
-    if (requestData.fulfillmentPreference === FULFILMENT_TYPES.DELIVERY && isString(requestData.pickupServicePointId)) {
+    if (requestData.fulfillmentPreference === FULFILMENT_TYPES.DELIVERY || requestData.pickupServicePointId === '') {
       unset(requestData, 'pickupServicePointId');
     }
 
@@ -171,12 +177,12 @@ const RequestFormContainer = ({
     unset(requestData, 'keyOfInstanceIdField');
     unset(requestData, 'keyOfRequestTypeField');
 
-    return ky.post('circulation/requests', {
-      json: { ...requestData },
+    return ky.post(requestUrl, {
+      json: requestData,
     })
       .json()
-      .then(() => {
-        if (submitInitiator === SAVE_BUTTON_ID) {
+      .then((res) => {
+        if (isSaveAndCloseAction) {
           callout.sendCallout({
             message: <FormattedMessage id="ui-requests-mediated.form.saveRequest.success" />,
           });
@@ -195,12 +201,18 @@ const RequestFormContainer = ({
           });
         }
 
-        handleClose();
+        const url = `${getMediatedRequestsActivitiesUrl()}/preview/${res.id}`;
+
+        history.push(url);
       })
       .catch(() => {
+        const message = isSaveAndCloseAction ?
+          <FormattedMessage id="ui-requests-mediated.form.saveRequest.error" /> :
+          <FormattedMessage id="ui-requests-mediated.form.confirmRequest.error" />;
+
         callout.sendCallout({
           type: 'error',
-          message: <FormattedMessage id="ui-requests-mediated.form.saveRequest.error" />,
+          message,
         });
       });
   };
@@ -210,9 +222,11 @@ const RequestFormContainer = ({
       request={request}
       selectedItem={selectedItem}
       selectedUser={selectedUser}
+      selectedProxy={selectedProxy}
       selectedInstance={selectedInstance}
       onSetSelectedItem={setSelectedItem}
       onSetSelectedUser={setSelectedUser}
+      onSetSelectedProxy={setSelectedProxy}
       onSetSelectedInstance={setSelectedInstance}
       onSetSubmitInitiator={setSubmitInitiator}
       addressTypes={addressTypes}

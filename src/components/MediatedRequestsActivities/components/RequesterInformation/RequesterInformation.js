@@ -38,6 +38,7 @@ class RequesterInformation extends Component {
     form: PropTypes.object.isRequired,
     values: PropTypes.object.isRequired,
     onSetSelectedUser: PropTypes.func.isRequired,
+    onSetSelectedProxy: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
     findUser: PropTypes.func.isRequired,
     getUserValidationData: PropTypes.func.isRequired,
@@ -64,15 +65,8 @@ class RequesterInformation extends Component {
   }
 
   validate = memoizeValidation(async (barcode) => {
-    const {
-      selectedUser,
-      getUserValidationData,
-    } = this.props;
+    const { getUserValidationData } = this.props;
     const { shouldValidate } = this.state;
-
-    if (selectedUser?.id && !barcode) {
-      return undefined;
-    }
 
     if (!barcode) {
       return <FormattedMessage id="ui-requests-mediated.form.errors.selectUser" />;
@@ -106,7 +100,10 @@ class RequesterInformation extends Component {
       findUser(RESOURCE_KEYS.BARCODE, barcode);
 
       if (eventKey === ENTER_EVENT_KEY) {
-        this.setState({ shouldValidate: true }, triggerUserBarcodeValidation);
+        this.setState({
+          shouldValidate: true,
+          validatedBarcode: barcode,
+        }, triggerUserBarcodeValidation);
       }
     }
   }
@@ -140,11 +137,22 @@ class RequesterInformation extends Component {
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, barcode);
   };
 
+  clearRequesterData = () => {
+    const {
+      onSetSelectedProxy,
+      onSetSelectedUser,
+    } = this.props;
+
+    onSetSelectedUser(null);
+    onSetSelectedProxy(null);
+  };
+
   handleBlur = (input) => () => {
     const { triggerUserBarcodeValidation } = this.props;
     const { validatedBarcode } = this.state;
 
     if (input.value && input.value !== validatedBarcode) {
+      this.clearRequesterData();
       this.setState({
         shouldValidate: true,
         isUserBlurred: true,
@@ -154,7 +162,8 @@ class RequesterInformation extends Component {
         triggerUserBarcodeValidation();
       });
     } else if (!input.value) {
-      input.onBlur();
+      this.clearRequesterData();
+      this.setState({ isUserBlurred: true }, input.onBlur);
     }
   }
 
@@ -171,6 +180,7 @@ class RequesterInformation extends Component {
     onSetSelectedUser(null);
 
     if (user.barcode) {
+      this.setState({ validatedBarcode: user.barcode });
       findUser(RESOURCE_KEYS.BARCODE, user.barcode);
     } else {
       findUser(RESOURCE_KEYS.ID, user.id);
@@ -262,6 +272,9 @@ class RequesterInformation extends Component {
               </Button>
             </Col>
           </Row>}
+          {
+            isLoading && <Icon {...BASE_SPINNER_PROPS} />
+          }
           {(selectedUser?.id || isEditForm) &&
             <UserForm
               user={user}
@@ -271,9 +284,6 @@ class RequesterInformation extends Component {
               selectProxy={selectProxy}
               handleCloseProxy={handleCloseProxy}
             />
-          }
-          {
-            isLoading && <Icon {...BASE_SPINNER_PROPS} />
           }
         </Col>
       </Row>

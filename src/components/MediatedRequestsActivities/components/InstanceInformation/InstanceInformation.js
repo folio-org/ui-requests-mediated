@@ -37,6 +37,7 @@ class InstanceInformation extends Component {
     onSetSelectedInstance: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
+    isInstanceFromItem: PropTypes.bool.isRequired,
     request: PropTypes.object,
     selectedInstance: PropTypes.object,
   };
@@ -50,6 +51,17 @@ class InstanceInformation extends Component {
       isInstanceBlurred: false,
       validatedId: null,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      isInstanceFromItem,
+      selectedInstance,
+    } = this.props;
+
+    if (isInstanceFromItem && isInstanceFromItem !== prevProps.isInstanceFromItem) {
+      this.setState({ validatedId: selectedInstance.hrid });
+    }
   }
 
   validate = memoizeValidation(async (instanceId) => {
@@ -97,10 +109,14 @@ class InstanceInformation extends Component {
   };
 
   handleBlur = (input) => () => {
-    const { triggerValidation } = this.props;
+    const {
+      triggerValidation,
+      onSetSelectedInstance,
+    } = this.props;
     const { validatedId } = this.state;
 
     if (input.value && input.value !== validatedId) {
+      onSetSelectedInstance(null);
       this.setState({
         shouldValidate: true,
         isInstanceBlurred: true,
@@ -110,6 +126,7 @@ class InstanceInformation extends Component {
         triggerValidation();
       });
     } else if (!input.value) {
+      onSetSelectedInstance(null);
       input.onBlur();
     }
   };
@@ -129,7 +146,10 @@ class InstanceInformation extends Component {
       findInstance(instanceId);
 
       if (eventKey === ENTER_EVENT_KEY) {
-        this.setState({ shouldValidate: true }, triggerValidation);
+        this.setState({
+          shouldValidate: true,
+          validatedId: instanceId,
+        }, triggerValidation);
       }
     }
   };
@@ -142,6 +162,8 @@ class InstanceInformation extends Component {
   };
 
   selectInstance = (instanceFromPlugin) => {
+    this.setState({ validatedId: instanceFromPlugin.hrid });
+
     return this.props.findInstance(instanceFromPlugin.hrid);
   };
 
@@ -159,7 +181,6 @@ class InstanceInformation extends Component {
       isInstanceBlurred,
     } = this.state;
     const isEditForm = isFormEditing(request);
-    const isTitleInfoVisible = selectedInstance && !isLoading;
 
     return (
       <Row>
@@ -238,7 +259,7 @@ class InstanceInformation extends Component {
             isLoading && <Icon {...BASE_SPINNER_PROPS} />
           }
           {
-            isTitleInfoVisible &&
+            selectedInstance &&
               <TitleInformation
                 instanceId={request?.instanceId || selectedInstance.id}
                 title={selectedInstance.title}

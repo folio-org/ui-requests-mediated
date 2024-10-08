@@ -51,6 +51,7 @@ const basicProps = {
   isLoading: false,
   submitting: false,
   isItemIdRequest: true,
+  isItemFromItemsDialog: false,
 };
 const labelIds = {
   inputPlaceholder: 'ui-requests-mediated.form.item.inputPlaceholder',
@@ -80,11 +81,13 @@ const renderItemInfoWithBarcode = (onBlur) => {
     });
   }));
 
-  render(
+  const { rerender } = render(
     <ItemInformation
       {...basicProps}
     />
   );
+
+  return rerender;
 };
 
 describe('ItemInformation', () => {
@@ -527,6 +530,36 @@ describe('ItemInformation', () => {
       it('should not trigger ItemDetail', () => {
         expect(ItemDetail).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('Component updating', () => {
+    const onBlur = jest.fn();
+
+    beforeEach(() => {
+      const rerender = renderItemInfoWithBarcode(onBlur);
+      const newProps = {
+        ...basicProps,
+        isItemFromItemsDialog: true,
+        selectedItem: {
+          barcode: 'itemBarcode',
+        },
+      };
+
+      rerender(
+        <ItemInformation
+          {...newProps}
+        />
+      );
+    });
+
+    it('should not trigger onBlur handler', () => {
+      const itemBarcodeField = screen.getByTestId(testIds.itemBarcodeField);
+
+      fireEvent.click(itemBarcodeField);
+      fireEvent.blur(itemBarcodeField);
+
+      expect(onBlur).not.toHaveBeenCalled();
     });
   });
 });
