@@ -204,5 +204,6 @@
     "confirmItemList.columnName.mediatedRequestStatus": "Mediated request status",
     "confirmItemList.columnName.requester": "Requester",
     "confirmItemList.columnName.requesterBarcode": "Requester barcode",
-    "meta.searchTitle": "Mediated requests - {query} - Search"
+    "meta.searchTitle": "Mediated requests - {query} - Search",
+    "form.confirmRequest.error": "Request was not successfully confirmed"
 }

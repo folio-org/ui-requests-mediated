@@ -41,7 +41,7 @@
     "itemDetails.barcode": "資料バーコード",
     "itemDetails.id": "資料ID",
     "itemDetails.title": "タイトル",
-    "itemDetails.contributor": "Contributor",
+    "itemDetails.contributor": "寄与者",
     "itemDetails.effectiveLocation": "有効所在",
     "itemDetails.callNumber": "Effective call number string",
     "itemDetails.status": "資料ステータス",
@@ -164,7 +164,7 @@
     "report.requestDate": "Mediated request date",
     "report.item.barcode": "資料バーコード",
     "report.instance.title": "タイトル",
-    "report.instance.contributorNames": "Contributor",
+    "report.instance.contributorNames": "寄与者",
     "report.item.location.libraryName": "図書館",
     "report.item.callNumberComponents.prefix": "Effective call number prefix",
     "report.item.callNumberComponents.callNumber": "Effective call number",
@@ -188,7 +188,7 @@
     "mediatedRequestsActivities.paneTitle": "Mediated requests",
     "sendItemInTransit.paneTitle": "Send item in transit",
     "confirmItem.mainSection.paneTitle": "Scan items",
-    "confirmItem.mainSection.itemBarcodeInput.placeholder": "Scan or enter item barcode",
+    "confirmItem.mainSection.itemBarcodeInput.placeholder": "資料バーコードをスキャンまたは入力",
     "confirmItem.mainSection.enter": "Enter",
     "confirmItem.mainSection.listItems.isEmptyMessage": "No items have been entered yet",
     "confirmItem.errorModal.confirmItemArrival.title": "Item not confirmed as arrived",
@@ -204,5 +204,6 @@
     "confirmItemList.columnName.mediatedRequestStatus": "Mediated request status",
     "confirmItemList.columnName.requester": "Requester",
     "confirmItemList.columnName.requesterBarcode": "Requester barcode",
-    "meta.searchTitle": "Mediated requests - {query} - Search"
+    "meta.searchTitle": "Mediated requests - {query} - Search",
+    "form.confirmRequest.error": "Request was not successfully confirmed"
 }

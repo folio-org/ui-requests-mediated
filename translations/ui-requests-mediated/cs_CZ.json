@@ -204,5 +204,6 @@
     "confirmItemList.columnName.mediatedRequestStatus": "Stav zprostředkované žádanky",
     "confirmItemList.columnName.requester": "Čtenář",
     "confirmItemList.columnName.requesterBarcode": "Čárový kód čtenáře",
-    "meta.searchTitle": "Zprostředkované žádanky - {query} - Vyhledat"
+    "meta.searchTitle": "Zprostředkované žádanky - {query} - Vyhledat",
+    "form.confirmRequest.error": "Request was not successfully confirmed"
 }
