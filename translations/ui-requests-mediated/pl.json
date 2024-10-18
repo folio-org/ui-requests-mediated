@@ -49,7 +49,7 @@
     "itemsDialog.barcode": "Barcode",
     "itemsDialog.status": "Item status",
     "itemsDialog.location": "Location",
-    "itemsDialog.materialType": "Material type",
+    "itemsDialog.materialType": "Rodzaj materiału",
     "itemsDialog.loanType": "Loan type",
     "itemsDialog.selectItem": "Select item",
     "itemsDialog.instanceItems": "Other items in {title}",
