@@ -3,11 +3,11 @@
   "meta.searchTitle": "Mediated requests - {query} - Search",
 
   "permission.view": "Mediated requests: View",
-  "permission.view-create-edit": "Mediated requests: View, create, edit",
-  "permission.view-decline": "Mediated requests: View, decline",
-  "permission.view-confirm": "Mediated requests: View, confirm",
-  "permission.confirm-item-arrival": "Mediated requests: Confirm item arrival",
-  "permission.send-item-in-transit": "Mediated requests: Send item in transit",
+  "permission.requests-mediated.view-create-edit.execute": "Mediated requests: View, create, edit",
+  "permission.requests-mediated.view-decline.execute": "Mediated requests: View, decline",
+  "permission.requests-mediated.view-confirm.execute": "Mediated requests: View, confirm",
+  "permission.requests-mediated.confirm-item-arrival.execute": "Mediated requests: Confirm item arrival",
+  "permission.requests-mediated.send-item-in-transit.execute": "Mediated requests: Send item in transit",
   "permission.all": "Mediated requests: All permissions",
 
   "app.filterPane.selectActivity": "Select activity",

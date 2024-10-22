@@ -26,14 +26,14 @@ export const getDataOptions = (intl, stripes) => {
     });
   }
 
-  if (stripes.hasPerm('ui-requests-mediated.confirm-item-arrival')) {
+  if (stripes.hasPerm('ui-requests-mediated.requests-mediated.confirm-item-arrival.execute')) {
     dataOptions.push({
       label: intl.formatMessage({ id: 'ui-requests-mediated.app.confirmItemArrival.navigation' }),
       value: getConfirmItemArrivalUrl(),
     });
   }
 
-  if (stripes.hasPerm('ui-requests-mediated.send-item-in-transit')) {
+  if (stripes.hasPerm('ui-requests-mediated.requests-mediated.send-item-in-transit.execute')) {
     dataOptions.push({
       label: intl.formatMessage({ id: 'ui-requests-mediated.app.sendItemInTransit.navigation' }),
       value: getSendItemInTransitUrl(),
@@ -44,7 +44,7 @@ export const getDataOptions = (intl, stripes) => {
 };
 
 export const isNavigationMenuDisabled = (stripes) => (
-  !stripes.hasPerm('ui-requests-mediated.confirm-item-arrival') && !stripes.hasPerm('ui-requests-mediated.send-item-in-transit')
+  !stripes.hasPerm('ui-requests-mediated.requests-mediated.confirm-item-arrival.execute') && !stripes.hasPerm('ui-requests-mediated.requests-mediated.send-item-in-transit.execute')
 );
 
 export const handleChangeMenu = (event, location, history) => {

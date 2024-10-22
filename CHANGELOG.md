@@ -31,6 +31,7 @@
 * Mediated requests activities - Add Content for Send item in transit. Refs UIREQMED-9.
 * Update Mediated requests permissions in Closed stories. Refs UIREQMED-36.
 * Implement functionality for creating new mediated request. Refs UIREQMED-7.
+* Review and cleanup Module Descriptor. Refs UIREQMED-47.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.

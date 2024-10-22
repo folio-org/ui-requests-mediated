@@ -57,7 +57,7 @@ const RequestsMediated = (props) => {
     },
   } = props;
   const pageTitle = getPageTitle();
-  const isRequestCreationAvailable = stripes.hasPerm('ui-requests-mediated.all') || stripes.hasPerm('ui-requests-mediated.view-create-edit');
+  const isRequestCreationAvailable = stripes.hasPerm('ui-requests-mediated.all') || stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
 
   return (
     <>
