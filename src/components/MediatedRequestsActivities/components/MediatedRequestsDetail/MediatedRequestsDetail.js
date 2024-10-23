@@ -1,3 +1,6 @@
+import {
+  useState,
+} from 'react';
 import PropTypes from 'prop-types';
 import {
   useHistory,
@@ -14,6 +17,7 @@ import {
 import {
   IfPermission,
   TitleManager,
+  useOkapiKy,
 } from '@folio/stripes/core';
 import {
   Button,
@@ -31,6 +35,7 @@ import TitleInformation from '../TitleInformation';
 import MediatedRequestInformation from '../MediatedRequestInformation';
 import ItemDetail from '../ItemDetail';
 import UserDetail from '../UserDetail';
+import DeclineModal from './components/DeclineModal';
 import {
   useMediatedRequestById,
   useUserById,
@@ -52,6 +57,7 @@ import {
   getPatronGroup,
   getUserPreferences,
   getReferredRecordData,
+  confirmDeclineModal,
 } from '../../../../utils';
 
 const DETAIL_PANE_WIDTH = '44%';
@@ -64,15 +70,19 @@ const MediatedRequestsDetail = ({
   stripes,
   patronGroups,
   setRequest,
+  updateMediatedRequestList,
 }) => {
   const history = useHistory();
   const location = useLocation();
+  const ky = useOkapiKy();
   const mediatedRequestIdFromPathname = location.pathname.substring(location.pathname.lastIndexOf('/') + 1);
 
   const { formatMessage } = useIntl();
   const {
     mediatedRequest,
     isFetching,
+    shouldUpdateMediatedRequestById,
+    setShouldUpdateMediatedRequestById,
   } = useMediatedRequestById(mediatedRequestIdFromPathname);
   const { userData } = useUserById(mediatedRequest?.requesterId, isFetching);
   const { servicePoints } = useServicePoints();
@@ -80,6 +90,20 @@ const MediatedRequestsDetail = ({
 
   setRequest(mediatedRequest);
 
+  const [declineModalOpen, setDeclineModalOpen] = useState(false);
+  const onOpenDeclineModal = () => setDeclineModalOpen(true);
+  const declineModalState = {
+    shouldUpdateMediatedRequestById,
+    setShouldUpdateMediatedRequestById,
+    setDeclineModalOpen,
+  };
+  const declineModalProps = {
+    ky,
+    url: `requests-mediated/mediated-requests/${mediatedRequestIdFromPathname}/decline`,
+    updateMediatedRequestList,
+  };
+  const onConfirmDeclineModal = () => confirmDeclineModal(declineModalState, declineModalProps);
+  const onCloseDeclineModal = () => setDeclineModalOpen(false);
   const isActionMenuVisible = () => (
     get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS], DEFAULT_VIEW_VALUE) === MEDIATED_REQUEST_STATUS.NEW_AWAITING_CONFIRMATION
       ? stripes.hasPerm('ui-requests-mediated.requests-mediated.view-confirm.execute') || stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute') || stripes.hasPerm('ui-requests-mediated.requests-mediated.view-decline.execute')
@@ -95,6 +119,10 @@ const MediatedRequestsDetail = ({
     const handleEditAndConfirm = () => {
       onToggle();
       history.push(`${mediatedRequestsActivitiesUrl}/edit/${mediatedRequestIdFromPathname}`);
+    };
+    const handleDecline = () => {
+      onOpenDeclineModal();
+      onToggle();
     };
 
     return (
@@ -114,7 +142,7 @@ const MediatedRequestsDetail = ({
           <Button
             buttonStyle="dropdownItem"
             marginBottom0
-            onClick={onToggle}
+            onClick={handleDecline}
           >
             <Icon icon={ICONS.TIMES_CIRCLE}>
               <FormattedMessage id="ui-requests-mediated.mediatedRequestDetails.actionMenu.decline" />
@@ -218,6 +246,12 @@ const MediatedRequestsDetail = ({
                   hideAssignButton
                 />
               </AccordionStatus>
+              <DeclineModal
+                open={declineModalOpen}
+                title={get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE], DEFAULT_VIEW_VALUE)}
+                onConfirm={onConfirmDeclineModal}
+                onClose={onCloseDeclineModal}
+              />
             </>
       }
     </Pane>
@@ -227,6 +261,7 @@ const MediatedRequestsDetail = ({
 MediatedRequestsDetail.propTypes = {
   stripes: PropTypes.object.isRequired,
   setRequest: PropTypes.func.isRequired,
+  updateMediatedRequestList: PropTypes.func.isRequired,
   patronGroups: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     group: PropTypes.string,

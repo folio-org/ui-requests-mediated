@@ -48,6 +48,7 @@ import {
   getDeliveryAddressForCsvRecords,
   modifyRecordsToExport,
   handleConfirmItemSubmit,
+  confirmDeclineModal,
   getStaffSlipsTemplateByType,
   escapeValue,
   buildTemplate,
@@ -1006,6 +1007,59 @@ describe('handleConfirmItemSubmit', () => {
     await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemPropsWithErrors);
 
     expect(confirmItemState.setIsErrorModalOpen).toHaveBeenCalledWith(true);
+  });
+});
+
+describe('confirmDeclineModal', () => {
+  const ky = {
+    post: jest.fn().mockImplementation(() => Promise.resolve()),
+  };
+  const declineModalState = {
+    shouldUpdateMediatedRequestById: 0,
+    setShouldUpdateMediatedRequestById: jest.fn(),
+    setDeclineModalOpen: jest.fn(),
+  };
+  const declineModalProps = {
+    ky,
+    url: 'requests-mediated/mediated-requests/111/decline',
+    updateMediatedRequestList: jest.fn(),
+  };
+
+  it('should trigger "ky.post" with correct props', () => {
+    confirmDeclineModal(declineModalState, declineModalProps);
+
+    expect(ky.post).toHaveBeenCalledWith(declineModalProps.url);
+  });
+
+  it('should trigger "updateMediatedRequestList" on success', () => {
+    confirmDeclineModal(declineModalState, declineModalProps);
+
+    expect(declineModalProps.updateMediatedRequestList).toHaveBeenCalled();
+  });
+
+  it('should trigger "setShouldUpdateMediatedRequestById" on success', () => {
+    confirmDeclineModal(declineModalState, declineModalProps);
+
+    expect(declineModalState.setShouldUpdateMediatedRequestById).toHaveBeenCalledWith(1);
+  });
+
+  it('should trigger "setDeclineModalOpen" on success', () => {
+    confirmDeclineModal(declineModalState, declineModalProps);
+
+    expect(declineModalState.setDeclineModalOpen).toHaveBeenCalledWith(false);
+  });
+
+  it('should trigger "setDeclineModalOpen" on errors', () => {
+    const declineModalPropsWithErrors = {
+      ...declineModalProps,
+      ky: {
+        post: jest.fn().mockImplementation(() => Promise.reject()),
+      },
+    };
+
+    confirmDeclineModal(declineModalState, declineModalPropsWithErrors);
+
+    expect(declineModalState.setDeclineModalOpen).toHaveBeenCalledWith(false);
   });
 });
 

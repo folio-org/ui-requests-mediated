@@ -57,6 +57,8 @@ const labelIds = {
   requesterAccordion: 'ui-requests-mediated.mediatedRequestDetail.requester.accordionLabel',
   noItemInformation: 'ui-requests-mediated.mediatedRequestDetail.item.noInformation',
   editAndConfirmButton: 'ui-requests-mediated.mediatedRequestDetails.actionMenu.editAndConfirm',
+  declineButton: 'ui-requests-mediated.mediatedRequestDetails.actionMenu.decline',
+  declineModalTitle: 'ui-requests-mediated.declineModal.title',
 };
 
 describe('MediatedRequestsDetail', () => {
@@ -348,6 +350,12 @@ describe('MediatedRequestsDetail', () => {
       fireEvent.click(editAndConfirmButton);
 
       expect(push).toHaveBeenCalledWith(`${getMediatedRequestsActivitiesUrl()}/edit/id`);
+    });
+
+    it('should render "Decline" button', () => {
+      const declineButton = screen.getByText(labelIds.declineButton);
+
+      expect(declineButton).toBeInTheDocument();
     });
   });
 });
