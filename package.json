@@ -110,8 +110,9 @@
         "visible": false
       },
       {
-        "permissionName": "ui-requests-mediated.edit",
+        "permissionName": "ui-requests-mediated.requests-mediated.edit",
         "displayName": "Mediated requests: Edit",
+        "replaces": ["ui-requests-mediated.edit"],
         "subPermissions": [
           "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
@@ -121,8 +122,9 @@
         "visible": false
       },
       {
-        "permissionName": "ui-requests-mediated.confirm",
+        "permissionName": "ui-requests-mediated.requests-mediated.confirm.execute",
         "displayName": "Mediated requests: Confirm",
+        "replaces": ["ui-requests-mediated.confirm"],
         "subPermissions": [
           "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
@@ -133,18 +135,20 @@
         "visible": false
       },
       {
-        "permissionName": "ui-requests-mediated.view-create-edit",
+        "permissionName": "ui-requests-mediated.requests-mediated.view-create-edit.execute",
         "displayName": "Mediated requests: View, create, edit",
+        "replaces": ["ui-requests-mediated.view-create-edit"],
         "subPermissions": [
           "ui-requests-mediated.view",
           "ui-requests-mediated.create",
-          "ui-requests-mediated.edit"
+          "ui-requests-mediated.requests-mediated.edit"
         ],
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.view-decline",
+        "permissionName": "ui-requests-mediated.requests-mediated.view-decline.execute",
         "displayName": "Mediated requests: View, decline",
+        "replaces": ["ui-requests-mediated.view-decline"],
         "subPermissions": [
           "ui-requests-mediated.view",
           "requests-mediated.mediated-request.item.delete"
@@ -152,17 +156,19 @@
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.view-confirm",
+        "permissionName": "ui-requests-mediated.requests-mediated.view-confirm.execute",
         "displayName": "Mediated requests: View, confirm",
+        "replaces": ["ui-requests-mediated.view-confirm"],
         "subPermissions": [
           "ui-requests-mediated.view",
-          "ui-requests-mediated.confirm"
+          "ui-requests-mediated.requests-mediated.confirm.execute"
         ],
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.confirm-item-arrival",
+        "permissionName": "ui-requests-mediated.requests-mediated.confirm-item-arrival.execute",
         "displayName": "Mediated requests: Confirm item arrival",
+        "replaces": ["ui-requests-mediated.confirm-item-arrival"],
         "subPermissions": [
           "ui-requests-mediated.view",
           "requests-mediated.confirm-item-arrival.post"
@@ -170,8 +176,9 @@
         "visible": true
       },
       {
-        "permissionName": "ui-requests-mediated.send-item-in-transit",
+        "permissionName": "ui-requests-mediated.requests-mediated.send-item-in-transit.execute",
         "displayName": "Mediated requests: Send item in transit",
+        "replaces": ["ui-requests-mediated.send-item-in-transit"],
         "subPermissions": [
           "ui-requests-mediated.view",
           "requests-mediated.send-item-in-transit.post"
@@ -182,11 +189,11 @@
         "permissionName": "ui-requests-mediated.all",
         "displayName": "Mediated requests: All permissions",
         "subPermissions": [
-          "ui-requests-mediated.view-create-edit",
-          "ui-requests-mediated.view-decline",
-          "ui-requests-mediated.view-confirm",
-          "ui-requests-mediated.confirm-item-arrival",
-          "ui-requests-mediated.send-item-in-transit"
+          "ui-requests-mediated.requests-mediated.view-create-edit.execute",
+          "ui-requests-mediated.requests-mediated.view-decline.execute",
+          "ui-requests-mediated.requests-mediated.view-confirm.execute",
+          "ui-requests-mediated.requests-mediated.confirm-item-arrival.execute",
+          "ui-requests-mediated.requests-mediated.send-item-in-transit.execute"
         ],
         "visible": true
       }

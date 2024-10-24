@@ -156,7 +156,7 @@ export const getActionMenu = ({
 
   return (
     <>
-      <IfPermission perm="ui-requests-mediated.view-create-edit">
+      <IfPermission perm="ui-requests-mediated.requests-mediated.view-create-edit.execute">
         <Button
           buttonStyle="dropdownItem"
           marginBottom0

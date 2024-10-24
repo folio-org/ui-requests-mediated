@@ -257,8 +257,8 @@ describe('MediatedRequestsDetail', () => {
       const stripes = {
         hasPerm: (currentPerm) => {
           const hasPerm = {
-            'ui-requests-mediated.view-confirm': true,
-            'ui-requests-mediated.view-create-edit': true,
+            'ui-requests-mediated.requests-mediated.view-confirm.execute': true,
+            'ui-requests-mediated.requests-mediated.view-create-edit.execute': true,
           };
 
           return hasPerm[currentPerm];
@@ -272,8 +272,8 @@ describe('MediatedRequestsDetail', () => {
       const stripes = {
         hasPerm: (currentPerm) => {
           const hasPerm = {
-            'ui-requests-mediated.view-confirm': true,
-            'ui-requests-mediated.view-create-edit': false,
+            'ui-requests-mediated.requests-mediated.view-confirm.execute': true,
+            'ui-requests-mediated.requests-mediated.view-create-edit.execute': false,
           };
 
           return hasPerm[currentPerm];
@@ -287,8 +287,8 @@ describe('MediatedRequestsDetail', () => {
       const stripes = {
         hasPerm: (currentPerm) => {
           const hasPerm = {
-            'ui-requests-mediated.view-confirm': false,
-            'ui-requests-mediated.view-create-edit': true,
+            'ui-requests-mediated.requests-mediated.view-confirm.execute': false,
+            'ui-requests-mediated.requests-mediated.view-create-edit.execute': true,
           };
 
           return hasPerm[currentPerm];
@@ -302,8 +302,8 @@ describe('MediatedRequestsDetail', () => {
       const stripes = {
         hasPerm: (currentPerm) => {
           const hasPerm = {
-            'ui-requests-mediated.view-confirm': false,
-            'ui-requests-mediated.view-create-edit': false,
+            'ui-requests-mediated.requests-mediated.view-confirm.execute': false,
+            'ui-requests-mediated.requests-mediated.view-create-edit.execute': false,
           };
 
           return hasPerm[currentPerm];
