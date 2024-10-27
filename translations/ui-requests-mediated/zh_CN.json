@@ -1,7 +1,6 @@
 {
     "meta.title": "中介请求",
     "permission.view": "中介请求：查看",
-    "permission.view-create-edit": "中介请求：查看、创建、编辑",
     "permission.all": "中介请求：所有权限",
     "app.filterPane.selectActivity": "选择活动",
     "app.confirmItemArrival.navigation": "确认单件到达",
@@ -11,7 +10,6 @@
     "filters.mediatedRequestLevel.accordionTitle": "中介请求级别",
     "filters.mediatedRequestLevel.item": "单件",
     "filters.mediatedRequestLevel.title": "题名",
-    "permission.view-decline": "中介请求：查看、拒绝",
     "form.title": "新建中介请求",
     "form.tlrCheckboxLabel": "创建标题级别的请求",
     "form.enterButton": "输入",
@@ -123,9 +121,6 @@
     "mediatedRequestStatus.newAwaitingConfirmation": "新建 - 等待确认",
     "mediatedRequestStatus.openAwaitingPickup": "开放 - 等待取件",
     "mediatedRequestStatus.openItemArrived": "开放 - 单件已抵达",
-    "permission.view-confirm": "中介请求：查看、确认",
-    "permission.confirm-item-arrival": "中介请求：确认单件到达",
-    "permission.send-item-in-transit": "中介请求：发送传送中单件",
     "form.request.delivery": "传递地址",
     "requesterDetails.deliveryAddress": "传递地址",
     "requesterDetails.pickupServicePoint": "取件服务点",
@@ -205,5 +200,10 @@
     "confirmItemList.columnName.requester": "请求者",
     "confirmItemList.columnName.requesterBarcode": "请求者条码",
     "meta.searchTitle": "中介请求 - {query} - 搜索",
-    "form.confirmRequest.error": "Request was not successfully confirmed"
+    "form.confirmRequest.error": "Request was not successfully confirmed",
+    "permission.requests-mediated.view-create-edit.execute": "Mediated requests: View, create, edit",
+    "permission.requests-mediated.view-decline.execute": "Mediated requests: View, decline",
+    "permission.requests-mediated.view-confirm.execute": "Mediated requests: View, confirm",
+    "permission.requests-mediated.confirm-item-arrival.execute": "Mediated requests: Confirm item arrival",
+    "permission.requests-mediated.send-item-in-transit.execute": "Mediated requests: Send item in transit"
 }

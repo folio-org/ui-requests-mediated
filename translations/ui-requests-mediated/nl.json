@@ -1,7 +1,6 @@
 {
     "meta.title": "Bemiddelde aanvragen",
     "permission.view": "Bemiddelde aanvragen: Bekijken",
-    "permission.view-create-edit": "E-usage: Kan leveranciers van gebruiksdata en gebruiksrapporten bekijken, maken en bewerken.",
     "permission.all": "Bemiddelde aanvragen: Alle machtigingen",
     "app.filterPane.selectActivity": "Activiteit selecteren",
     "app.confirmItemArrival.navigation": "Bevestig aankomst item",
@@ -11,7 +10,6 @@
     "filters.mediatedRequestLevel.accordionTitle": "Niveau bemiddellingsaanvraag",
     "filters.mediatedRequestLevel.item": "Item",
     "filters.mediatedRequestLevel.title": "Titel",
-    "permission.view-decline": "Bemiddellingsaanvragen: Bekijken, weigeren",
     "form.title": "Nieuwe bemiddellingsaanvraag",
     "form.tlrCheckboxLabel": "Aanvraag titelniveau aanmaken",
     "form.enterButton": "Invoeren",
@@ -123,9 +121,6 @@
     "mediatedRequestStatus.newAwaitingConfirmation": "Nieuw - Wacht op bevestiging",
     "mediatedRequestStatus.openAwaitingPickup": "Open - In afwachting van afhalen",
     "mediatedRequestStatus.openItemArrived": "Open - Item aangekomen",
-    "permission.view-confirm": "Bemiddellingsaanvragen: Bekijken, bevestigen",
-    "permission.confirm-item-arrival": "Bemiddellingsaanvragen: Bevestig aankomst item",
-    "permission.send-item-in-transit": "Bemiddellingsaanvragen: Item verzenden",
     "form.request.delivery": "Afleveradres",
     "requesterDetails.deliveryAddress": "Afleveradres",
     "requesterDetails.pickupServicePoint": "Servicepunt voor afhaal",
@@ -205,5 +200,10 @@
     "confirmItemList.columnName.requester": "Requester",
     "confirmItemList.columnName.requesterBarcode": "Requester barcode",
     "meta.searchTitle": "Mediated requests - {query} - Search",
-    "form.confirmRequest.error": "Request was not successfully confirmed"
+    "form.confirmRequest.error": "Request was not successfully confirmed",
+    "permission.requests-mediated.view-create-edit.execute": "Mediated requests: View, create, edit",
+    "permission.requests-mediated.view-decline.execute": "Mediated requests: View, decline",
+    "permission.requests-mediated.view-confirm.execute": "Mediated requests: View, confirm",
+    "permission.requests-mediated.confirm-item-arrival.execute": "Mediated requests: Confirm item arrival",
+    "permission.requests-mediated.send-item-in-transit.execute": "Mediated requests: Send item in transit"
 }

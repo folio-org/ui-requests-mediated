@@ -1,7 +1,6 @@
 {
     "meta.title": "Zprostředkované žádanky",
     "permission.view": "Zprostředkované žádanky: Zobrazit",
-    "permission.view-create-edit": "Zprostředkované žádanky: Zobrazit, vytvořit, upravit",
     "permission.all": "Zprostředkované žádanky: Všechna oprávnění",
     "app.filterPane.selectActivity": "Zvolte aktivitu",
     "app.confirmItemArrival.navigation": "Potvrdit příchod jednotky",
@@ -11,7 +10,6 @@
     "filters.mediatedRequestLevel.accordionTitle": "Úroveň zprostředkované žádanky",
     "filters.mediatedRequestLevel.item": "Jednotka",
     "filters.mediatedRequestLevel.title": "Název",
-    "permission.view-decline": "Zprostředkované žádanky: Zobrazit, odmítnout",
     "form.title": "Nová zprostředkovaná žádanka",
     "form.tlrCheckboxLabel": "Vytvořit žádanku na úrovni názvu",
     "form.enterButton": "Potvrdit",
@@ -123,9 +121,6 @@
     "mediatedRequestStatus.newAwaitingConfirmation": "Novinka - Čeká se na potvrzení",
     "mediatedRequestStatus.openAwaitingPickup": "Otevřená - Čeká na vyzvednutí",
     "mediatedRequestStatus.openItemArrived": "Otevřená - Jednotka dorazila",
-    "permission.view-confirm": "Zprostředkované žádanky: Zobrazit, potvrdit",
-    "permission.confirm-item-arrival": "Zprostředkované žádanky: Potvrdit příchod jednotky",
-    "permission.send-item-in-transit": "Zprostředkované žádanky: Odeslat jednotku v přepravě",
     "form.request.delivery": "Doručovací adresa",
     "requesterDetails.deliveryAddress": "Doručovací adresa",
     "requesterDetails.pickupServicePoint": "Pult služeb pro vyzvednutí",
@@ -205,5 +200,10 @@
     "confirmItemList.columnName.requester": "Čtenář",
     "confirmItemList.columnName.requesterBarcode": "Čárový kód čtenáře",
     "meta.searchTitle": "Zprostředkované žádanky - {query} - Vyhledat",
-    "form.confirmRequest.error": "Request was not successfully confirmed"
+    "form.confirmRequest.error": "Request was not successfully confirmed",
+    "permission.requests-mediated.view-create-edit.execute": "Mediated requests: View, create, edit",
+    "permission.requests-mediated.view-decline.execute": "Mediated requests: View, decline",
+    "permission.requests-mediated.view-confirm.execute": "Mediated requests: View, confirm",
+    "permission.requests-mediated.confirm-item-arrival.execute": "Mediated requests: Confirm item arrival",
+    "permission.requests-mediated.send-item-in-transit.execute": "Mediated requests: Send item in transit"
 }
