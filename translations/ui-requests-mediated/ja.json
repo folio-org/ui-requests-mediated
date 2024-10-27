@@ -1,7 +1,6 @@
 {
     "meta.title": "Mediated requests",
     "permission.view": "Mediated requests: View",
-    "permission.view-create-edit": "Mediated requests: View, create, edit",
     "permission.all": "Mediated requests: All permissions",
     "app.filterPane.selectActivity": "Select activity",
     "app.confirmItemArrival.navigation": "資料到着の確認",
@@ -11,7 +10,6 @@
     "filters.mediatedRequestLevel.accordionTitle": "Mediated request level",
     "filters.mediatedRequestLevel.item": "資料",
     "filters.mediatedRequestLevel.title": "タイトル",
-    "permission.view-decline": "Mediated requests: View, decline",
     "form.title": "New mediated request",
     "form.tlrCheckboxLabel": "タイトルレベルのリクエストを作成",
     "form.enterButton": "Enter",
@@ -123,9 +121,6 @@
     "mediatedRequestStatus.newAwaitingConfirmation": "New - Awaiting confirmation",
     "mediatedRequestStatus.openAwaitingPickup": "Open - Awaiting pickup",
     "mediatedRequestStatus.openItemArrived": "Open - Item arrived",
-    "permission.view-confirm": "Mediated requests: View, confirm",
-    "permission.confirm-item-arrival": "Mediated requests: Confirm item arrival",
-    "permission.send-item-in-transit": "Mediated requests: Send item in transit",
     "form.request.delivery": "配送先住所",
     "requesterDetails.deliveryAddress": "配送先住所",
     "requesterDetails.pickupServicePoint": "受取サービスポイント",
@@ -205,5 +200,10 @@
     "confirmItemList.columnName.requester": "Requester",
     "confirmItemList.columnName.requesterBarcode": "Requester barcode",
     "meta.searchTitle": "Mediated requests - {query} - Search",
-    "form.confirmRequest.error": "Request was not successfully confirmed"
+    "form.confirmRequest.error": "Request was not successfully confirmed",
+    "permission.requests-mediated.view-create-edit.execute": "Mediated requests: View, create, edit",
+    "permission.requests-mediated.view-decline.execute": "Mediated requests: View, decline",
+    "permission.requests-mediated.view-confirm.execute": "Mediated requests: View, confirm",
+    "permission.requests-mediated.confirm-item-arrival.execute": "Mediated requests: Confirm item arrival",
+    "permission.requests-mediated.send-item-in-transit.execute": "Mediated requests: Send item in transit"
 }
