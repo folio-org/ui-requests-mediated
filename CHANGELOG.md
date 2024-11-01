@@ -1,5 +1,8 @@
 # Change history for ui-requests-mediated
 
+## 2.0.0 (IN PROGRESS)
+* Print slip for Mediated requests activity - Send item in transit. Refs UIREQMED-40.
+
 ## [1.1.0](https://github.com/folio-org/ui-requests-mediated/tree/v1.1.0) (2024-10-30)
 * Update github actions. Refs UIREQMED-14.
 * Add landing page actions: Confirm item arrival, Mediated requests activities and Send item in transit. Refs UIREQMED-2.
