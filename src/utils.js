@@ -46,10 +46,6 @@ export const handleKeyCommand = (handler, { disabled } = {}) => {
   };
 };
 
-export const isFormEditing = (request) => {
-  return !!get(request, 'id');
-};
-
 export const memoizeValidation = (fn) => {
   const lastArgs = {};
   const lastKeys = {};
@@ -147,11 +143,7 @@ export const resetFieldState = (form, fieldName) => {
   }
 };
 
-export const getSelectedAddressTypeId = (deliverySelected, defaultDeliveryAddressTypeId) => {
-  return deliverySelected ? defaultDeliveryAddressTypeId : DEFAULT_VIEW_VALUE;
-};
-
-export const isDeliverySelected = (fulfillmentPreference) => {
+export const isDelivery = (fulfillmentPreference) => {
   return fulfillmentPreference === FULFILMENT_TYPES.DELIVERY;
 };
 
@@ -208,8 +200,7 @@ export const getDefaultRequestPreferences = (initialValues) => {
     hasDelivery: false,
     defaultDeliveryAddressTypeId: DEFAULT_VIEW_VALUE,
     defaultServicePointId: DEFAULT_VIEW_VALUE,
-    deliverySelected: isDeliverySelected(initialValues?.fulfillmentPreference),
-    selectedAddressTypeId: DEFAULT_VIEW_VALUE,
+    isDeliverySelected: isDelivery(initialValues?.fulfillmentPreference),
   };
 };
 
@@ -225,13 +216,8 @@ export const getRequestLevelValue = (value) => {
 
 export const getResourceTypeId = (isTitleLevelRequest) => (isTitleLevelRequest ? ID_TYPE_MAP.INSTANCE_ID : ID_TYPE_MAP.ITEM_ID);
 
-export const getRequestInformation = (values, selectedInstance, selectedItem) => {
-  const selectedResource = values.createTitleLevelRequest ? selectedInstance : selectedItem;
-
-  return {
-    isTitleLevelRequest: values.createTitleLevelRequest,
-    selectedResource,
-  };
+export const getRequestInformation = (isTitleLevelRequest, selectedInstance, selectedItem) => {
+  return isTitleLevelRequest ? selectedInstance : selectedItem;
 };
 
 export const getNoRequestTypeErrorMessageId = (isTitleLevelRequest) => (
@@ -240,19 +226,11 @@ export const getNoRequestTypeErrorMessageId = (isTitleLevelRequest) => (
     MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.ITEM_LEVEL_ERROR]
 );
 
-export const validateDropDownValue = (shouldValidate) => (value) => {
-  if (shouldValidate) {
-    return value ? undefined : <FormattedMessage id="ui-requests-mediated.form.errors.requiredToConfirm" />;
-  }
-
-  return undefined;
-};
-
 export const getUserPreferences = (mediatedRequest, userData, servicePoints) => {
   const userPreferences = {};
 
   if (mediatedRequest) {
-    if (isDeliverySelected(mediatedRequest.fulfillmentPreference)) {
+    if (isDelivery(mediatedRequest.fulfillmentPreference)) {
       const address = userData?.users[0].personal.addresses.find(({ addressTypeId }) => addressTypeId === mediatedRequest.deliveryAddressTypeId);
 
       userPreferences.label = <FormattedMessage id="ui-requests-mediated.requesterDetails.deliveryAddress" />;
@@ -317,8 +295,6 @@ export const getProxyInformation = (proxy, proxyIdFromRequest) => {
   return {};
 };
 
-export const getRequester = (proxy, selectedUser) => proxy || selectedUser;
-
 export const getFullNameForCsvRecords = (user) => {
   const {
     firstName = '',
@@ -352,6 +328,8 @@ export const modifyRecordsToExport = (records) => {
 
     if (instance.contributorNames?.length > 0) {
       instance.contributorNames = instance.contributorNames.map(({ name }) => name).join('; ');
+    } else {
+      instance.contributorNames = '';
     }
 
     if (proxy) {

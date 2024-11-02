@@ -10,17 +10,14 @@ import PickupServicePoint from '../PickupServicePoint';
 import { MEDIATED_REQUEST_TYPES } from '../../../../constants';
 
 jest.mock('../../../../utils', () => ({
-  getSelectedAddressTypeId: jest.fn(),
-  isDeliverySelected: jest.fn(),
+  isDelivery: jest.fn(),
 }));
 jest.mock('../PickupServicePoint', () => jest.fn(() => <div />));
 jest.mock('../DeliveryAddress', () => jest.fn(() => <div />));
 
 const basicProps = {
-  isEditForm: false,
-  deliverySelected: true,
+  isDeliverySelected: true,
   deliveryAddress: 'deliveryAddress',
-  onChangeAddress: jest.fn(),
   deliveryLocations: [],
   fulfillmentTypeOptions: [
     {
@@ -28,7 +25,6 @@ const basicProps = {
       value: 'value',
     }
   ],
-  defaultDeliveryAddressTypeId: 'defaultId',
   setDeliveryAddress: jest.fn(),
   requestTypes: {
     [MEDIATED_REQUEST_TYPES.HOLD]: [
@@ -45,7 +41,6 @@ const basicProps = {
   form: {
     change: jest.fn(),
   },
-  shouldValidate: false,
 };
 const labelIds = {
   fulfilmentPreference: 'ui-requests-mediated.form.request.fulfilmentPreference',
@@ -82,12 +77,11 @@ describe('FulfilmentPreference', () => {
 
     it('should trigger DeliveryAddress with correct props', () => {
       const expectedProp = {
-        onChangeAddress: expect.any(Function),
         deliveryLocations: basicProps.deliveryLocations,
-        shouldValidate: basicProps.shouldValidate,
+        disabled: false,
       };
 
-      expect(DeliveryAddress).toHaveBeenCalledWith(expect.objectContaining(expectedProp), {});
+      expect(DeliveryAddress).toHaveBeenCalledWith(expectedProp, {});
     });
 
     it('should not trigger PickupServicePoint', () => {
@@ -120,7 +114,7 @@ describe('FulfilmentPreference', () => {
   describe('When delivery is not selected', () => {
     const props = {
       ...basicProps,
-      deliverySelected: false,
+      isDeliverySelected: false,
     };
 
     beforeEach(() => {
@@ -139,11 +133,9 @@ describe('FulfilmentPreference', () => {
 
     it('should trigger PickupServicePoint with correct props', () => {
       const expectedProp = {
-        isEditForm: basicProps.isEditForm,
-        request: basicProps.request,
         values: basicProps.values,
         requestTypes: basicProps.requestTypes,
-        shouldValidate: basicProps.shouldValidate,
+        disabled: false,
       };
 
       expect(PickupServicePoint).toHaveBeenCalledWith(expect.objectContaining(expectedProp), {});

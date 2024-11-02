@@ -19,7 +19,6 @@ import RequesterInformation, {
   VISIBLE_COLUMNS,
 } from './RequesterInformation';
 import UserForm from '../UserForm';
-import { isFormEditing } from '../../../../utils';
 import {
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
@@ -29,7 +28,6 @@ import {
 
 jest.mock('../../../../utils', () => ({
   ...jest.requireActual('../../../../utils'),
-  isFormEditing: jest.fn(() => false),
   memoizeValidation: (fn) => () => fn,
 }));
 jest.mock('../UserForm', () => jest.fn(() => <div />));
@@ -53,16 +51,24 @@ const basicProps = {
     id: 'requestId',
     requester: {},
   },
-  selectedUser: {},
-  stripes: {},
+  selectedUser: {
+    id: 'requesterId',
+    barcode: 'requesterBarcode',
+  },
+  stripes: {
+    hasPerm: jest.fn(() => true),
+  },
   patronGroup: {
     group: 'group',
   },
   isLoading: false,
   submitting: false,
+  isEditMode: false,
+  isUserPreselected: false,
   proxy: {},
-  selectProxy: jest.fn(),
+  selectRequester: jest.fn(),
   handleCloseProxy: jest.fn(),
+  resetRequestInformation: jest.fn(),
 };
 const labelIds = {
   selectUser: 'ui-requests-mediated.form.errors.selectUser',
@@ -94,11 +100,13 @@ const renderRequesterInfoWithBarcode = (onBlur) => {
     });
   }));
 
-  render(
+  const { rerender } = render(
     <RequesterInformation
       {...basicProps}
     />
   );
+
+  return rerender;
 };
 
 describe('RequesterInformation', () => {
@@ -106,7 +114,7 @@ describe('RequesterInformation', () => {
     jest.clearAllMocks();
   });
 
-  describe('When creation form', () => {
+  describe('Initial render', () => {
     beforeEach(() => {
       render(
         <RequesterInformation
@@ -187,51 +195,48 @@ describe('RequesterInformation', () => {
 
       expect(basicProps.findUser).toHaveBeenCalledWith(RESOURCE_KEYS.BARCODE, basicProps.values.requester.barcode);
     });
-  });
-
-  describe('When editing form', () => {
-    beforeEach(() => {
-      isFormEditing.mockReturnValueOnce(true);
-    });
 
     it('should trigger UserForm with correct props', () => {
       const expectedProps = {
-        user: basicProps.request.requester,
+        user: basicProps.selectedUser,
         request: basicProps.request,
         patronGroup: basicProps.patronGroup.group,
         proxy: basicProps.proxy,
-        selectProxy: basicProps.selectProxy,
-        handleCloseProxy: basicProps.handleCloseProxy,
+        selectRequester: basicProps.selectRequester,
+        closeProxyManager: basicProps.handleCloseProxy,
+        isEditMode: basicProps.isEditMode,
+        isUserPreselected: basicProps.isUserPreselected,
+        isEditPermission: true,
       };
-
-      render(
-        <RequesterInformation
-          {...basicProps}
-        />
-      );
 
       expect(UserForm).toHaveBeenCalledWith(expectedProps, {});
     });
+  });
 
-    it('should trigger UserForm with selected user', () => {
-      const props = {
+  describe('Component updating', () => {
+    const onBlur = jest.fn();
+
+    beforeEach(() => {
+      const rerender = renderRequesterInfoWithBarcode(onBlur);
+      const newProps = {
         ...basicProps,
-        request: undefined,
-        selectedUser: {
-          id: 'selectedUserId',
-        },
-      };
-      const expectedProps = {
-        user: props.selectedUser,
+        isUserPreselected: true,
       };
 
-      render(
+      rerender(
         <RequesterInformation
-          {...props}
+          {...newProps}
         />
       );
+    });
 
-      expect(UserForm).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+    it('should not trigger onBlur handler', () => {
+      const requesterBarcodeField = screen.getByTestId(testIds.requesterBarcodeField);
+
+      fireEvent.click(requesterBarcodeField);
+      fireEvent.blur(requesterBarcodeField);
+
+      expect(onBlur).not.toHaveBeenCalled();
     });
   });
 

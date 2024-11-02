@@ -11,7 +11,6 @@ import {
   getRequesterName,
   getTotalCount,
   handleKeyCommand,
-  isFormEditing,
   memoizeValidation,
   getTlrSettings,
   getPatronGroup,
@@ -19,8 +18,7 @@ import {
   getFormattedYears,
   getInstanceQueryString,
   getFulfillmentTypeOptions,
-  getSelectedAddressTypeId,
-  isDeliverySelected,
+  isDelivery,
   resetFieldState,
   getDefaultRequestPreferences,
   getFulfillmentPreference,
@@ -29,13 +27,11 @@ import {
   getResourceTypeId,
   getRequestInformation,
   getNoRequestTypeErrorMessageId,
-  validateDropDownValue,
   getUserPreferences,
   getReferredRecordData,
   formatNoteReferrerEntityData,
   getUserHighlightBoxLink,
   getProxyInformation,
-  getRequester,
   getFullNameForCsvRecords,
   getDeliveryAddressForCsvRecords,
   modifyRecordsToExport,
@@ -213,20 +209,6 @@ describe('utils', () => {
         handleKeyCommand(handler)();
 
         expect(event.preventDefault).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('isFormEditing', () => {
-    describe('When id is presented', () => {
-      it('should return true', () => {
-        expect(isFormEditing({ id: 'id' })).toBe(true);
-      });
-    });
-
-    describe('when id is not presented', () => {
-      it('should return false', () => {
-        expect(isFormEditing({})).toBe(false);
       });
     });
   });
@@ -457,25 +439,13 @@ describe('utils', () => {
     });
   });
 
-  describe('getSelectedAddressTypeId', () => {
-    it('should return default delivery address type id"', () => {
-      const defaultDeliveryAddressTypeId = 'id';
-
-      expect(getSelectedAddressTypeId(true, defaultDeliveryAddressTypeId)).toBe(defaultDeliveryAddressTypeId);
-    });
-
-    it('should return empty string', () => {
-      expect(getSelectedAddressTypeId(false)).toBe('');
-    });
-  });
-
-  describe('isDeliverySelected', () => {
+  describe('isDelivery', () => {
     it('should return true', () => {
-      expect(isDeliverySelected(FULFILMENT_TYPES.DELIVERY)).toBe(true);
+      expect(isDelivery(FULFILMENT_TYPES.DELIVERY)).toBe(true);
     });
 
     it('should return false', () => {
-      expect(isDeliverySelected('test')).toBe(false);
+      expect(isDelivery('test')).toBe(false);
     });
   });
 
@@ -531,8 +501,7 @@ describe('utils', () => {
         hasDelivery: false,
         defaultDeliveryAddressTypeId: DEFAULT_VIEW_VALUE,
         defaultServicePointId: DEFAULT_VIEW_VALUE,
-        deliverySelected: true,
-        selectedAddressTypeId: DEFAULT_VIEW_VALUE,
+        isDeliverySelected: true,
       };
 
       expect(getDefaultRequestPreferences(initialValues)).toEqual(expectedResult);
@@ -641,27 +610,15 @@ describe('utils', () => {
     };
 
     it('should return data with selected instance', () => {
-      const values = {
-        createTitleLevelRequest: true,
-      };
-      const expectedResult = {
-        isTitleLevelRequest: values.createTitleLevelRequest,
-        selectedResource: selectedInstance,
-      };
+      const isTitleLevelRequest = true;
 
-      expect(getRequestInformation(values, selectedInstance, selectedItem)).toEqual(expectedResult);
+      expect(getRequestInformation(isTitleLevelRequest, selectedInstance, selectedItem)).toEqual(selectedInstance);
     });
 
     it('should return data with selected item', () => {
-      const values = {
-        createTitleLevelRequest: false,
-      };
-      const expectedResult = {
-        isTitleLevelRequest: values.createTitleLevelRequest,
-        selectedResource: selectedItem,
-      };
+      const isTitleLevelRequest = false;
 
-      expect(getRequestInformation(values, selectedInstance, selectedItem)).toEqual(expectedResult);
+      expect(getRequestInformation(isTitleLevelRequest, selectedInstance, selectedItem)).toEqual(selectedItem);
     });
   });
 
@@ -672,30 +629,6 @@ describe('utils', () => {
 
     it('should return error for item level request', () => {
       expect(getNoRequestTypeErrorMessageId(false)).toBe(MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.ITEM_LEVEL_ERROR]);
-    });
-  });
-
-  describe('validateDropDownValue', () => {
-    const value = 'value';
-
-    describe('When shouldValidate is true', () => {
-      it('should return undefined', () => {
-        expect(validateDropDownValue(true)(value)).toBeUndefined();
-      });
-
-      it('should return validation error message', () => {
-        const errorMessage = 'ui-requests-mediated.form.errors.requiredToConfirm';
-
-        render(validateDropDownValue(true)(''));
-
-        expect(screen.getByText(errorMessage)).toBeInTheDocument();
-      });
-    });
-
-    describe('When shouldValidate is false', () => {
-      it('should return undefined', () => {
-        expect(validateDropDownValue(false)(value)).toBeUndefined();
-      });
     });
   });
 
@@ -893,24 +826,6 @@ describe('utils', () => {
       it('should return empty object', () => {
         expect(getProxyInformation()).toEqual({});
       });
-    });
-  });
-
-  describe('getRequester', () => {
-    const selectedUser = {
-      id: 'selectedUserId',
-    };
-
-    it('should return proxy user', () => {
-      const proxy = {
-        id: 'proxyId',
-      };
-
-      expect(getRequester(proxy, selectedUser)).toEqual(proxy);
-    });
-
-    it('should return selected user', () => {
-      expect(getRequester(null, selectedUser)).toEqual(selectedUser);
     });
   });
 

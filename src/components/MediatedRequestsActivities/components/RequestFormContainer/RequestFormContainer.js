@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import {
+  useState,
+  useRef,
+} from 'react';
 import { useHistory } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import {
@@ -47,14 +50,14 @@ export const urls = {
       query: `(${ITEM_QUERIES[idType]}=="${value}")`,
     });
 
-    return `circulation/items-by-instance?${query}`;
+    return `circulation-bff/requests/search-instances?${query}`;
   },
   [RESOURCE_TYPES.INSTANCE]: (value) => {
     const query = stringify({
       query: getInstanceQueryString(value),
     });
 
-    return `circulation/items-by-instance?${query}`;
+    return `circulation-bff/requests/search-instances?${query}`;
   },
   [RESOURCE_TYPES.LOAN]: (value) => {
     const query = stringify({
@@ -91,9 +94,14 @@ export const urls = {
 
     return `request-preference-storage/request-preference?${query}`;
   },
+  [RESOURCE_TYPES.REQUEST_BY_ID]: (id) => {
+    return `requests-mediated/mediated-requests/${id}`;
+  },
 };
 
 const RequestFormContainer = ({
+  isEditMode,
+  setRequest,
   request,
   settings,
   patronGroups,
@@ -107,7 +115,7 @@ const RequestFormContainer = ({
   const [selectedInstance, setSelectedInstance] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
   const [selectedProxy, setSelectedProxy] = useState(null);
-  const [submitInitiator, setSubmitInitiator] = useState(null);
+  const submitInitiator = useRef('');
   const initialValues = {
     requestType: DEFAULT_REQUEST_TYPE_VALUE,
     fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
@@ -128,12 +136,24 @@ const RequestFormContainer = ({
 
   const handleSubmit = (data) => {
     const requestData = cloneDeep(data);
-    const isSaveAndCloseAction = submitInitiator === SAVE_BUTTON_ID;
-    const requestUrl = isSaveAndCloseAction ? 'requests-mediated/mediated-requests' : 'circulation-bff/mediated-requests/confirm';
+    const isSaveAndCloseAction = submitInitiator.current === SAVE_BUTTON_ID;
+    let requestUrl = isSaveAndCloseAction ? 'requests-mediated/mediated-requests' : 'circulation-bff/mediated-requests/confirm';
+    let requestMethod = 'post';
     let userData;
 
+    if (isEditMode) {
+      requestData.id = request.id;
+      requestData.requestLevel = request.requestLevel;
+
+      if (isSaveAndCloseAction) {
+        requestMethod = 'put';
+        requestUrl = `${requestUrl}/${requestData.id}`;
+      }
+    } else {
+      requestData.requestLevel = getRequestLevelValue(requestData.createTitleLevelRequest);
+    }
+
     requestData.requestDate = moment.tz(intl.timeZone).toISOString();
-    requestData.requestLevel = getRequestLevelValue(requestData.createTitleLevelRequest);
 
     if (selectedProxy) {
       userData = selectedProxy;
@@ -177,7 +197,7 @@ const RequestFormContainer = ({
     unset(requestData, 'keyOfInstanceIdField');
     unset(requestData, 'keyOfRequestTypeField');
 
-    return ky.post(requestUrl, {
+    return ky[requestMethod](requestUrl, {
       json: requestData,
     })
       .json()
@@ -201,14 +221,15 @@ const RequestFormContainer = ({
           });
         }
 
-        const url = `${getMediatedRequestsActivitiesUrl()}/preview/${res.id}`;
+        const mediatedRequestId = res.id || requestData.id;
+        const url = `${getMediatedRequestsActivitiesUrl()}/preview/${mediatedRequestId}`;
 
         history.push(url);
       })
       .catch(() => {
         const message = isSaveAndCloseAction ?
           <FormattedMessage id="ui-requests-mediated.form.saveRequest.error" /> :
-          <FormattedMessage id="ui-requests-mediated.form.confirmRequest.error" />;
+          <FormattedMessage id="ui-requests-mediated.form.createRequest.error" />;
 
         callout.sendCallout({
           type: 'error',
@@ -228,7 +249,7 @@ const RequestFormContainer = ({
       onSetSelectedUser={setSelectedUser}
       onSetSelectedProxy={setSelectedProxy}
       onSetSelectedInstance={setSelectedInstance}
-      onSetSubmitInitiator={setSubmitInitiator}
+      submitInitiator={submitInitiator}
       addressTypes={addressTypes}
       settings={settings}
       patronGroups={patronGroups}
@@ -236,6 +257,8 @@ const RequestFormContainer = ({
       findResource={findResource}
       onSubmit={handleSubmit}
       onCancel={handleClose}
+      isEditMode={isEditMode}
+      setRequest={setRequest}
     />
   );
 };
@@ -243,6 +266,8 @@ const RequestFormContainer = ({
 RequestFormContainer.propTypes = {
   settings: PropTypes.object.isRequired,
   patronGroups: PropTypes.object.isRequired,
+  isEditMode: PropTypes.bool.isRequired,
+  setRequest: PropTypes.func,
   request: PropTypes.object,
 };
 

@@ -29,7 +29,6 @@ import {
 } from '../../../../constants';
 
 const basicProps = {
-  request: {},
   settings: {
     items: [
       {
@@ -40,6 +39,8 @@ const basicProps = {
     ],
   },
   patronGroups: [],
+  isEditMode: false,
+  setRequest: jest.fn(),
 };
 const testIds = {
   cancelButton: 'cancelButton',
@@ -47,6 +48,10 @@ const testIds = {
   submitButton: 'submitButton',
 };
 const addressTypes = [];
+const request = {
+  id: 'id',
+  requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
+};
 
 jest.mock('react-router-dom', () => ({
   useHistory: jest.fn(),
@@ -95,14 +100,14 @@ const mockedProxy = {
     lastName: 'proxyLastName',
   },
 };
-const mockSubmitFunctionality = (dataToSubmit, isSavingRequest, isProxy) => {
+const mockSubmitFunctionality = (dataToSubmit, isSavingRequest, isProxy, props = basicProps) => {
   RequestForm.mockImplementation(({
     onSubmit,
-    onSetSubmitInitiator,
+    submitInitiator,
     onSetSelectedProxy,
   }) => {
     if (isSavingRequest) {
-      onSetSubmitInitiator(SAVE_BUTTON_ID);
+      submitInitiator.current = SAVE_BUTTON_ID;
     }
 
     if (isProxy) {
@@ -128,7 +133,7 @@ const mockSubmitFunctionality = (dataToSubmit, isSavingRequest, isProxy) => {
 
   render(
     <RequestFormContainer
-      {...basicProps}
+      {...props}
     />
   );
 
@@ -174,8 +179,9 @@ describe('RequestFormContainer', () => {
           findResource: expect.any(Function),
           onSubmit: expect.any(Function),
           onCancel: expect.any(Function),
-          onSetSubmitInitiator: expect.any(Function),
+          setRequest: expect.any(Function),
           onSetSelectedProxy: expect.any(Function),
+          isEditMode: basicProps.isEditMode,
           addressTypes,
         };
 
@@ -193,7 +199,7 @@ describe('RequestFormContainer', () => {
 
       it('should find item data', () => {
         const findDataButton = screen.getByTestId(testIds.findDataButton);
-        const itemUrl = `circulation/items-by-instance?query=(${ITEM_QUERIES[RESOURCE_KEYS.ID]}=="test")`;
+        const itemUrl = `circulation-bff/requests/search-instances?query=(${ITEM_QUERIES[RESOURCE_KEYS.ID]}=="test")`;
 
         fireEvent.click(findDataButton);
 
@@ -393,6 +399,66 @@ describe('RequestFormContainer', () => {
           });
         });
       });
+
+      describe('When saving request in edit mode', () => {
+        const props = {
+          ...basicProps,
+          isEditMode: true,
+          request,
+        };
+
+        beforeEach(() => {
+          mockSubmitFunctionality(basicDataToSend, true, false, props);
+        });
+
+        it('should send correct data to save', () => {
+          const expectedArguments = [
+            `requests-mediated/mediated-requests/${props.request.id}`,
+            {
+              json: expect.objectContaining({
+                itemId: basicDataToSend.itemId,
+                item: basicDataToSend.item,
+                pickupServicePointId: basicDataToSend.pickupServicePointId,
+                requestDate: expect.any(String),
+                requestLevel: props.request.requestLevel,
+                id: props.request.id,
+              }),
+            }
+          ];
+
+          expect(useOkapiKy().put).toHaveBeenCalledWith(...expectedArguments);
+        });
+      });
+
+      describe('When confirming request in edit mode', () => {
+        const props = {
+          ...basicProps,
+          isEditMode: true,
+          request,
+        };
+
+        beforeEach(() => {
+          mockSubmitFunctionality(basicDataToSend, false, false, props);
+        });
+
+        it('should send correct data to confirm', () => {
+          const expectedArguments = [
+            'circulation-bff/mediated-requests/confirm',
+            {
+              json: expect.objectContaining({
+                itemId: basicDataToSend.itemId,
+                item: basicDataToSend.item,
+                pickupServicePointId: basicDataToSend.pickupServicePointId,
+                requestDate: expect.any(String),
+                requestLevel: props.request.requestLevel,
+                id: props.request.id,
+              }),
+            }
+          ];
+
+          expect(useOkapiKy().post).toHaveBeenCalledWith(...expectedArguments);
+        });
+      });
     });
   });
 
@@ -407,13 +473,13 @@ describe('RequestFormContainer', () => {
     });
 
     it('should return url to get item data', () => {
-      const expectedUrl = `circulation/items-by-instance?query=(${ITEM_QUERIES[idType]}=="${value}")`;
+      const expectedUrl = `circulation-bff/requests/search-instances?query=(${ITEM_QUERIES[idType]}=="${value}")`;
 
       expect(urls[RESOURCE_TYPES.ITEM](value, idType)).toBe(expectedUrl);
     });
 
     it('should return url to get instance data', () => {
-      const expectedUrl = `circulation/items-by-instance?query=${value}`;
+      const expectedUrl = `circulation-bff/requests/search-instances?query=${value}`;
 
       expect(urls[RESOURCE_TYPES.INSTANCE](value)).toBe(expectedUrl);
     });
@@ -460,6 +526,13 @@ describe('RequestFormContainer', () => {
       const expectedUrl = `request-preference-storage/request-preference?query=(userId=="${value}")`;
 
       expect(urls[RESOURCE_TYPES.REQUEST_PREFERENCES](value)).toBe(expectedUrl);
+    });
+
+    it('should return url to get request by id', () => {
+      const id = 'id';
+      const expectedUrl = `requests-mediated/mediated-requests/${id}`;
+
+      expect(urls[RESOURCE_TYPES.REQUEST_BY_ID](id)).toBe(expectedUrl);
     });
   });
 });

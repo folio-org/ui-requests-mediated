@@ -2,13 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Field } from 'react-final-form';
 import { FormattedMessage } from 'react-intl';
-import { parse } from 'query-string';
-import {
-  isEqual,
-  isEmpty,
-  pick,
-  get,
-} from 'lodash';
+import { isEmpty } from 'lodash';
 
 import {
   Accordion,
@@ -43,24 +37,22 @@ import {
   FULFILMENT_TYPES,
   SAVE_BUTTON_ID,
   ID_TYPE_MAP,
+  CONFIRM_BUTTON_ID,
 } from '../../../../constants';
 import {
   handleKeyCommand,
   getPatronGroup,
   getTlrSettings,
   isSubmittingButtonDisabled,
-  isFormEditing,
   resetFieldState,
   getFulfillmentTypeOptions,
   getDefaultRequestPreferences,
   getFulfillmentPreference,
-  getSelectedAddressTypeId,
-  isDeliverySelected,
+  isDelivery,
   getRequestTypesOptions,
   getDeliveryInformation,
   getResourceTypeId,
   getRequestInformation,
-  getRequester,
 } from '../../../../utils';
 
 import css from './RequestForm.css';
@@ -69,7 +61,7 @@ class RequestForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     findResource: PropTypes.func.isRequired,
-    onSetSubmitInitiator: PropTypes.func.isRequired,
+    submitInitiator: PropTypes.object.isRequired,
     addressTypes: PropTypes.arrayOf({
       addressType: PropTypes.string,
       id: PropTypes.string,
@@ -89,6 +81,13 @@ class RequestForm extends React.Component {
     onSetSelectedUser: PropTypes.func.isRequired,
     onSetSelectedProxy: PropTypes.func.isRequired,
     onSetSelectedInstance: PropTypes.func.isRequired,
+    isEditMode: PropTypes.bool.isRequired,
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        id: PropTypes.string,
+      }),
+    }).isRequired,
+    setRequest: PropTypes.func,
     pristine: PropTypes.bool,
     submitting: PropTypes.bool,
     patronGroups: PropTypes.arrayOf(PropTypes.object),
@@ -107,98 +106,130 @@ class RequestForm extends React.Component {
     super(props);
 
     const {
-      request,
       settings,
       initialValues,
     } = props;
-    const { loan } = (request || {});
     const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.items[0]?.value);
 
     this.state = {
-      selectedLoan: loan,
+      selectedLoan: null,
       isItemOrInstanceLoading: false,
       isItemsDialogOpen: false,
-      isItemFromItemsDialog: false, // is item received from items dialog
-      isInstanceFromItem: false, // is instance received after clicking on TLR checkbox
-      isItemIdRequest: this.isItemIdProvided(),
+      isItemPreselected: false, // is item received from items dialog or received on edit page
+      isInstancePreselected: false, // is instance received after clicking on TLR checkbox or received on edit page
+      isUserPreselected: false, // is user received on edit page
+      isItemIdRequest: false,
       requestTypes: {},
       isRequestTypesReceived: false,
       isRequestTypeLoading: false,
-      shouldValidate: false,
+      fulfillmentPreference: initialValues.fulfillmentPreference,
+      isDeliverySelected: isDelivery(initialValues.fulfillmentPreference),
       titleLevelRequestsFeatureEnabled,
-      ...getDefaultRequestPreferences(initialValues),
     };
     this.accordionStatusRef = React.createRef();
   }
 
   componentDidMount() {
-    this.setTlrCheckboxInitialState();
+    const {
+      isEditMode,
+      request,
+    } = this.props;
+
+    if (isEditMode) {
+      if (request) { // when user came from mediated request details page
+        this.getRequestDataForEditing();
+      } else { // when user reloads Edit mediated request page
+        this.getRequestById();
+      }
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      initialValues,
-      request,
-      onSetSelectedItem,
-      onSetSelectedUser,
-      settings,
-    } = this.props;
-    const {
-      initialValues: prevInitialValues,
-      request: prevRequest,
-      settings: prevSettings,
-    } = prevProps;
+    const { settings } = this.props;
+    const { settings: prevSettings } = prevProps;
     const newSettings = settings?.items[0]?.value;
-
-    if (
-      (initialValues?.fulfillmentPreference && !prevInitialValues?.fulfillmentPreference) ||
-      !isEqual(request, prevRequest)
-    ) {
-      onSetSelectedItem(request.item);
-      onSetSelectedUser(request.requester);
-
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ selectedLoan: request.loan });
-    }
 
     if (prevSettings?.items[0]?.value !== newSettings) {
       const { titleLevelRequestsFeatureEnabled } = getTlrSettings(newSettings);
 
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ titleLevelRequestsFeatureEnabled }, this.setTlrCheckboxInitialState);
+      this.setState({ titleLevelRequestsFeatureEnabled });
     }
   }
 
-  isItemIdProvided = () => {
-    const { location } = this.props;
-    const { itemId } = parse(location?.search);
-
-    return Boolean(itemId);
-  }
-
-  setTlrCheckboxInitialState = () => {
-    const { titleLevelRequestsFeatureEnabled } = this.state;
+  getRequestDataForEditing = (request = this.props.request) => {
     const {
       form,
-      location,
+      onSetSelectedProxy,
+      onSetSelectedInstance,
+      onSetSelectedItem,
+      onSetSelectedUser,
     } = this.props;
+    const isTlr = request.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE;
+
+    if (isTlr && request.instance?.hrid) {
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, request.instance.hrid);
+    } else if (request.item?.barcode) {
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, request.item.barcode);
+    }
+
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, request.requester.barcode);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PATRON_COMMENTS, request.patronComments);
+
+    Promise.allSettled([
+      isTlr ? this.findInstance(request.instanceId, false) : this.findItem(RESOURCE_KEYS.ID, request.itemId, false, false),
+      this.findUser(RESOURCE_KEYS.ID, request.requesterId, false)
+    ])
+      .then((results) => {
+        const resourceId = results[0]?.value?.id;
+        const requesterId = results[1]?.value?.id;
+
+        if (isTlr) {
+          this.setState({
+            isInstancePreselected: true,
+            isUserPreselected: true,
+          });
+        } else {
+          this.setState({
+            isItemPreselected: true,
+            isUserPreselected: true,
+          });
+        }
+
+        if (request.proxy) {
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, request.proxyUserId);
+          onSetSelectedProxy(request.proxy);
+        }
+
+        this.setRequestPreferencesForEditing(resourceId, requesterId, isTlr, request);
+      })
+      .catch(() => {
+        if (isTlr) {
+          onSetSelectedInstance(null);
+        } else {
+          onSetSelectedItem(null);
+        }
+
+        onSetSelectedUser(null);
+      });
+  }
+
+  getRequestById = () => {
     const {
-      itemId,
-      itemBarcode,
-      instanceId,
-    } = parse(location?.search);
+      findResource,
+      match,
+      setRequest,
+    } = this.props;
 
-    if (titleLevelRequestsFeatureEnabled === false) {
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false);
+    findResource(RESOURCE_TYPES.REQUEST_BY_ID, match.params?.id)
+      .then(request => {
+        setRequest(request);
 
-      return;
-    }
-
-    if (itemId || itemBarcode) {
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false);
-    } else if (instanceId) {
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, true);
-    }
+        return request;
+      })
+      .then((request) => {
+        this.getRequestDataForEditing(request);
+      });
   }
 
   getAvailableRequestTypes = (user) => {
@@ -206,11 +237,11 @@ class RequestForm extends React.Component {
       selectedItem,
       selectedInstance,
       values,
+      request,
+      isEditMode,
     } = this.props;
-    const {
-      selectedResource,
-      isTitleLevelRequest,
-    } = getRequestInformation(values, selectedInstance, selectedItem);
+    const isTitleLevelRequest = isEditMode ? request?.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE : values?.createTitleLevelRequest;
+    const selectedResource = getRequestInformation(isTitleLevelRequest, selectedInstance, selectedItem);
 
     if (selectedResource?.id && user?.id) {
       const resourceTypeId = getResourceTypeId(isTitleLevelRequest);
@@ -232,23 +263,26 @@ class RequestForm extends React.Component {
       });
   }
 
-  selectProxy = (proxy) => {
+  selectRequester = (requester) => {
     const {
+      selectedUser: initialRequester,
       form,
-      selectedUser,
       onSetSelectedProxy,
+      onSetSelectedUser,
     } = this.props;
 
-    if (selectedUser.id !== proxy.id) {
+    if (initialRequester.id !== requester.id) {
       this.setState({
         requestTypes: {},
         isRequestTypesReceived: false,
       });
-      onSetSelectedProxy(proxy);
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, proxy.id);
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, selectedUser.id);
-      this.findRequestPreferences(proxy.id);
-      this.getAvailableRequestTypes(proxy);
+      onSetSelectedProxy(initialRequester);
+      onSetSelectedUser(requester);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, requester.id);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, requester.barcode);
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, initialRequester.id);
+      this.setRequestPreferences(requester.id);
+      this.getAvailableRequestTypes(requester);
     }
   }
 
@@ -256,7 +290,7 @@ class RequestForm extends React.Component {
     this.props.onSetSelectedProxy(null);
   };
 
-  findUser = (fieldName, value) => {
+  findUser = (fieldName, value, shouldFetchAdditionalInfo = true) => {
     const {
       form,
       findResource,
@@ -268,9 +302,12 @@ class RequestForm extends React.Component {
       isUserLoading: true,
       requestTypes: {},
       isRequestTypesReceived: false,
+      isUserPreselected: false,
     });
     onSetSelectedProxy(null);
+    onSetSelectedUser(null);
 
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, undefined);
@@ -288,7 +325,9 @@ class RequestForm extends React.Component {
             this.triggerUserBarcodeValidation();
           }
 
-          this.findRequestPreferences(selectedUser.id);
+          if (shouldFetchAdditionalInfo) {
+            this.setRequestPreferences(selectedUser.id);
+          }
 
           return selectedUser;
         }
@@ -301,7 +340,9 @@ class RequestForm extends React.Component {
         return null;
       })
       .then(user => {
-        this.getAvailableRequestTypes(user);
+        if (shouldFetchAdditionalInfo) {
+          this.getAvailableRequestTypes(user);
+        }
 
         return user;
       })
@@ -311,20 +352,23 @@ class RequestForm extends React.Component {
   }
 
   findItemRelatedResources = (item) => {
-    const { findResource } = this.props;
-
     if (!item) {
       return null;
     }
 
-    return Promise.all([findResource(RESOURCE_TYPES.LOAN, item.id)])
-      .then((results) => {
-        const selectedLoan = results[0]?.loans?.[0];
+    const { findResource } = this.props;
 
-        this.setState({ selectedLoan });
+    return findResource(RESOURCE_TYPES.LOAN, item.id)
+      .then((result) => {
+        const selectedLoan = result?.loans?.[0];
+
+        if (selectedLoan) {
+          this.setState({ selectedLoan });
+        }
 
         return item;
-      });
+      })
+      .catch(() => null);
   }
 
   setItemIdRequest = (key, isBarcodeRequired) => {
@@ -350,24 +394,21 @@ class RequestForm extends React.Component {
       });
   };
 
-  findItem = (key, value, isBarcodeRequired = false) => {
-    const {
-      isItemOrInstanceLoading,
-    } = this.state;
+  findItem = (key, value, isBarcodeRequired = false, shouldGetRequestTypes = true) => {
     const {
       findResource,
       form,
       onSetSelectedItem,
       selectedUser,
-      selectedProxy,
     } = this.props;
 
     this.setState({
       isItemOrInstanceLoading: true,
       requestTypes: {},
       isRequestTypesReceived: false,
-      isItemFromItemsDialog: false,
+      isItemPreselected: false,
     });
+    this.resetRequestPreference();
 
     return findResource(RESOURCE_TYPES.ITEM, value, key)
       .then((result) => {
@@ -379,13 +420,14 @@ class RequestForm extends React.Component {
 
         const foundItem = result.items?.find(item => item[key] === value);
 
-        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_ID, foundItem.id);
-        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, foundItem.barcode);
-        resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
-        onSetSelectedItem(foundItem);
-        this.setState({ isItemOrInstanceLoading: false });
+        if (foundItem) {
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_ID, foundItem.id);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, foundItem.barcode);
+          resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
+          onSetSelectedItem(foundItem);
+        }
 
-        return foundItem;
+        return foundItem || null;
       })
       .catch(() => {
         onSetSelectedItem(null);
@@ -393,18 +435,19 @@ class RequestForm extends React.Component {
         return null;
       })
       .then(item => {
-        if (item && selectedUser?.id) {
-          const requester = getRequester(selectedProxy, selectedUser);
-          this.findRequestTypes(item.id, requester.id, ID_TYPE_MAP.ITEM_ID);
+        if (item && selectedUser?.id && shouldGetRequestTypes) {
+          this.findRequestTypes(item.id, selectedUser.id, ID_TYPE_MAP.ITEM_ID);
         }
 
         return item;
       })
-      .then(item => this.findItemRelatedResources(item))
+      .then(item => {
+        this.findItemRelatedResources(item);
+
+        return item;
+      })
       .finally(() => {
-        if (isItemOrInstanceLoading) {
-          this.setState({ isItemOrInstanceLoading: false });
-        }
+        this.setState({ isItemOrInstanceLoading: false });
       });
   }
 
@@ -421,24 +464,21 @@ class RequestForm extends React.Component {
       });
   }
 
-  findInstance = async (instanceId) => {
-    const {
-      isItemOrInstanceLoading,
-    } = this.state;
+  findInstance = async (instanceId, shouldGetRequestTypes = true) => {
     const {
       findResource,
       form,
       onSetSelectedInstance,
       selectedUser,
-      selectedProxy,
     } = this.props;
 
     this.setState({
       isItemOrInstanceLoading: true,
       requestTypes: {},
       isRequestTypesReceived: false,
-      isInstanceFromItem: false,
+      isInstancePreselected: false,
     });
+    this.resetRequestPreference();
 
     return findResource(RESOURCE_TYPES.INSTANCE, instanceId)
       .then((instance) => {
@@ -450,7 +490,6 @@ class RequestForm extends React.Component {
         form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, instance.hrid);
         resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
         onSetSelectedInstance(instance);
-        this.setState({ isItemOrInstanceLoading: false });
 
         return instance;
       })
@@ -460,17 +499,14 @@ class RequestForm extends React.Component {
         return null;
       })
       .then(instance => {
-        if (instance && selectedUser?.id) {
-          const requester = getRequester(selectedProxy, selectedUser);
-          this.findRequestTypes(instance.id, requester.id, ID_TYPE_MAP.INSTANCE_ID);
+        if (instance && selectedUser?.id && shouldGetRequestTypes) {
+          this.findRequestTypes(instance.id, selectedUser.id, ID_TYPE_MAP.INSTANCE_ID);
         }
 
         return instance;
       })
       .finally(() => {
-        if (isItemOrInstanceLoading) {
-          this.setState({ isItemOrInstanceLoading: false });
-        }
+        this.setState({ isItemOrInstanceLoading: false });
       });
   }
 
@@ -534,17 +570,17 @@ class RequestForm extends React.Component {
       if (selectedItem) {
         this.findInstance(selectedItem.instanceId)
           .then(() => {
-            this.setState({ isInstanceFromItem: true });
+            this.setState({ isInstancePreselected: true });
           });
       }
 
-      onSetSelectedItem(undefined);
+      onSetSelectedItem(null);
     } else if (selectedInstance) {
       form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
       resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
       this.setState({ isItemsDialogOpen: true });
     } else {
-      onSetSelectedInstance(undefined);
+      onSetSelectedInstance(null);
       this.setState({
         requestTypes: {},
         isRequestTypesReceived: false,
@@ -555,7 +591,7 @@ class RequestForm extends React.Component {
   handleItemsDialogClose = () => {
     const { onSetSelectedInstance } = this.props;
 
-    onSetSelectedInstance(undefined);
+    onSetSelectedInstance(null);
     this.setState({
       isItemsDialogOpen: false,
       isItemIdRequest: false,
@@ -581,7 +617,7 @@ class RequestForm extends React.Component {
 
     this.findItem(RESOURCE_KEYS.ID, item.id, isBarcodeRequired)
       .then(() => {
-        this.setState({ isItemFromItemsDialog: true });
+        this.setState({ isItemPreselected: true });
       });
   }
 
@@ -599,95 +635,136 @@ class RequestForm extends React.Component {
     }
   };
 
-  findRequestPreferences = async (userId) => {
+  getRequestPreferences = async (userId) => {
     const {
       findResource,
-      form,
       initialValues,
     } = this.props;
+    const defaultPreferences = getDefaultRequestPreferences(initialValues);
 
     try {
-      const { requestPreferences } = await findResource(RESOURCE_TYPES.REQUEST_PREFERENCES, userId, 'userId');
+      const { requestPreferences } = await findResource(RESOURCE_TYPES.REQUEST_PREFERENCES, userId);
       const preferences = requestPreferences[0];
-      const defaultPreferences = getDefaultRequestPreferences(initialValues);
-      const requestPreference = {
-        ...defaultPreferences,
-        ...pick(preferences, ['defaultDeliveryAddressTypeId', 'defaultServicePointId']),
-      };
-
-      requestPreference.hasDelivery = get(preferences, 'delivery');
-
       const fulfillmentPreference = getFulfillmentPreference(preferences, initialValues);
-      const deliverySelected = isDeliverySelected(fulfillmentPreference);
-      const selectedAddress = requestPreference.selectedAddressTypeId || requestPreference.defaultDeliveryAddressTypeId;
-      const selectedAddressTypeId = getSelectedAddressTypeId(deliverySelected, selectedAddress);
 
       this.setState({
-        ...requestPreference,
-        deliverySelected,
-        selectedAddressTypeId,
-      }, () => {
-        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, fulfillmentPreference);
-
-        this.updateRequestPreferencesFields();
+        defaultDeliveryAddressTypeId: preferences.defaultDeliveryAddressTypeId,
+        defaultServicePointId: preferences.defaultServicePointId,
+        fulfillmentPreference,
       });
+
+      return {
+        ...defaultPreferences,
+        defaultDeliveryAddressTypeId: preferences.defaultDeliveryAddressTypeId,
+        defaultServicePointId: preferences.defaultServicePointId,
+        hasDelivery: Boolean(preferences.delivery),
+        isDeliverySelected: isDelivery(fulfillmentPreference),
+        selectedAddress: preferences.defaultDeliveryAddressTypeId,
+        fulfillmentPreference,
+      };
     } catch (e) {
-      this.setState({
-        ...getDefaultRequestPreferences(initialValues),
-        deliverySelected: false,
-      }, () => {
-        form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF);
-      });
+      return defaultPreferences;
     }
-  }
+  };
 
-  updateRequestPreferencesFields = () => {
+  setRequestPreferences = async (userId) => {
     const {
-      defaultDeliveryAddressTypeId,
-      defaultServicePointId,
-      deliverySelected,
-      selectedAddressTypeId,
-    } = this.state;
-    const { form } = this.props;
+      form,
+    } = this.props;
+    const requestPreference = await this.getRequestPreferences(userId);
 
-    if (deliverySelected) {
-      const deliveryAddressTypeId = selectedAddressTypeId || defaultDeliveryAddressTypeId;
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, requestPreference.fulfillmentPreference);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, requestPreference.defaultServicePointId);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, requestPreference.defaultDeliveryAddressTypeId);
 
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, deliveryAddressTypeId);
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, '');
-    } else {
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, defaultServicePointId);
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, '');
-    }
+    this.setState({
+      hasDelivery: requestPreference.hasDelivery,
+      isDeliverySelected: requestPreference.isDeliverySelected,
+    });
   }
+
+  setRequestPreferencesForEditing = (resourceId, requesterId, isTlr, request) => {
+    const {
+      form,
+      selectedUser,
+    } = this.props;
+
+    if (resourceId && requesterId) {
+      const resourceType = isTlr ? ID_TYPE_MAP.INSTANCE_ID : ID_TYPE_MAP.ITEM_ID;
+
+      Promise.allSettled([
+        this.getRequestPreferences(requesterId),
+        this.findRequestTypes(resourceId, requesterId, resourceType)
+      ])
+        .then((response) => {
+          const requestPreferences = response[0]?.value;
+          const requestTypes = response[1]?.value;
+
+          if (requestTypes?.[request.requestType]) { // when request type, fulfilment preference, pickup sp/delivery address were saved before
+            form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, request.requestType);
+
+            if (request.fulfillmentPreference === FULFILMENT_TYPES.HOLD_SHELF) {
+              form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, request.fulfillmentPreference);
+              form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, requestPreferences.defaultDeliveryAddressTypeId);
+              this.setState({ hasDelivery: requestPreferences.hasDelivery });
+
+              // check if previously saved service point exists in list of available service points
+              const selectedServicePoint = requestTypes[request.requestType]?.find(servicePoint => servicePoint.id === request.pickupServicePointId);
+
+              if (selectedServicePoint) {
+                form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, request.pickupServicePointId);
+              }
+            } else if (request.fulfillmentPreference === FULFILMENT_TYPES.DELIVERY && requestPreferences.hasDelivery) {
+              this.setState({
+                isDeliverySelected: true,
+                hasDelivery: true,
+              });
+
+              form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, request.fulfillmentPreference);
+              form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, requestPreferences.defaultServicePointId);
+
+              // check if previously saved address exists in user's address list
+              const selectedDeliveryAddress = selectedUser.personal.addresses?.find(address => request.deliveryAddressTypeId === address.addressTypeId);
+
+              form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, selectedDeliveryAddress?.addressTypeId || requestPreferences.defaultDeliveryAddressTypeId);
+            }
+          } else { // when request type, fulfilment preference, pickup SP/delivery address were not saved before
+            form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, requestPreferences.fulfillmentPreference);
+            form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, requestPreferences.defaultServicePointId);
+            form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, requestPreferences.defaultDeliveryAddressTypeId);
+            this.setState({
+              hasDelivery: requestPreferences.hasDelivery,
+              isDeliverySelected: requestPreferences.isDeliverySelected,
+            });
+          }
+        })
+        .catch(() => {
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, undefined);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
+        });
+    }
+  };
 
   findRequestTypes = (resourceId, requesterId, resourceType) => {
     const {
       findResource,
       form,
-      request,
     } = this.props;
-    const isEditForm = isFormEditing(request);
-    let requestParams;
+    const requestParams = {
+      operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
+      [resourceType]: resourceId,
+      requesterId,
+    };
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
 
-    if (isEditForm) {
-      requestParams = {
-        operation: MEDIATED_REQUEST_OPERATIONS.REPLACE,
-        requestId: request.id,
-      };
-    } else {
-      requestParams = {
-        operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
-        [resourceType]: resourceId,
-        requesterId,
-      };
-      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
-    }
+    this.setState({
+      isRequestTypeLoading: true,
+      requestTypes: {},
+    });
 
-    this.setState({ isRequestTypeLoading: true });
-    this.resetDeliveryPoint();
-
-    findResource(RESOURCE_TYPES.REQUEST_TYPES, requestParams)
+    return findResource(RESOURCE_TYPES.REQUEST_TYPES, requestParams)
       .then(requestTypes => {
         if (!isEmpty(requestTypes)) {
           this.setState({
@@ -697,6 +774,8 @@ class RequestForm extends React.Component {
         } else {
           this.setState({ isRequestTypesReceived: true }, this.triggerRequestTypeValidation);
         }
+
+        return requestTypes;
       })
       .catch(() => {
         this.setState({ requestTypes: {} });
@@ -706,55 +785,40 @@ class RequestForm extends React.Component {
       });
   }
 
-  onChangeAddress = (e) => {
-    const { form } = this.props;
-    const selectedAddressTypeId = e.target.value;
-
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, selectedAddressTypeId);
-    this.setState({ selectedAddressTypeId });
+  setDeliveryAddress = (isDeliverySelected) => {
+    this.setState({ isDeliverySelected });
   }
 
-  setDeliveryAddress = (deliverySelected, selectedAddressTypeId) => {
-    this.setState({
-      deliverySelected,
-      selectedAddressTypeId,
-    }, () => {
-      this.updateRequestPreferencesFields();
-    });
-  }
-
-  resetDeliveryPoint = () => {
-    const { form } = this.props;
-
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, '');
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, '');
-  };
-
-  sendData = (isValidationRequired) => {
+  resetRequestPreference = () => {
     const {
-      form,
-      values,
-      handleSubmit,
-    } = this.props;
+      defaultDeliveryAddressTypeId,
+      defaultServicePointId,
+      fulfillmentPreference,
+    } = this.state;
+    const { form } = this.props;
+    const isDeliverySelected = isDelivery(fulfillmentPreference);
 
-    this.setState({ shouldValidate: isValidationRequired }, async () => {
-      await form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_REQUEST_TYPE_FIELD, values.keyOfRequestTypeField ? 0 : 1);
-      handleSubmit();
-    });
-  }
+    this.setState({ isDeliverySelected });
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, fulfillmentPreference);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, defaultDeliveryAddressTypeId);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, defaultServicePointId);
+  };
 
   handleDataSubmit = (e) => {
     e.preventDefault();
 
-    const { onSetSubmitInitiator } = this.props;
+    const {
+      submitInitiator,
+      handleSubmit,
+    } = this.props;
 
     if (e.nativeEvent?.submitter?.id === SAVE_BUTTON_ID) {
-      onSetSubmitInitiator(SAVE_BUTTON_ID);
-      this.sendData(false);
+      submitInitiator.current = SAVE_BUTTON_ID;
     } else {
-      onSetSubmitInitiator(null);
-      this.sendData(true);
+      submitInitiator.current = CONFIRM_BUTTON_ID;
     }
+
+    handleSubmit();
   }
 
   render() {
@@ -768,13 +832,12 @@ class RequestForm extends React.Component {
       isRequestTypesReceived,
       isRequestTypeLoading,
       requestTypes,
-      deliverySelected,
-      selectedAddressTypeId,
+      isDeliverySelected,
       hasDelivery,
       defaultDeliveryAddressTypeId,
-      shouldValidate,
-      isItemFromItemsDialog,
-      isInstanceFromItem,
+      isItemPreselected,
+      isInstancePreselected,
+      isUserPreselected,
     } = this.state;
     const {
       handleSubmit,
@@ -794,27 +857,29 @@ class RequestForm extends React.Component {
       onSetSelectedUser,
       onSetSelectedProxy,
       addressTypes,
+      isEditMode,
     } = this.props;
     let addressDetail;
-    const isEditForm = isFormEditing(request);
     const { createTitleLevelRequest } = values;
-    const requester = getRequester(selectedProxy, selectedUser);
-    const patronGroup = getPatronGroup(requester, patronGroups);
+    const patronGroup = getPatronGroup(selectedUser, patronGroups);
     const isSubmittingDisabled = isSubmittingButtonDisabled(pristine, submitting);
-    const isTitleLevelRequest = createTitleLevelRequest || request?.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE;
+    const isTitleLevelRequest = isEditMode ? request?.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE : createTitleLevelRequest;
     const isTlrCheckboxDisabled = !titleLevelRequestsFeatureEnabled || isItemOrInstanceLoading;
     const requestTypeOptions = getRequestTypesOptions(requestTypes);
     const fulfillmentTypeOptions = getFulfillmentTypeOptions(hasDelivery, FULFILMENT_TYPES_MAP);
-    const isFulfilmentPreferenceVisible = (values.requestType || isEditForm) && !isRequestTypeLoading && isRequestTypesReceived;
+    const isFulfilmentPreferenceVisible = values.requestType && !isRequestTypeLoading && isRequestTypesReceived;
     const {
       deliveryLocations,
       deliveryLocationsDetail,
-    } = getDeliveryInformation(requester, addressTypes);
+    } = getDeliveryInformation(selectedUser, addressTypes);
     const isSaveAndCloseButtonDisabled = isSubmittingDisabled || !(isTitleLevelRequest ? selectedInstance?.id : selectedItem?.id) || !selectedUser?.id;
-    const isConfirmButtonDisabled = isSaveAndCloseButtonDisabled || !values?.requestType || !(deliverySelected ? values?.deliveryAddressTypeId : values?.pickupServicePointId);
+    const isConfirmButtonDisabled = isSaveAndCloseButtonDisabled || !values.requestType || !(isDeliverySelected ? values.deliveryAddressTypeId : values.pickupServicePointId);
+    const paneTitle = isEditMode ? <FormattedMessage id="ui-requests-mediated.form.edit.title" /> : <FormattedMessage id="ui-requests-mediated.form.create.title" />;
+    const isTlrCheckboxVisible = titleLevelRequestsFeatureEnabled && !isEditMode;
+    const isMaterialInformationVisible = !isEditMode || (isEditMode && request);
 
-    if (selectedAddressTypeId) {
-      addressDetail = <AddressDetails address={deliveryLocationsDetail[selectedAddressTypeId]} />;
+    if (values[MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID]) {
+      addressDetail = <AddressDetails address={deliveryLocationsDetail[values[MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID]]} />;
     }
 
     return (
@@ -836,7 +901,7 @@ class RequestForm extends React.Component {
               defaultWidth="100%"
               height="100%"
               firstMenu={<RequestFormFirstMenu onCancel={onCancel} />}
-              paneTitle={<FormattedMessage id="ui-requests-mediated.form.title" />}
+              paneTitle={paneTitle}
               footer={
                 <RequestFormFooter
                   onCancel={onCancel}
@@ -846,7 +911,7 @@ class RequestForm extends React.Component {
               }
             >
               {
-                titleLevelRequestsFeatureEnabled &&
+                isTlrCheckboxVisible &&
                   <div className={css.tlrCheckbox}>
                     <Row>
                       <Col xs={12}>
@@ -866,17 +931,16 @@ class RequestForm extends React.Component {
               }
               <AccordionStatus ref={this.accordionStatusRef}>
                 <AccordionSet>
-                  {
-                    isTitleLevelRequest
+                  {isMaterialInformationVisible &&
+                    (isTitleLevelRequest
                       ? (
                         <Accordion
                           id="instanceAccordion"
                           label={<FormattedMessage id="ui-requests-mediated.form.instance.accordionLabel" />}
                         >
                           <InstanceInformation
-                            request={request}
                             selectedInstance={selectedInstance}
-                            isInstanceFromItem={isInstanceFromItem}
+                            isInstancePreselected={isInstancePreselected}
                             triggerValidation={this.triggerInstanceIdValidation}
                             findInstance={this.findInstance}
                             getInstanceValidationData={this.getInstanceValidationData}
@@ -898,7 +962,7 @@ class RequestForm extends React.Component {
                             request={request}
                             form={form}
                             selectedItem={selectedItem}
-                            isItemFromItemsDialog={isItemFromItemsDialog}
+                            isItemPreselected={isItemPreselected}
                             isItemIdRequest={isItemIdRequest}
                             triggerValidation={this.triggerItemBarcodeValidation}
                             findItem={this.findItem}
@@ -912,6 +976,7 @@ class RequestForm extends React.Component {
                           />
                         </Accordion>
                       )
+                    )
                   }
                   <Accordion
                     id="requesterAccordion"
@@ -928,12 +993,14 @@ class RequestForm extends React.Component {
                       patronGroup={patronGroup}
                       isLoading={isUserLoading}
                       findUser={this.findUser}
-                      selectProxy={this.selectProxy}
+                      selectRequester={this.selectRequester}
                       handleCloseProxy={this.handleCloseProxy}
                       proxy={selectedProxy}
                       getUserValidationData={this.getUserValidationData}
                       triggerUserBarcodeValidation={this.triggerUserBarcodeValidation}
                       enterButtonClass={css.enterButton}
+                      isEditMode={isEditMode}
+                      isUserPreselected={isUserPreselected}
                     />
                   </Accordion>
                   <Accordion
@@ -941,7 +1008,6 @@ class RequestForm extends React.Component {
                     label={<FormattedMessage id="ui-requests-mediated.form.request.accordionLabel" />}
                   >
                     <RequestInformation
-                      updateRequestPreferencesFields={this.updateRequestPreferencesFields}
                       request={request}
                       requestTypeOptions={requestTypeOptions}
                       isTitleLevelRequest={isTitleLevelRequest}
@@ -951,16 +1017,13 @@ class RequestForm extends React.Component {
                       isSelectedItem={Boolean(selectedItem?.id)}
                       isSelectedUser={Boolean(selectedUser?.id)}
                       values={values}
-                      form={form}
-                      shouldValidate={shouldValidate}
+                      isEditMode={isEditMode}
                     />
                     {isFulfilmentPreferenceVisible &&
                       <FulfilmentPreference
-                        isEditForm={isEditForm}
                         requestTypes={requestTypes}
-                        deliverySelected={deliverySelected}
+                        isDeliverySelected={isDeliverySelected}
                         deliveryAddress={addressDetail}
-                        onChangeAddress={this.onChangeAddress}
                         setDeliveryAddress={this.setDeliveryAddress}
                         deliveryLocations={deliveryLocations}
                         fulfillmentTypeOptions={fulfillmentTypeOptions}
@@ -968,7 +1031,6 @@ class RequestForm extends React.Component {
                         request={request}
                         form={form}
                         values={values}
-                        shouldValidate={shouldValidate}
                       />
                     }
                   </Accordion>

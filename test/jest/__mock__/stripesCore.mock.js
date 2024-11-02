@@ -3,7 +3,7 @@ jest.mock('@folio/stripes/core', () => ({
   useOkapiKy: jest.fn().mockReturnValue({
     get: jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({}) }),
     post: jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({}) }),
-    put: jest.fn(),
+    put: jest.fn().mockReturnValue({ json: jest.fn().mockResolvedValue({}) }),
     delete: jest.fn(),
     extend: jest.fn().mockReturnValue(this),
   }),

@@ -11,18 +11,17 @@ import {
   Row,
   TextField,
 } from '@folio/stripes/components';
+import { stripesConnect } from '@folio/stripes/core';
 
 import {
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
   ENTER_EVENT_KEY,
   BASE_SPINNER_PROPS,
+  DEFAULT_REQUEST_TYPE_VALUE,
 } from '../../../../constants';
 import ItemDetail from '../ItemDetail';
-import {
-  isFormEditing,
-  memoizeValidation,
-} from '../../../../utils';
+import { memoizeValidation } from '../../../../utils';
 
 class ItemInformation extends Component {
   static propTypes = {
@@ -37,7 +36,10 @@ class ItemInformation extends Component {
     submitting: PropTypes.bool.isRequired,
     isItemIdRequest: PropTypes.bool.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
-    isItemFromItemsDialog: PropTypes.bool.isRequired,
+    isItemPreselected: PropTypes.bool.isRequired,
+    stripes: PropTypes.shape({
+      hasPerm: PropTypes.func,
+    }).isRequired,
     selectedLoan: PropTypes.object,
     selectedItem: PropTypes.object,
   };
@@ -55,11 +57,11 @@ class ItemInformation extends Component {
 
   componentDidUpdate(prevProps) {
     const {
-      isItemFromItemsDialog,
+      isItemPreselected,
       selectedItem,
     } = this.props;
 
-    if (isItemFromItemsDialog && isItemFromItemsDialog !== prevProps.isItemFromItemsDialog) {
+    if (selectedItem && isItemPreselected && isItemPreselected !== prevProps.isItemPreselected) {
       this.setState({ validatedBarcode: selectedItem.barcode });
     }
   }
@@ -113,15 +115,22 @@ class ItemInformation extends Component {
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, barcode);
   };
 
-  handleBlur = (input) => () => {
+  resetItem = () => {
     const {
-      triggerValidation,
+      form,
       onSetSelectedItem,
     } = this.props;
+
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
+    onSetSelectedItem(null);
+  };
+
+  handleBlur = (input) => () => {
+    const { triggerValidation } = this.props;
     const { validatedBarcode } = this.state;
 
     if (input.value && input.value !== validatedBarcode) {
-      onSetSelectedItem(null);
+      this.resetItem();
       this.setState({
         shouldValidate: true,
         isItemBlurred: true,
@@ -131,7 +140,7 @@ class ItemInformation extends Component {
         triggerValidation();
       });
     } else if (!input.value) {
-      onSetSelectedItem(null);
+      this.resetItem();
       input.onBlur();
     }
   }
@@ -176,69 +185,69 @@ class ItemInformation extends Component {
       request,
       selectedLoan,
       enterButtonClass,
+      stripes,
     } = this.props;
     const {
       isItemClicked,
       isItemBlurred,
     } = this.state;
-    const isEditForm = isFormEditing(request);
+    const isEditPermission = stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
+    const isEnterButtonDisabled = submitting || !isEditPermission;
 
     return (
       <Row>
         <Col xs={12}>
-          {
-            !isEditForm &&
-            <Row>
-              <Col xs={9}>
-                <FormattedMessage id="ui-requests-mediated.form.item.inputPlaceholder">
-                  {placeholder => {
-                    const key = values.keyOfItemBarcodeField ?? 0;
+          <Row>
+            <Col xs={9}>
+              <FormattedMessage id="ui-requests-mediated.form.item.inputPlaceholder">
+                {placeholder => {
+                  const key = values.keyOfItemBarcodeField ?? 0;
 
-                    return (
-                      <Field
-                        data-testid="itemBarcodeField"
-                        key={key}
-                        name={MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE}
-                        validate={this.validate(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, key)}
-                        validateFields={[]}
-                      >
-                        {({ input, meta }) => {
-                          const selectItemError = meta.touched && meta.error;
-                          const itemDoesntExistError = (isItemClicked || isItemBlurred) && meta.error;
-                          const error = meta.submitError || selectItemError || itemDoesntExistError || null;
+                  return (
+                    <Field
+                      data-testid="itemBarcodeField"
+                      key={key}
+                      name={MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE}
+                      validate={this.validate(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, key)}
+                      validateFields={[]}
+                    >
+                      {({ input, meta }) => {
+                        const selectItemError = meta.touched && meta.error;
+                        const itemDoesntExistError = (isItemClicked || isItemBlurred) && meta.error;
+                        const error = meta.submitError || selectItemError || itemDoesntExistError || null;
 
-                          return (
-                            <TextField
-                              {...input}
-                              required
-                              placeholder={placeholder}
-                              label={<FormattedMessage id="ui-requests-mediated.form.item.inputLabel" />}
-                              error={error}
-                              onChange={this.handleChange}
-                              onBlur={this.handleBlur(input)}
-                              onKeyDown={this.onKeyDown}
-                            />
-                          );
-                        }}
-                      </Field>
-                    );
-                  }}
-                </FormattedMessage>
-              </Col>
-              <Col xs={3}>
-                <Button
-                  id="selectItemButton"
-                  buttonStyle="primary noRadius"
-                  buttonClass={enterButtonClass}
-                  fullWidth
-                  onClick={this.handleClick}
-                  disabled={submitting}
-                >
-                  <FormattedMessage id="ui-requests-mediated.form.enterButton" />
-                </Button>
-              </Col>
-            </Row>
-          }
+                        return (
+                          <TextField
+                            {...input}
+                            required
+                            placeholder={placeholder}
+                            label={<FormattedMessage id="ui-requests-mediated.form.item.inputLabel" />}
+                            error={error}
+                            onChange={this.handleChange}
+                            onBlur={this.handleBlur(input)}
+                            onKeyDown={this.onKeyDown}
+                            disabled={!isEditPermission}
+                          />
+                        );
+                      }}
+                    </Field>
+                  );
+                }}
+              </FormattedMessage>
+            </Col>
+            <Col xs={3}>
+              <Button
+                id="selectItemButton"
+                buttonStyle="primary noRadius"
+                buttonClass={enterButtonClass}
+                fullWidth
+                onClick={this.handleClick}
+                disabled={isEnterButtonDisabled}
+              >
+                <FormattedMessage id="ui-requests-mediated.form.enterButton" />
+              </Button>
+            </Col>
+          </Row>
           {
             isLoading && <Icon {...BASE_SPINNER_PROPS} />
           }
@@ -256,4 +265,4 @@ class ItemInformation extends Component {
   }
 }
 
-export default ItemInformation;
+export default stripesConnect(ItemInformation);

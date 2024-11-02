@@ -16,23 +16,26 @@ import {
   RESOURCE_KEYS,
   RESOURCE_TYPES,
   DEFAULT_REQUEST_TYPE_VALUE,
+  MEDIATED_REQUEST_LEVEL,
 } from '../../../../constants';
 import {
   getRequestInformation,
   getFulfillmentPreference,
-  isDeliverySelected,
+  getDefaultRequestPreferences,
 } from '../../../../utils';
 
 const basicProps = {
   handleSubmit: jest.fn(),
   findResource: jest.fn(),
-  onSetSubmitInitiator: jest.fn(),
+  submitInitiator: {
+    current: '',
+  },
   onCancel: jest.fn(),
   onSetSelectedItem: jest.fn(),
   onSetSelectedUser: jest.fn(),
   onSetSelectedProxy: jest.fn(),
   onSetSelectedInstance: jest.fn(),
-  request: {},
+  request: null,
   initialValues: {},
   location: {
     search: '',
@@ -49,6 +52,8 @@ const basicProps = {
   selectedItem: {},
   selectedInstance: {},
   selectedUser: {},
+  isEditMode: false,
+  setRequest: jest.fn(),
 };
 const labelIds = {
   itemAccordion: 'ui-requests-mediated.form.item.accordionLabel',
@@ -109,13 +114,13 @@ jest.mock('../InstanceInformation', () => jest.fn(({
 }));
 jest.mock('../RequesterInformation', () => jest.fn(({
   findUser,
-  selectProxy,
+  selectRequester,
 }) => {
   const onFindUser = () => {
     findUser('barcode', userBarcode);
   };
   const onSelectProxy = () => {
-    selectProxy({ id: proxyId });
+    selectRequester({ id: proxyId });
   };
 
   return (
@@ -149,45 +154,519 @@ jest.mock('../../../../utils', () => ({
   handleKeyCommand: jest.fn(),
   getPatronGroup: jest.fn(),
   isSubmittingButtonDisabled: jest.fn(),
-  isFormEditing: jest.fn(),
   resetFieldState: jest.fn(),
   getFulfillmentTypeOptions: jest.fn(() => []),
   getDefaultRequestPreferences: jest.fn(),
   getFulfillmentPreference: jest.fn(),
   getSelectedAddressTypeId: jest.fn(),
-  isDeliverySelected: jest.fn(),
+  isDelivery: jest.fn(),
   getRequestTypesOptions: jest.fn(() => []),
   getDeliveryInformation: jest.fn(() => ({
     deliveryLocationsDetail: {},
   })),
   getResourceTypeId: jest.fn(() => 'itemId'),
-  getRequestInformation: jest.fn(() => ({
-    selectedResource: {
-      id: 'id',
-    },
-    isTitleLevelRequest: false,
-  })),
-  getRequester: jest.fn((proxy, selectedUser) => selectedUser),
+  getRequestInformation: jest.fn((isTlr, instance, item) => {
+    return isTlr ? instance : item;
+  }),
 }));
 
 describe('RequestForm', () => {
   afterEach(() => {
     jest.clearAllMocks();
+    basicProps.form.change.mockClear();
   });
 
   describe('Initial render', () => {
-    beforeEach(() => {
-      render(
-        <RequestForm
-          {...basicProps}
-        />
-      );
+    describe('When creating mode', () => {
+      beforeEach(() => {
+        render(
+          <RequestForm
+            {...basicProps}
+          />
+        );
+      });
+
+      it('should render item accordion label', () => {
+        const accordionLabel = screen.getByText(labelIds.itemAccordion);
+
+        expect(accordionLabel).toBeInTheDocument();
+      });
+
+      it('should not find user information', () => {
+        const args = [RESOURCE_TYPES.USER, expect.any(String), expect.any(String)];
+
+        expect(basicProps.findResource).not.toHaveBeenCalledWith(...args);
+      });
     });
 
-    it('should render item accordion label', () => {
-      const accordionLabel = screen.getByText(labelIds.itemAccordion);
+    describe('When editing mode', () => {
+      const foundItem = {
+        items: [
+          {
+            id: 'itemId',
+            barcode: 'itemBarcode',
+          }
+        ],
+      };
+      const foundInstance = {
+        id: 'instanceId',
+        hrid: 'instanceHrid',
+      };
+      const foundUser = {
+        totalRecords: 1,
+        users: [
+          {
+            id: 'userId',
+          }
+        ],
+      };
+      const foundLoan = {
+        loans: [],
+      };
+      const foundRequestPreferences = {};
 
-      expect(accordionLabel).toBeInTheDocument();
+      describe('When title level request with removed requester', () => {
+        const props = {
+          ...basicProps,
+          isEditMode: true,
+          request: {
+            requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
+            patronComments: 'comment',
+            instanceId: 'instanceId',
+            instance: {
+              hrid: 'instanceHrid',
+            },
+            requesterId: 'requesterId',
+            requester: {
+              barcode: 'requesterBarcode',
+            },
+            proxy: {
+              lastName: 'proxyLastName',
+            },
+            proxyUserId: 'proxyUserId',
+          },
+        };
+        const user = {
+          totalRecords: 0,
+          users: [],
+        };
+
+        beforeEach(() => {
+          props.findResource
+            .mockResolvedValueOnce(foundInstance)
+            .mockResolvedValueOnce(user);
+
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+        });
+
+        it('should set instance hrid', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, props.request.instance.hrid];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set requester barcode', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, props.request.requester.barcode];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set patron comments', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.PATRON_COMMENTS, props.request.patronComments];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set instance id', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, foundInstance.id];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should find instance information', () => {
+          const args = [RESOURCE_TYPES.INSTANCE, props.request.instanceId];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set proxy user id', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, props.request.proxyUserId];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set proxy data', () => {
+          expect(basicProps.onSetSelectedProxy).toHaveBeenCalledWith(props.request.proxy);
+        });
+      });
+
+      describe('When title level request with existing user and without request types', () => {
+        const props = {
+          ...basicProps,
+          isEditMode: true,
+          request: {
+            requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
+            patronComments: 'comment',
+            instanceId: 'instanceId',
+            requesterId: 'requesterId',
+            instance: {
+              hrid: 'instanceHrid',
+            },
+            requester: {
+              barcode: 'requesterBarcode',
+            },
+          },
+        };
+        const foundRequestTypes = {};
+        const requestPreferences = {
+          fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
+          defaultDeliveryAddressTypeId: 'defaultDeliveryAddressTypeId',
+          defaultServicePointId: 'defaultServicePointId',
+        };
+
+        beforeEach(() => {
+          getDefaultRequestPreferences.mockReturnValueOnce(requestPreferences);
+          props.findResource
+            .mockResolvedValueOnce(foundInstance)
+            .mockResolvedValueOnce(foundUser)
+            .mockResolvedValueOnce(foundRequestPreferences)
+            .mockResolvedValueOnce(foundRequestTypes);
+
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+        });
+
+        it('should find user information', () => {
+          const args = [RESOURCE_TYPES.USER, props.request.requesterId, RESOURCE_KEYS.ID];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...args);
+        });
+
+        it('should find request types information', () => {
+          const args = [
+            RESOURCE_TYPES.REQUEST_TYPES,
+            {
+              operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
+              [ID_TYPE_MAP.INSTANCE_ID]: foundInstance.id,
+              requesterId: foundUser.users[0].id,
+            }
+          ];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set fulfilment preference', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, requestPreferences.fulfillmentPreference];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set service point id', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, requestPreferences.defaultServicePointId];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set delivery address type id', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, requestPreferences.defaultDeliveryAddressTypeId];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+      });
+
+      describe('When item level request with existing user, request type and service point', () => {
+        const props = {
+          ...basicProps,
+          isEditMode: true,
+          request: {
+            requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
+            patronComments: 'comment',
+            instanceId: 'instanceId',
+            itemId: 'itemId',
+            requesterId: 'requesterId',
+            requestType: MEDIATED_REQUEST_TYPES.PAGE,
+            fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
+            pickupServicePointId: 'pickupServicePointId',
+            item: {
+              barcode: 'itemBarcode',
+            },
+            requester: {
+              barcode: 'requesterBarcode',
+            },
+          },
+        };
+        const foundRequestTypes = {
+          [MEDIATED_REQUEST_TYPES.PAGE]: [
+            {
+              id: props.request.pickupServicePointId,
+            }
+          ],
+        };
+
+        beforeEach(() => {
+          getDefaultRequestPreferences.mockReturnValueOnce({
+            defaultDeliveryAddressTypeId: 'defaultDeliveryAddressTypeId',
+            defaultServicePointId: 'defaultServicePointId',
+          });
+          props.findResource
+            .mockResolvedValueOnce(foundItem)
+            .mockResolvedValueOnce(foundUser)
+            .mockResolvedValueOnce(foundLoan)
+            .mockResolvedValueOnce(foundRequestPreferences)
+            .mockResolvedValueOnce(foundRequestTypes);
+
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+        });
+
+        it('should set item barcode', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, props.request.item.barcode];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should find item information', () => {
+          const args = [RESOURCE_TYPES.ITEM, props.request.itemId, RESOURCE_KEYS.ID];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...args);
+        });
+
+        it('should find request types information', () => {
+          const args = [
+            RESOURCE_TYPES.REQUEST_TYPES,
+            {
+              operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
+              [ID_TYPE_MAP.ITEM_ID]: foundItem.items[0].id,
+              requesterId: foundUser.users[0].id,
+            }
+          ];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set request type', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, props.request.requestType];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set fulfillment preference', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, props.request.fulfillmentPreference];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+
+        it('should set service point id', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, props.request.pickupServicePointId];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+      });
+
+      describe('When item level request with existing user, request type and delivery address', () => {
+        const deliveryAddressTypeId = 'deliveryAddressTypeId';
+        const props = {
+          ...basicProps,
+          selectedUser: {
+            personal: {
+              addresses: [
+                {
+                  addressTypeId: deliveryAddressTypeId,
+                }
+              ],
+            },
+          },
+          isEditMode: true,
+          request: {
+            requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
+            patronComments: 'comment',
+            instanceId: 'instanceId',
+            itemId: 'itemId',
+            item: {
+              barcode: 'itemBarcode',
+            },
+            requester: {
+              barcode: 'requesterBarcode',
+            },
+            requesterId: 'requesterId',
+            requestType: MEDIATED_REQUEST_TYPES.PAGE,
+            fulfillmentPreference: FULFILMENT_TYPES.DELIVERY,
+            deliveryAddressTypeId,
+          },
+        };
+        const foundRequestTypes = {
+          [MEDIATED_REQUEST_TYPES.PAGE]: [
+            {
+              id: props.request.pickupServicePointId,
+            }
+          ],
+        };
+
+        beforeEach(() => {
+          getDefaultRequestPreferences.mockReturnValueOnce({ hasDelivery: true });
+          props.findResource
+            .mockResolvedValueOnce(foundItem)
+            .mockResolvedValueOnce(foundUser)
+            .mockResolvedValueOnce(foundLoan)
+            .mockResolvedValueOnce(foundRequestPreferences)
+            .mockResolvedValueOnce(foundRequestTypes);
+
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+        });
+
+        it('should set delivery address', () => {
+          const args = [MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, props.request.deliveryAddressTypeId];
+
+          expect(basicProps.form.change).toHaveBeenCalledWith(...args);
+        });
+      });
+
+      describe('When error for item level request', () => {
+        const props = {
+          ...basicProps,
+          isEditMode: true,
+          request: {
+            requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
+            patronComments: 'comment',
+            instanceId: 'instanceId',
+            itemId: 'itemId',
+            requesterId: 'requesterId',
+            item: {
+              barcode: 'itemBarcode',
+            },
+            requester: {
+              barcode: 'requesterBarcode',
+            },
+          },
+        };
+
+        beforeEach(() => {
+          props.findResource
+            .mockResolvedValueOnce(foundItem)
+            .mockResolvedValueOnce(foundUser)
+            .mockResolvedValueOnce(foundLoan)
+            .mockResolvedValueOnce({
+              'brokenData': 'data',
+            });
+
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+        });
+
+        it('should reset item information', () => {
+          expect(props.onSetSelectedItem).toHaveBeenCalledWith(null);
+        });
+
+        it('should reset user information', () => {
+          expect(props.onSetSelectedUser).toHaveBeenCalledWith(null);
+        });
+      });
+
+      describe('When error for title level request', () => {
+        const props = {
+          ...basicProps,
+          isEditMode: true,
+          request: {
+            requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
+            patronComments: 'comment',
+            instanceId: 'instanceId',
+            requesterId: 'requesterId',
+            instance: {
+              hrid: 'instanceHrid',
+            },
+            requester: {
+              barcode: 'requesterBarcode',
+            },
+          },
+        };
+
+        beforeEach(() => {
+          props.findResource
+            .mockResolvedValueOnce(foundInstance)
+            .mockResolvedValueOnce(foundUser)
+            .mockResolvedValueOnce({
+              'brokenData': 'data',
+            });
+
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+        });
+
+        it('should reset instance information', () => {
+          expect(props.onSetSelectedInstance).toHaveBeenCalledWith(null);
+        });
+      });
+
+      describe('When request information received during page reloading', () => {
+        const props = {
+          ...basicProps,
+          match: {
+            params: {
+              id: 'requestId',
+            },
+          },
+          isEditMode: true,
+        };
+        const foundRequestTypes = {};
+        const foundRequest = {
+          id: props.match.params.id,
+          requestLevel: MEDIATED_REQUEST_LEVEL.TITLE,
+          patronComments: 'comment',
+          instanceId: 'instanceId',
+          requesterId: 'requesterId',
+          instance: {
+            hrid: 'instanceHrid',
+          },
+          requester: {
+            barcode: 'requesterBarcode',
+          },
+        };
+
+        beforeEach(() => {
+          props.findResource
+            .mockResolvedValueOnce(foundRequest)
+            .mockResolvedValueOnce(foundInstance)
+            .mockResolvedValueOnce(foundUser)
+            .mockResolvedValueOnce(foundRequestPreferences)
+            .mockResolvedValueOnce(foundRequestTypes);
+
+          render(
+            <RequestForm
+              {...props}
+            />
+          );
+        });
+
+        it('should set found request', () => {
+          expect(props.setRequest).toHaveBeenCalledWith(foundRequest);
+        });
+
+        it('should find request information', () => {
+          const args = [RESOURCE_TYPES.REQUEST_BY_ID, props.match.params.id];
+
+          expect(basicProps.findResource).toHaveBeenCalledWith(...args);
+        });
+      });
     });
   });
 
@@ -392,17 +871,14 @@ describe('RequestForm', () => {
         },
       };
 
-      describe('When delivery is not selected', () => {
+      describe('When Hold Shelf is selected', () => {
         beforeEach(() => {
           render(
             <RequestForm
               {...props}
             />
           );
-          getRequestInformation.mockReturnValueOnce({
-            isTitleLevelRequest: false,
-            selectedResource: props.selectedItem,
-          });
+          getRequestInformation.mockReturnValueOnce(props.selectedItem);
           getFulfillmentPreference.mockReturnValueOnce(FULFILMENT_TYPES.HOLD_SHELF);
 
           const findUserButton = screen.getByTestId(testIds.findUser);
@@ -437,7 +913,7 @@ describe('RequestForm', () => {
         });
 
         it('should find request preferences', () => {
-          const expectedArgs = [RESOURCE_TYPES.REQUEST_PREFERENCES, foundUser.users[0].id, 'userId'];
+          const expectedArgs = [RESOURCE_TYPES.REQUEST_PREFERENCES, foundUser.users[0].id];
 
           expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
         });
@@ -472,40 +948,11 @@ describe('RequestForm', () => {
         });
       });
 
-      describe('When delivery is selected', () => {
-        beforeEach(() => {
-          render(
-            <RequestForm
-              {...props}
-            />
-          );
-          getRequestInformation.mockReturnValueOnce({
-            isTitleLevelRequest: false,
-            selectedResource: props.selectedItem,
-          });
-          getFulfillmentPreference.mockReturnValueOnce(FULFILMENT_TYPES.HOLD_SHELF);
-          isDeliverySelected.mockReturnValueOnce(true);
-
-          const findUserButton = screen.getByTestId(testIds.findUser);
-
-          basicProps.findResource
-            .mockResolvedValueOnce(foundUser)
-            .mockResolvedValueOnce(foundRequestPreferences)
-            .mockResolvedValueOnce(foundRequestTypes);
-          fireEvent.click(findUserButton);
-        });
-
-        it('should reset pickup service point id', async () => {
-          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, ''];
-
-          await waitFor(() => {
-            expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
-          });
-        });
-      });
-
       describe('When error while receiving request preferences', () => {
+        const fulfillmentPreference = 'testFulfillmentPreference';
+
         beforeEach(() => {
+          getDefaultRequestPreferences.mockReturnValueOnce({ fulfillmentPreference });
           render(
             <RequestForm
               {...props}
@@ -521,12 +968,10 @@ describe('RequestForm', () => {
           fireEvent.click(findUserButton);
         });
 
-        it('should set fulfilment preference to hold shelf', async () => {
-          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, FULFILMENT_TYPES.HOLD_SHELF];
+        it('should set default fulfilment preference', () => {
+          const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, fulfillmentPreference];
 
-          await waitFor(() => {
-            expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
-          });
+          expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
         });
       });
     });
@@ -632,6 +1077,9 @@ describe('RequestForm', () => {
           selectedUser: {
             id: 'selectedUserId',
           },
+          selectedItem: {
+            id: 'itemId',
+          },
         };
         const foundRequestPreferences = {
           requestPreferences: [
@@ -676,19 +1124,18 @@ describe('RequestForm', () => {
         });
 
         it('should find request preferences', () => {
-          const expectedArgs = [RESOURCE_TYPES.REQUEST_PREFERENCES, proxyId, 'userId'];
+          const expectedArgs = [RESOURCE_TYPES.REQUEST_PREFERENCES, proxyId];
 
           expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
         });
 
         it('should find request types', () => {
-          const selectedResourceId = 'id';
           const expectedArgs = [
             RESOURCE_TYPES.REQUEST_TYPES,
             {
               operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
               requesterId: proxyId,
-              [ID_TYPE_MAP.ITEM_ID]: selectedResourceId,
+              [ID_TYPE_MAP.ITEM_ID]: props.selectedItem.id,
             }
           ];
 
@@ -814,8 +1261,7 @@ describe('RequestForm', () => {
 
     it('should trigger with correct props', () => {
       const expectedProps = {
-        updateRequestPreferencesFields: expect.any(Function),
-        request: {},
+        request: null,
         requestTypeOptions: [],
         isTitleLevelRequest: basicProps.values.createTitleLevelRequest,
         isRequestTypesReceived: false,
@@ -824,8 +1270,7 @@ describe('RequestForm', () => {
         isSelectedItem: false,
         isSelectedUser: false,
         values: basicProps.values,
-        form: basicProps.form,
-        shouldValidate: false,
+        isEditMode: false,
       };
 
       expect(RequestInformation).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
