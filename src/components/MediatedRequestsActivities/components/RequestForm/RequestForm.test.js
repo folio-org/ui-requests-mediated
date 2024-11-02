@@ -17,6 +17,7 @@ import {
   RESOURCE_TYPES,
   DEFAULT_REQUEST_TYPE_VALUE,
   MEDIATED_REQUEST_LEVEL,
+  EMPTY_MEDIATED_REQUEST_FORM_VALUE,
 } from '../../../../constants';
 import {
   getRequestInformation,
@@ -697,19 +698,19 @@ describe('RequestForm', () => {
     });
 
     it('should reset item barcode value', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, null];
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
 
       expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
     });
 
     it('should reset instance hrid value', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, null];
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
 
       expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
     });
 
     it('should reset instance id value', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, null];
+      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
 
       expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
     });

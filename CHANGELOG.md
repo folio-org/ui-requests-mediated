@@ -1,5 +1,8 @@
 # Change history for ui-requests-mediated
 
+## IN PROGRESS [2.0.0]
+* Implement functionality for editing mediated request. Refs UIREQMED-22.
+
 ## [1.1.0](https://github.com/folio-org/ui-requests-mediated/tree/v1.1.0) (2024-10-30)
 * Update github actions. Refs UIREQMED-14.
 * Add landing page actions: Confirm item arrival, Mediated requests activities and Send item in transit. Refs UIREQMED-2.
@@ -32,7 +35,6 @@
 * Update Mediated requests permissions in Closed stories. Refs UIREQMED-36.
 * Implement functionality for creating new mediated request. Refs UIREQMED-7.
 * Review and cleanup Module Descriptor. Refs UIREQMED-47.
-* Implement functionality for editing mediated request. Refs UIREQMED-22.
 
 ## 1.0.0
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.

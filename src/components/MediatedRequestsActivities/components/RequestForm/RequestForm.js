@@ -38,6 +38,8 @@ import {
   SAVE_BUTTON_ID,
   ID_TYPE_MAP,
   CONFIRM_BUTTON_ID,
+  EMPTY_MEDIATED_REQUEST_FORM_VALUE,
+  EMPTY_RESOURCE_VALUE,
 } from '../../../../constants';
 import {
   handleKeyCommand,
@@ -112,7 +114,7 @@ class RequestForm extends React.Component {
     const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.items[0]?.value);
 
     this.state = {
-      selectedLoan: null,
+      selectedLoan: EMPTY_RESOURCE_VALUE,
       isItemOrInstanceLoading: false,
       isItemsDialogOpen: false,
       isItemPreselected: false, // is item received from items dialog or received on edit page
@@ -205,12 +207,12 @@ class RequestForm extends React.Component {
       })
       .catch(() => {
         if (isTlr) {
-          onSetSelectedInstance(null);
+          onSetSelectedInstance(EMPTY_RESOURCE_VALUE);
         } else {
-          onSetSelectedItem(null);
+          onSetSelectedItem(EMPTY_RESOURCE_VALUE);
         }
 
-        onSetSelectedUser(null);
+        onSetSelectedUser(EMPTY_RESOURCE_VALUE);
       });
   }
 
@@ -257,7 +259,7 @@ class RequestForm extends React.Component {
 
     return findResource(RESOURCE_TYPES.USER, value, key)
       .then((result) => result.totalRecords)
-      .catch(() => null)
+      .catch(() => EMPTY_RESOURCE_VALUE)
       .finally(() => {
         this.setState({ isUserLoading: false });
       });
@@ -287,7 +289,7 @@ class RequestForm extends React.Component {
   }
 
   handleCloseProxy = () => {
-    this.props.onSetSelectedProxy(null);
+    this.props.onSetSelectedProxy(EMPTY_RESOURCE_VALUE);
   };
 
   findUser = (fieldName, value, shouldFetchAdditionalInfo = true) => {
@@ -304,13 +306,13 @@ class RequestForm extends React.Component {
       isRequestTypesReceived: false,
       isUserPreselected: false,
     });
-    onSetSelectedProxy(null);
-    onSetSelectedUser(null);
+    onSetSelectedProxy(EMPTY_RESOURCE_VALUE);
+    onSetSelectedUser(EMPTY_RESOURCE_VALUE);
 
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, undefined);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
 
     return findResource(RESOURCE_TYPES.USER, value, fieldName)
       .then((result) => {
@@ -332,12 +334,12 @@ class RequestForm extends React.Component {
           return selectedUser;
         }
 
-        return null;
+        return EMPTY_RESOURCE_VALUE;
       })
       .catch(() => {
-        onSetSelectedUser(null);
+        onSetSelectedUser(EMPTY_RESOURCE_VALUE);
 
-        return null;
+        return EMPTY_RESOURCE_VALUE;
       })
       .then(user => {
         if (shouldFetchAdditionalInfo) {
@@ -353,7 +355,7 @@ class RequestForm extends React.Component {
 
   findItemRelatedResources = (item) => {
     if (!item) {
-      return null;
+      return EMPTY_RESOURCE_VALUE;
     }
 
     const { findResource } = this.props;
@@ -368,7 +370,7 @@ class RequestForm extends React.Component {
 
         return item;
       })
-      .catch(() => null);
+      .catch(() => EMPTY_RESOURCE_VALUE);
   }
 
   setItemIdRequest = (key, isBarcodeRequired) => {
@@ -388,7 +390,7 @@ class RequestForm extends React.Component {
 
     return findResource(RESOURCE_TYPES.ITEM, value, key)
       .then((result) => result?.items?.length)
-      .catch(() => null)
+      .catch(() => EMPTY_RESOURCE_VALUE)
       .finally(() => {
         this.setState({ isItemOrInstanceLoading: false });
       });
@@ -415,7 +417,7 @@ class RequestForm extends React.Component {
         this.setItemIdRequest(key, isBarcodeRequired);
 
         if (!result || result?.items?.length === 0) {
-          return null;
+          return EMPTY_RESOURCE_VALUE;
         }
 
         const foundItem = result.items?.find(item => item[key] === value);
@@ -427,12 +429,12 @@ class RequestForm extends React.Component {
           onSetSelectedItem(foundItem);
         }
 
-        return foundItem || null;
+        return foundItem || EMPTY_RESOURCE_VALUE;
       })
       .catch(() => {
-        onSetSelectedItem(null);
+        onSetSelectedItem(EMPTY_RESOURCE_VALUE);
 
-        return null;
+        return EMPTY_RESOURCE_VALUE;
       })
       .then(item => {
         if (item && selectedUser?.id && shouldGetRequestTypes) {
@@ -458,7 +460,7 @@ class RequestForm extends React.Component {
 
     return findResource(RESOURCE_TYPES.INSTANCE, instanceId)
       .then((result) => Boolean(result?.id))
-      .catch(() => null)
+      .catch(() => EMPTY_RESOURCE_VALUE)
       .finally(() => {
         this.setState({ isItemOrInstanceLoading: false });
       });
@@ -483,7 +485,7 @@ class RequestForm extends React.Component {
     return findResource(RESOURCE_TYPES.INSTANCE, instanceId)
       .then((instance) => {
         if (!instance?.id) {
-          return null;
+          return EMPTY_RESOURCE_VALUE;
         }
 
         form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, instance.id);
@@ -494,9 +496,9 @@ class RequestForm extends React.Component {
         return instance;
       })
       .catch(() => {
-        onSetSelectedInstance(null);
+        onSetSelectedInstance(EMPTY_RESOURCE_VALUE);
 
-        return null;
+        return EMPTY_RESOURCE_VALUE;
       })
       .then(instance => {
         if (instance && selectedUser?.id && shouldGetRequestTypes) {
@@ -557,9 +559,9 @@ class RequestForm extends React.Component {
     } = this.props;
 
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, isCreateTlr);
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, null);
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, null);
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, null);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
 
     if (isCreateTlr) {
       this.setState({
@@ -574,13 +576,13 @@ class RequestForm extends React.Component {
           });
       }
 
-      onSetSelectedItem(null);
+      onSetSelectedItem(EMPTY_RESOURCE_VALUE);
     } else if (selectedInstance) {
       form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
       resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE);
       this.setState({ isItemsDialogOpen: true });
     } else {
-      onSetSelectedInstance(null);
+      onSetSelectedInstance(EMPTY_RESOURCE_VALUE);
       this.setState({
         requestTypes: {},
         isRequestTypesReceived: false,
@@ -591,7 +593,7 @@ class RequestForm extends React.Component {
   handleItemsDialogClose = () => {
     const { onSetSelectedInstance } = this.props;
 
-    onSetSelectedInstance(null);
+    onSetSelectedInstance(EMPTY_RESOURCE_VALUE);
     this.setState({
       isItemsDialogOpen: false,
       isItemIdRequest: false,
@@ -604,7 +606,7 @@ class RequestForm extends React.Component {
     const { onSetSelectedInstance } = this.props;
     let isBarcodeRequired = false;
 
-    onSetSelectedInstance(undefined);
+    onSetSelectedInstance(EMPTY_RESOURCE_VALUE);
     this.setState({
       isItemsDialogOpen: false,
       requestTypes: {},
@@ -740,9 +742,9 @@ class RequestForm extends React.Component {
         })
         .catch(() => {
           form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
-          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, undefined);
-          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
-          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, undefined);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
         });
     }
   };

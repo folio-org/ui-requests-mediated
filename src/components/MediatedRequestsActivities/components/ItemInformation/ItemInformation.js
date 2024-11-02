@@ -214,7 +214,7 @@ class ItemInformation extends Component {
                       {({ input, meta }) => {
                         const selectItemError = meta.touched && meta.error;
                         const itemDoesntExistError = (isItemClicked || isItemBlurred) && meta.error;
-                        const error = meta.submitError || selectItemError || itemDoesntExistError || null;
+                        const error = selectItemError || itemDoesntExistError || null;
 
                         return (
                           <TextField

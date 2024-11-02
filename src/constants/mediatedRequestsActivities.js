@@ -186,6 +186,9 @@ export const MEDIATED_REQUEST_FORM_FIELD_NAMES = {
   KEY_OF_REQUEST_TYPE_FIELD: 'keyOfRequestTypeField',
 };
 
+export const EMPTY_MEDIATED_REQUEST_FORM_VALUE = undefined;
+export const EMPTY_RESOURCE_VALUE = null;
+
 export const MEDIATED_REQUEST_OPERATIONS = {
   CREATE: 'create',
 };
