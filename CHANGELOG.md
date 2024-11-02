@@ -1,6 +1,6 @@
 # Change history for ui-requests-mediated
 
-## 1.1.0 (IN PROGRESS)
+## [1.1.0](https://github.com/folio-org/ui-requests-mediated/tree/v1.1.0) (2024-10-30)
 * Update github actions. Refs UIREQMED-14.
 * Add landing page actions: Confirm item arrival, Mediated requests activities and Send item in transit. Refs UIREQMED-2.
 * Hide permission that should not be visible. Refs UIREQMED-20.
