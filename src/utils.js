@@ -436,7 +436,7 @@ export const buildLocaleDateAndTime = (dateTime, timezone, locale) => {
     .format('L LT');
 };
 
-export const convertToSlipData = (source = {}, intl, timeZone, locale) => {
+export const convertToSlipData = (source, intl, timeZone, locale) => {
   const {
     item = {},
     request = {},
@@ -506,7 +506,7 @@ export const convertToSlipData = (source = {}, intl, timeZone, locale) => {
     'request.requestExpirationDate': request.requestExpirationDate
       ? intl.formatDate(request.requestExpirationDate, DEFAULT_DATE_OPTIONS)
       : request.requestExpirationDate,
-    'request.requestDate' : request.requestDate ? intl.formatDate(request.requestDate, DEFAULT_DATE_OPTIONS) : request.requestDate,
+    'request.requestDate': request.requestDate ? intl.formatDate(request.requestDate, DEFAULT_DATE_OPTIONS) : request.requestDate,
     'request.holdShelfExpirationDate': request.holdShelfExpirationDate
       ? intl.formatDate(request.holdShelfExpirationDate, DEFAULT_DATE_OPTIONS)
       : request.holdShelfExpirationDate,

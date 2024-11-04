@@ -5,7 +5,6 @@ import {
 import HtmlToReact, {
   Parser,
 } from 'html-to-react';
-import Barcode from 'react-barcode';
 import {
   sanitize,
 } from 'dompurify';
@@ -70,7 +69,7 @@ ContentToPrint.propTypes = {
   template: PropTypes.string.isRequired,
   dataSource: PropTypes.shape({
     requester: PropTypes.object.isRequired,
-    inTransitDate: PropTypes.object.isRequired,
+    inTransitDate: PropTypes.string.isRequired,
     staffSlipContext: PropTypes.object.isRequired,
   }),
 };

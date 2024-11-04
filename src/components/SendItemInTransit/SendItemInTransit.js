@@ -1,4 +1,4 @@
-import React, {
+import {
   useState,
   useRef,
 } from 'react';
@@ -71,6 +71,9 @@ const SendItemInTransit = () => {
   const handleSubmit = async ({ itemBarcode }) => {
     await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemProps);
   };
+  const reactToPrintTrigger = () => <button id={PRINT_BUTTON_SELECTOR} type="button">{PRINT_BUTTON_SELECTOR}</button>;
+  const reactToPrintContent = () => contentToPrintRef.current;
+  const reactToPrintOnAfterPrint = () => setStaffSlipContext(null);
 
   return (
     <>
@@ -89,11 +92,9 @@ const SendItemInTransit = () => {
       />
       <ReactToPrint
         removeAfterPrint
-        trigger={() => <button id={PRINT_BUTTON_SELECTOR} type="button">{PRINT_BUTTON_SELECTOR}</button>}
-        content={() => contentToPrintRef.current}
-        onAfterPrint={() => {
-          setStaffSlipContext(null);
-        }}
+        trigger={reactToPrintTrigger}
+        content={reactToPrintContent}
+        onAfterPrint={reactToPrintOnAfterPrint}
       />
       <div className={css.hiddenContent}>
         <div ref={contentToPrintRef}>
