@@ -15,7 +15,7 @@ const useAvailableItems = (instanceId, open) => {
     isFetching,
   } = useQuery(
     [namespace],
-    () => ky.get('circulation/items-by-instance', { searchParams }).json(),
+    () => ky.get('circulation-bff/requests/search-instances', { searchParams }).json(),
     { enabled: Boolean(instanceId && open) },
   );
 

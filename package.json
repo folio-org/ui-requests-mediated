@@ -1,6 +1,6 @@
 {
   "name": "@folio/requests-mediated",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Mediated requests",
   "main": "src/index.js",
   "repository": "folio-org/ui-requests-mediated",
@@ -83,7 +83,6 @@
           "mod-settings.global.read.circulation",
           "mod-settings.entries.collection.get",
           "mod-settings.entries.item.get",
-          "circulation.items-by-instance.get",
           "circulation.loans.collection.get",
           "circulation.requests.item.get",
           "circulation-storage.loans.collection.get",
@@ -94,7 +93,8 @@
           "users.item.get",
           "configuration.entries.collection.get",
           "requests-mediated.mediated-request.collection.get",
-          "requests-mediated.mediated-request.item.get"
+          "requests-mediated.mediated-request.item.get",
+          "addresstypes.collection.get"
         ],
         "visible": true
       },
@@ -102,10 +102,11 @@
         "permissionName": "ui-requests-mediated.create",
         "displayName": "Mediated requests: Create",
         "subPermissions": [
-          "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
-          "requests-mediated.mediated-request.item.post"
+          "requests-mediated.mediated-request.item.post",
+          "circulation-bff.requests.search-instances.get",
+          "circulation-bff.requests.allowed-service-points.get"
         ],
         "visible": false
       },
@@ -114,10 +115,11 @@
         "displayName": "Mediated requests: Edit",
         "replaces": ["ui-requests-mediated.edit"],
         "subPermissions": [
-          "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
-          "requests-mediated.mediated-request.item.put"
+          "requests-mediated.mediated-request.item.put",
+          "circulation-bff.requests.search-instances.get",
+          "circulation-bff.requests.allowed-service-points.get"
         ],
         "visible": false
       },
@@ -126,11 +128,11 @@
         "displayName": "Mediated requests: Confirm",
         "replaces": ["ui-requests-mediated.confirm"],
         "subPermissions": [
-          "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
-          "requests-mediated.mediated-request.item.put",
-          "requests-mediated.mediated-request.item.post"
+          "circulation-bff.confirm-mediated-request.execute",
+          "circulation-bff.requests.search-instances.get",
+          "circulation-bff.requests.allowed-service-points.get"
         ],
         "visible": false
       },

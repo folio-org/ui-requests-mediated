@@ -47,14 +47,14 @@ export const urls = {
       query: `(${ITEM_QUERIES[idType]}=="${value}")`,
     });
 
-    return `circulation/items-by-instance?${query}`;
+    return `circulation-bff/requests/search-instances?${query}`;
   },
   [RESOURCE_TYPES.INSTANCE]: (value) => {
     const query = stringify({
       query: getInstanceQueryString(value),
     });
 
-    return `circulation/items-by-instance?${query}`;
+    return `circulation-bff/requests/search-instances?${query}`;
   },
   [RESOURCE_TYPES.LOAN]: (value) => {
     const query = stringify({
@@ -70,7 +70,7 @@ export const urls = {
     requestId,
     operation,
   }) => {
-    const url = 'circulation/requests/allowed-service-points';
+    const url = 'circulation-bff/requests/allowed-service-points';
 
     if (requestId) {
       return `${url}?operation=${operation}&requestId=${requestId}`;
