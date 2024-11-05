@@ -71,7 +71,9 @@
     "okapiInterfaces": {
       "circulation-bff-requests": "1.0",
       "requests-mediated": "2.0",
-      "requests-mediated-actions": "1.0"
+      "requests-mediated-actions": "1.0",
+      "request-preference-storage": "2.0",
+      "circulation": "14.2"
     },
     "permissionSets": [
       {
