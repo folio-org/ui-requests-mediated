@@ -1,6 +1,6 @@
 {
   "name": "@folio/requests-mediated",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Mediated requests",
   "main": "src/index.js",
   "repository": "folio-org/ui-requests-mediated",
@@ -68,7 +68,11 @@
         "title": "Mediated requests manager"
       }
     ],
-    "okapiInterfaces": {},
+    "okapiInterfaces": {
+      "circulation-bff-requests": "1.0",
+      "requests-mediated": "2.0",
+      "requests-mediated-actions": "1.0"
+    },
     "permissionSets": [
       {
         "permissionName": "module.requests-mediated.enabled",
