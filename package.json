@@ -42,10 +42,14 @@
     "regenerator-runtime": "^0.13.3"
   },
   "dependencies": {
+    "dompurify": "^3.1.7",
+    "html-to-react": "^1.3.3",
     "prop-types": "^15.6.0",
+    "react-barcode": "^1.3.2",
     "query-string": "^5.1.0",
     "react-final-form": "^6.5.9",
-    "moment-timezone": "^0.5.14"
+    "moment-timezone": "^0.5.14",
+    "react-to-print": "^2.9.0"
   },
   "peerDependencies": {
     "@folio/stripes": "^9.1.0",
@@ -68,7 +72,13 @@
         "title": "Mediated requests manager"
       }
     ],
-    "okapiInterfaces": {},
+    "okapiInterfaces": {
+      "circulation-bff-requests": "1.0",
+      "requests-mediated": "2.0",
+      "requests-mediated-actions": "1.0",
+      "request-preference-storage": "2.0",
+      "circulation": "14.2"
+    },
     "permissionSets": [
       {
         "permissionName": "module.requests-mediated.enabled",
@@ -113,7 +123,9 @@
       {
         "permissionName": "ui-requests-mediated.requests-mediated.edit",
         "displayName": "Mediated requests: Edit",
-        "replaces": ["ui-requests-mediated.edit"],
+        "replaces": [
+          "ui-requests-mediated.edit"
+        ],
         "subPermissions": [
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
@@ -126,7 +138,9 @@
       {
         "permissionName": "ui-requests-mediated.requests-mediated.confirm.execute",
         "displayName": "Mediated requests: Confirm",
-        "replaces": ["ui-requests-mediated.confirm"],
+        "replaces": [
+          "ui-requests-mediated.confirm"
+        ],
         "subPermissions": [
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
@@ -139,7 +153,9 @@
       {
         "permissionName": "ui-requests-mediated.requests-mediated.view-create-edit.execute",
         "displayName": "Mediated requests: View, create, edit",
-        "replaces": ["ui-requests-mediated.view-create-edit"],
+        "replaces": [
+          "ui-requests-mediated.view-create-edit"
+        ],
         "subPermissions": [
           "ui-requests-mediated.view",
           "ui-requests-mediated.create",
@@ -150,7 +166,9 @@
       {
         "permissionName": "ui-requests-mediated.requests-mediated.view-decline.execute",
         "displayName": "Mediated requests: View, decline",
-        "replaces": ["ui-requests-mediated.view-decline"],
+        "replaces": [
+          "ui-requests-mediated.view-decline"
+        ],
         "subPermissions": [
           "ui-requests-mediated.view",
           "requests-mediated.mediated-request.item.delete"
@@ -160,7 +178,9 @@
       {
         "permissionName": "ui-requests-mediated.requests-mediated.view-confirm.execute",
         "displayName": "Mediated requests: View, confirm",
-        "replaces": ["ui-requests-mediated.view-confirm"],
+        "replaces": [
+          "ui-requests-mediated.view-confirm"
+        ],
         "subPermissions": [
           "ui-requests-mediated.view",
           "ui-requests-mediated.requests-mediated.confirm.execute"
@@ -170,7 +190,9 @@
       {
         "permissionName": "ui-requests-mediated.requests-mediated.confirm-item-arrival.execute",
         "displayName": "Mediated requests: Confirm item arrival",
-        "replaces": ["ui-requests-mediated.confirm-item-arrival"],
+        "replaces": [
+          "ui-requests-mediated.confirm-item-arrival"
+        ],
         "subPermissions": [
           "ui-requests-mediated.view",
           "requests-mediated.confirm-item-arrival.post"
@@ -180,7 +202,9 @@
       {
         "permissionName": "ui-requests-mediated.requests-mediated.send-item-in-transit.execute",
         "displayName": "Mediated requests: Send item in transit",
-        "replaces": ["ui-requests-mediated.send-item-in-transit"],
+        "replaces": [
+          "ui-requests-mediated.send-item-in-transit"
+        ],
         "subPermissions": [
           "ui-requests-mediated.view",
           "requests-mediated.send-item-in-transit.post"

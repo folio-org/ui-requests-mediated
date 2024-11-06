@@ -7,9 +7,6 @@ import PickupServicePoint from './PickupServicePoint';
 import { MEDIATED_REQUEST_TYPES } from '../../../../constants';
 
 const basicProps = {
-  isEditForm: false,
-  shouldValidate: false,
-  request: {},
   values: {
     requestType: MEDIATED_REQUEST_TYPES.HOLD,
   },
@@ -21,6 +18,7 @@ const basicProps = {
       }
     ],
   },
+  disabled: false,
 };
 const labelIds = {
   pickupServicePoint: 'ui-requests-mediated.form.request.pickupServicePoint',

@@ -63,6 +63,7 @@ export const isEditAndConfirmButtonVisible = (stripes) => (
 const MediatedRequestsDetail = ({
   stripes,
   patronGroups,
+  setRequest,
 }) => {
   const history = useHistory();
   const location = useLocation();
@@ -75,6 +76,9 @@ const MediatedRequestsDetail = ({
   } = useMediatedRequestById(mediatedRequestIdFromPathname);
   const { userData } = useUserById(mediatedRequest?.requesterId, isFetching);
   const { servicePoints } = useServicePoints();
+  const mediatedRequestsActivitiesUrl = getMediatedRequestsActivitiesUrl();
+
+  setRequest(mediatedRequest);
 
   const isActionMenuVisible = () => (
     get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS], DEFAULT_VIEW_VALUE) === MEDIATED_REQUEST_STATUS.NEW_AWAITING_CONFIRMATION
@@ -88,13 +92,18 @@ const MediatedRequestsDetail = ({
   };
 
   const actionMenu = ({ onToggle }) => {
+    const handleEditAndConfirm = () => {
+      onToggle();
+      history.push(`${mediatedRequestsActivitiesUrl}/edit/${mediatedRequestIdFromPathname}`);
+    };
+
     return (
       <>
         {isEditAndConfirmButtonVisible(stripes) &&
           <Button
             buttonStyle="dropdownItem"
             marginBottom0
-            onClick={onToggle}
+            onClick={handleEditAndConfirm}
           >
             <Icon icon={ICONS.EDIT}>
               <FormattedMessage id="ui-requests-mediated.mediatedRequestDetails.actionMenu.editAndConfirm" />
@@ -119,7 +128,6 @@ const MediatedRequestsDetail = ({
   const patronGroup = getPatronGroup(mediatedRequest?.requester, patronGroups);
   const userPreferences = getUserPreferences(mediatedRequest, userData, servicePoints);
   const referredRecordData = getReferredRecordData(mediatedRequest);
-  const mediatedRequestsActivitiesUrl = getMediatedRequestsActivitiesUrl();
 
   return (
     <Pane
@@ -218,6 +226,7 @@ const MediatedRequestsDetail = ({
 
 MediatedRequestsDetail.propTypes = {
   stripes: PropTypes.object.isRequired,
+  setRequest: PropTypes.func.isRequired,
   patronGroups: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     group: PropTypes.string,

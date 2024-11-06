@@ -1,3 +1,9 @@
+import { useIntl } from 'react-intl';
+
+import {
+  escape,
+} from 'lodash';
+
 import {
   render,
   screen,
@@ -6,12 +12,17 @@ import {
 import { NoValue } from '@folio/stripes/components';
 
 import {
+  STAFF_SLIP_WITH_OUT_DATA,
+  SOURCE_FOR_STAFF_SLIP_DATA,
+  STAFF_SLIP_DATA,
+} from '../test/jest/__mock__/staffSlipData.mock';
+
+import {
   transformRequestFilterOptions,
   getIsTitleLevelRequestsFeatureEnabled,
   getRequesterName,
   getTotalCount,
   handleKeyCommand,
-  isFormEditing,
   memoizeValidation,
   getTlrSettings,
   getPatronGroup,
@@ -19,8 +30,7 @@ import {
   getFormattedYears,
   getInstanceQueryString,
   getFulfillmentTypeOptions,
-  getSelectedAddressTypeId,
-  isDeliverySelected,
+  isDelivery,
   resetFieldState,
   getDefaultRequestPreferences,
   getFulfillmentPreference,
@@ -29,17 +39,21 @@ import {
   getResourceTypeId,
   getRequestInformation,
   getNoRequestTypeErrorMessageId,
-  validateDropDownValue,
   getUserPreferences,
   getReferredRecordData,
   formatNoteReferrerEntityData,
   getUserHighlightBoxLink,
   getProxyInformation,
-  getRequester,
   getFullNameForCsvRecords,
   getDeliveryAddressForCsvRecords,
   modifyRecordsToExport,
   handleConfirmItemSubmit,
+  getStaffSlipsTemplateByType,
+  escapeValue,
+  buildTemplate,
+  shouldProcessNode,
+  buildLocaleDateAndTime,
+  convertToSlipData, processNode,
 } from './utils';
 import {
   FULFILMENT_TYPES,
@@ -49,6 +63,7 @@ import {
   ID_TYPE_MAP,
   MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
   MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
+  STAFF_SLIPS_TYPE,
 } from './constants';
 
 jest.mock('react-router-dom', () => ({
@@ -213,20 +228,6 @@ describe('utils', () => {
         handleKeyCommand(handler)();
 
         expect(event.preventDefault).not.toHaveBeenCalled();
-      });
-    });
-  });
-
-  describe('isFormEditing', () => {
-    describe('When id is presented', () => {
-      it('should return true', () => {
-        expect(isFormEditing({ id: 'id' })).toBe(true);
-      });
-    });
-
-    describe('when id is not presented', () => {
-      it('should return false', () => {
-        expect(isFormEditing({})).toBe(false);
       });
     });
   });
@@ -457,25 +458,13 @@ describe('utils', () => {
     });
   });
 
-  describe('getSelectedAddressTypeId', () => {
-    it('should return default delivery address type id"', () => {
-      const defaultDeliveryAddressTypeId = 'id';
-
-      expect(getSelectedAddressTypeId(true, defaultDeliveryAddressTypeId)).toBe(defaultDeliveryAddressTypeId);
-    });
-
-    it('should return empty string', () => {
-      expect(getSelectedAddressTypeId(false)).toBe('');
-    });
-  });
-
-  describe('isDeliverySelected', () => {
+  describe('isDelivery', () => {
     it('should return true', () => {
-      expect(isDeliverySelected(FULFILMENT_TYPES.DELIVERY)).toBe(true);
+      expect(isDelivery(FULFILMENT_TYPES.DELIVERY)).toBe(true);
     });
 
     it('should return false', () => {
-      expect(isDeliverySelected('test')).toBe(false);
+      expect(isDelivery('test')).toBe(false);
     });
   });
 
@@ -531,8 +520,7 @@ describe('utils', () => {
         hasDelivery: false,
         defaultDeliveryAddressTypeId: DEFAULT_VIEW_VALUE,
         defaultServicePointId: DEFAULT_VIEW_VALUE,
-        deliverySelected: true,
-        selectedAddressTypeId: DEFAULT_VIEW_VALUE,
+        isDeliverySelected: true,
       };
 
       expect(getDefaultRequestPreferences(initialValues)).toEqual(expectedResult);
@@ -641,27 +629,15 @@ describe('utils', () => {
     };
 
     it('should return data with selected instance', () => {
-      const values = {
-        createTitleLevelRequest: true,
-      };
-      const expectedResult = {
-        isTitleLevelRequest: values.createTitleLevelRequest,
-        selectedResource: selectedInstance,
-      };
+      const isTitleLevelRequest = true;
 
-      expect(getRequestInformation(values, selectedInstance, selectedItem)).toEqual(expectedResult);
+      expect(getRequestInformation(isTitleLevelRequest, selectedInstance, selectedItem)).toEqual(selectedInstance);
     });
 
     it('should return data with selected item', () => {
-      const values = {
-        createTitleLevelRequest: false,
-      };
-      const expectedResult = {
-        isTitleLevelRequest: values.createTitleLevelRequest,
-        selectedResource: selectedItem,
-      };
+      const isTitleLevelRequest = false;
 
-      expect(getRequestInformation(values, selectedInstance, selectedItem)).toEqual(expectedResult);
+      expect(getRequestInformation(isTitleLevelRequest, selectedInstance, selectedItem)).toEqual(selectedItem);
     });
   });
 
@@ -672,30 +648,6 @@ describe('utils', () => {
 
     it('should return error for item level request', () => {
       expect(getNoRequestTypeErrorMessageId(false)).toBe(MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.ITEM_LEVEL_ERROR]);
-    });
-  });
-
-  describe('validateDropDownValue', () => {
-    const value = 'value';
-
-    describe('When shouldValidate is true', () => {
-      it('should return undefined', () => {
-        expect(validateDropDownValue(true)(value)).toBeUndefined();
-      });
-
-      it('should return validation error message', () => {
-        const errorMessage = 'ui-requests-mediated.form.errors.requiredToConfirm';
-
-        render(validateDropDownValue(true)(''));
-
-        expect(screen.getByText(errorMessage)).toBeInTheDocument();
-      });
-    });
-
-    describe('When shouldValidate is false', () => {
-      it('should return undefined', () => {
-        expect(validateDropDownValue(false)(value)).toBeUndefined();
-      });
     });
   });
 
@@ -896,24 +848,6 @@ describe('utils', () => {
     });
   });
 
-  describe('getRequester', () => {
-    const selectedUser = {
-      id: 'selectedUserId',
-    };
-
-    it('should return proxy user', () => {
-      const proxy = {
-        id: 'proxyId',
-      };
-
-      expect(getRequester(proxy, selectedUser)).toEqual(proxy);
-    });
-
-    it('should return selected user', () => {
-      expect(getRequester(null, selectedUser)).toEqual(selectedUser);
-    });
-  });
-
   describe('getFullNameForCsvRecords', () => {
     describe('When all user information exists', () => {
       it('should return user name for CSV report', () => {
@@ -1036,6 +970,7 @@ describe('handleConfirmItemSubmit', () => {
   const confirmItemProps = {
     ky,
     url: 'confirm-item-props-url',
+    onSuccess: jest.fn(),
   };
 
   it('should trigger "ky.post" with correct props', async () => {
@@ -1054,6 +989,12 @@ describe('handleConfirmItemSubmit', () => {
     expect(confirmItemState.setContentData).toHaveBeenCalledWith([response]);
   });
 
+  it('should trigger "onSuccess" on success', async () => {
+    await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemProps);
+
+    expect(confirmItemProps.onSuccess).toHaveBeenCalledWith(response);
+  });
+
   it('should trigger "setIsErrorModalOpen" on errors', async () => {
     const confirmItemPropsWithErrors = {
       ...confirmItemProps,
@@ -1065,5 +1006,126 @@ describe('handleConfirmItemSubmit', () => {
     await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemPropsWithErrors);
 
     expect(confirmItemState.setIsErrorModalOpen).toHaveBeenCalledWith(true);
+  });
+});
+
+describe('getStaffSlipsTemplateByType', () => {
+  const slipTypeName = STAFF_SLIPS_TYPE.TRANSIT_MEDIATED_REQUESTS;
+  const slipTypeTemplate = <p>${slipTypeName}</p>;
+  const otherSlipTypeName = 'otherSlipTypeName';
+  const otherSlipTypeTemplate = <p>otherSlipTypeName</p>;
+  const staffSlips = [{
+    active: true,
+    id: 'id1',
+    name: slipTypeName,
+    template: slipTypeTemplate,
+  }, {
+    active: true,
+    id: 'id2',
+    name: otherSlipTypeName,
+    template: otherSlipTypeTemplate,
+  }];
+
+  it(`should return "${slipTypeName}" template`, () => {
+    expect(getStaffSlipsTemplateByType(staffSlips, slipTypeName)).toEqual(slipTypeTemplate);
+  });
+
+  it(`should return "${otherSlipTypeName}" template`, () => {
+    expect(getStaffSlipsTemplateByType(staffSlips, otherSlipTypeName)).toEqual(otherSlipTypeTemplate);
+  });
+
+  it('should return empty template', () => {
+    expect(getStaffSlipsTemplateByType()).toEqual('');
+  });
+});
+
+describe('escapeValue', () => {
+  it('should escapes values', () => {
+    const input = '<test>value</test>';
+
+    expect(escapeValue(input)).toEqual(escape(input));
+  });
+
+  it('should not escape "<Barcode>" values', () => {
+    const input = '<Barcode>value</Barcode>';
+
+    expect(escapeValue(input)).toEqual(input);
+  });
+});
+
+describe('buildTemplate', () => {
+  it('should substitutes strings and numbers', () => {
+    const t = buildTemplate('{{a}}, {{b}}! {{a}}, {{b}}! And {{c}} and {{c}}');
+    const v = t({ a: 1, b: 2, c: 'test' });
+
+    expect(v).toEqual('1, 2! 1, 2! And test and test');
+  });
+
+  it('should elides other types', () => {
+    const t = buildTemplate('The {{a}}{{b}}{{c}}test test-test!');
+    const v = t({
+      a: Boolean(true),
+      b: { key: 'value' },
+      c: () => 'function',
+    });
+
+    expect(v).toEqual('The test test-test!');
+  });
+});
+
+describe('processNode', () => {
+  const node = {};
+  const children = 'children';
+
+  it('should use children as value', () => {
+    expect(processNode(node, [children]).props.value).toEqual(children);
+  });
+
+  it('should use empty value', () => {
+    expect(processNode(node, []).props.value).toEqual(' ');
+  });
+});
+
+describe('shouldProcessNode', () => {
+  it('should process node', () => {
+    const node = {
+      name: 'barcode',
+    };
+
+    expect(shouldProcessNode(node)).toBeTruthy();
+  });
+
+  it('should not process node', () => {
+    const node = {
+      name: 'notBarcode',
+    };
+
+    expect(shouldProcessNode(node)).toBeFalsy();
+  });
+});
+
+describe('buildLocaleDateAndTime', () => {
+  const dateTime = '2024-12-31T24:00:00.000+00:00';
+  const timezone = 'UTC';
+  const locale = 'en-US';
+
+  it('should return date with locale date and time', () => {
+    expect(buildLocaleDateAndTime(dateTime, timezone, locale)).toEqual('01/01/2025 12:00 AM');
+  });
+});
+
+describe('convertToSlipData', () => {
+  const intl = useIntl();
+  const timeZone = 'UTC';
+  const locale = 'en-US';
+
+  it('should return slip data with out value', () => {
+    const source = {};
+
+    expect(convertToSlipData(source, intl, timeZone, locale)).toEqual(STAFF_SLIP_WITH_OUT_DATA);
+  });
+
+  it('should return slip data with value', () => {
+    expect(convertToSlipData(SOURCE_FOR_STAFF_SLIP_DATA, intl, timeZone, locale)).toEqual(STAFF_SLIP_DATA);
   });
 });

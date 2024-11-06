@@ -4,37 +4,29 @@ import { FormattedMessage } from 'react-intl';
 
 import { Select } from '@folio/stripes/components';
 
-import { validateDropDownValue } from '../../../../utils';
+import { MEDIATED_REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
 
 const PickupServicePoint = ({
-  isEditForm,
-  request,
   values,
   requestTypes,
-  shouldValidate,
+  disabled,
 }) => {
-  const selectedRequestType = isEditForm ? request.requestType : values.requestType;
-  const allowedServicePoints = requestTypes[selectedRequestType] || [];
+  const allowedServicePoints = requestTypes[values?.requestType] || [];
 
   return (
     <Field
       data-testid="pickupServicePoint"
-      name="pickupServicePointId"
-      validateFields={[]}
-      validate={validateDropDownValue(shouldValidate)}
+      name={MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID}
     >
       {
         ({
           input,
-          meta
         }) => {
-          const error = meta.touched && meta.error;
-
           return (
             <Select
               {...input}
               label={<FormattedMessage id="ui-requests-mediated.form.request.pickupServicePoint" />}
-              error={error}
+              disabled={disabled}
               fullWidth
             >
               <FormattedMessage id="ui-requests-mediated.form.request.selectServicePoint">
@@ -60,11 +52,9 @@ const PickupServicePoint = ({
 };
 
 PickupServicePoint.propTypes = {
-  isEditForm: PropTypes.bool.isRequired,
   requestTypes: PropTypes.object.isRequired,
   values: PropTypes.object.isRequired,
-  shouldValidate: PropTypes.bool.isRequired,
-  request: PropTypes.object.isRequired,
+  disabled: PropTypes.bool.isRequired,
 };
 
 export default PickupServicePoint;

@@ -5,8 +5,12 @@ import {
   Button,
   PaneFooter,
 } from '@folio/stripes/components';
+import { useStripes } from '@folio/stripes/core';
 
-import { SAVE_BUTTON_ID } from '../../../../constants';
+import {
+  CONFIRM_BUTTON_ID,
+  SAVE_BUTTON_ID,
+} from '../../../../constants';
 
 import styles from './RequestFormFooter.css';
 
@@ -15,6 +19,9 @@ const RequestFormFooter = ({
   isSaveAndCloseButtonDisabled,
   isConfirmButtonDisabled,
 }) => {
+  const stripes = useStripes();
+  const isSaveAndCloseDisabled = isSaveAndCloseButtonDisabled || !stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
+
   return (
     <PaneFooter
       renderStart={
@@ -34,13 +41,13 @@ const RequestFormFooter = ({
             type="submit"
             buttonClass={styles.saveAndCloseButton}
             buttonStyle="default mega"
-            disabled={isSaveAndCloseButtonDisabled}
+            disabled={isSaveAndCloseDisabled}
             marginBottom0
           >
             <FormattedMessage id="stripes-components.saveAndClose" />
           </Button>
           <Button
-            id="confirmRequestButton"
+            id={CONFIRM_BUTTON_ID}
             type="submit"
             buttonStyle="primary mega"
             disabled={isConfirmButtonDisabled}

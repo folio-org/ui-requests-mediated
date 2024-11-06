@@ -1,14 +1,16 @@
+import { Field } from 'react-final-form';
+
 import {
   render,
   screen,
-  fireEvent,
 } from '@folio/jest-config-stripes/testing-library/react';
+import { Select } from '@folio/stripes/components';
 
 import DeliveryAddress from './DeliveryAddress';
+import { MEDIATED_REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
 
 const basicProps = {
-  onChangeAddress: jest.fn(),
-  shouldValidate: false,
+  disabled: false,
   deliveryLocations: [
     {
       value: 'value',
@@ -18,9 +20,6 @@ const basicProps = {
 };
 const labelIds = {
   deliveryAddress: 'ui-requests-mediated.form.request.delivery',
-};
-const testIds = {
-  deliveryAddress: 'deliveryAddress',
 };
 
 describe('DeliveryAddress', () => {
@@ -38,16 +37,14 @@ describe('DeliveryAddress', () => {
     expect(deliveryAddressLabel).toBeInTheDocument();
   });
 
-  it('should handle address change', () => {
-    const event = {
-      target: {
-        value: 'test',
-      },
+  it('should trigger Field with correct props', () => {
+    const expectedProps = {
+      name: MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID,
+      component: Select,
+      disabled: basicProps.disabled,
+      fullWidth: true,
     };
-    const deliveryAddress = screen.getByTestId(testIds.deliveryAddress);
 
-    fireEvent.change(deliveryAddress, event);
-
-    expect(basicProps.onChangeAddress).toHaveBeenCalled();
+    expect(Field).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
   });
 });

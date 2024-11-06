@@ -12,16 +12,14 @@ import {
   TextArea,
 } from '@folio/stripes/components';
 import { ViewMetaData } from '@folio/stripes/smart-components';
+import { useStripes } from '@folio/stripes/core';
 
 import {
   MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS,
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
+  DEFAULT_REQUEST_TYPE_VALUE,
 } from '../../../../constants';
-import {
-  isFormEditing,
-  resetFieldState,
-  getNoRequestTypeErrorMessageId,
-} from '../../../../utils';
+import { getNoRequestTypeErrorMessageId } from '../../../../utils';
 
 const RequestInformation = ({
   request,
@@ -33,33 +31,20 @@ const RequestInformation = ({
   isRequestTypesReceived,
   isRequestTypeLoading,
   values,
-  form,
-  updateRequestPreferencesFields,
-  shouldValidate,
+  isEditMode,
 }) => {
-  const isEditForm = isFormEditing(request);
-  const isMetadata = isEditForm && request?.metadata;
+  const stripes = useStripes();
+  const isEditPermission = stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
+  const isMetadata = isEditMode && request?.metadata;
   const isItemOrTitleSelected = isTitleLevelRequest ? isSelectedInstance : isSelectedItem;
-  const isRequestTypeDisabled = requestTypeOptions.length === 0 || !(isItemOrTitleSelected && isSelectedUser);
-  const validateRequestType = useCallback((requestType) => {
-    if (isItemOrTitleSelected && isSelectedUser && shouldValidate) {
-      if (requestTypeOptions.length === 0 && isRequestTypesReceived) {
-        return <FormattedMessage id={getNoRequestTypeErrorMessageId(isTitleLevelRequest)} />;
-      }
-
-      if (!requestType && requestTypeOptions.length !== 0) {
-        return <FormattedMessage id="ui-requests-mediated.form.errors.requiredToConfirm" />;
-      }
+  const isRequestTypeDisabled = requestTypeOptions.length === 0 || !(isItemOrTitleSelected && isSelectedUser) || !isEditPermission;
+  const validateRequestType = useCallback(() => {
+    if (isItemOrTitleSelected && isSelectedUser && requestTypeOptions.length === 0 && isRequestTypesReceived) {
+      return <FormattedMessage id={getNoRequestTypeErrorMessageId(isTitleLevelRequest)} />;
     }
 
     return undefined;
-  }, [isItemOrTitleSelected, isSelectedUser, requestTypeOptions, isTitleLevelRequest, isRequestTypesReceived, shouldValidate]);
-  const changeRequestType = (input) => (e) => {
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined);
-    resetFieldState(form, MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID);
-    input.onChange(e);
-    updateRequestPreferencesFields();
-  };
+  }, [isItemOrTitleSelected, isSelectedUser, requestTypeOptions, isTitleLevelRequest, isRequestTypesReceived]);
 
   return (
     <>
@@ -83,9 +68,8 @@ const RequestInformation = ({
                   input,
                   meta,
                 }) => {
-                  const selectItemError = requestTypeOptions.length !== 0 && meta.touched && meta.error;
                   const noAvailableRequestTypesError = !isRequestTypeLoading && isRequestTypesReceived && requestTypeOptions.length === 0 && meta.error;
-                  const error = selectItemError || noAvailableRequestTypesError || null;
+                  const error = noAvailableRequestTypesError || null;
 
                   return (
                     <Select
@@ -93,11 +77,10 @@ const RequestInformation = ({
                       label={<FormattedMessage id="ui-requests-mediated.form.request.requestType" />}
                       disabled={isRequestTypeDisabled}
                       error={error}
-                      onChange={changeRequestType(input)}
                       fullWidth
                     >
                       <FormattedMessage id="ui-requests-mediated.form.request.selectRequestType">
-                        {optionLabel => <option value="">{optionLabel}</option>}
+                        {optionLabel => <option value={DEFAULT_REQUEST_TYPE_VALUE}>{optionLabel}</option>}
                       </FormattedMessage>
                       {requestTypeOptions.map(({
                         id,
@@ -119,11 +102,14 @@ const RequestInformation = ({
                 }}
               </Field>
             </Col>
-            {isEditForm &&
-              <Col xs={3}>
+            {isEditMode &&
+              <Col
+                xsOffset={1}
+                xs={3}
+              >
                 <KeyValue
                   label={<FormattedMessage id="ui-requests-mediated.form.request.status" />}
-                  value={(MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS[request.status]
+                  value={(MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS[request?.status]
                     ? <FormattedMessage id={MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS[request.status]} />
                     : <NoValue />)}
                 />
@@ -134,7 +120,8 @@ const RequestInformation = ({
               xs={4}
             >
               <Field
-                name="patronComments"
+                name={MEDIATED_REQUEST_FORM_FIELD_NAMES.PATRON_COMMENTS}
+                disabled={!isEditPermission}
                 id="patronComments"
                 label={<FormattedMessage id="ui-requests-mediated.form.request.patronComments" />}
                 component={TextArea}
@@ -154,11 +141,9 @@ RequestInformation.propTypes = {
   isSelectedUser: PropTypes.bool.isRequired,
   isRequestTypesReceived: PropTypes.bool.isRequired,
   isRequestTypeLoading: PropTypes.bool.isRequired,
-  shouldValidate: PropTypes.bool.isRequired,
+  isEditMode: PropTypes.bool.isRequired,
   request: PropTypes.object.isRequired,
   values: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-  updateRequestPreferencesFields: PropTypes.func.isRequired,
   requestTypeOptions: PropTypes.arrayOf(PropTypes.object),
 };
 

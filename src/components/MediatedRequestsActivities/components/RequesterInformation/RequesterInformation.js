@@ -11,18 +11,19 @@ import {
   Row,
   TextField,
 } from '@folio/stripes/components';
-import { Pluggable } from '@folio/stripes/core';
+import {
+  Pluggable,
+  stripesConnect,
+} from '@folio/stripes/core';
 
 import UserForm from '../UserForm';
-import {
-  isFormEditing,
-  memoizeValidation,
-} from '../../../../utils';
+import { memoizeValidation } from '../../../../utils';
 import {
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
   ENTER_EVENT_KEY,
   BASE_SPINNER_PROPS,
+  DEFAULT_REQUEST_TYPE_VALUE,
 } from '../../../../constants';
 
 export const VISIBLE_COLUMNS = ['active', 'name', 'patronGroup', 'username', 'barcode'];
@@ -44,12 +45,15 @@ class RequesterInformation extends Component {
     getUserValidationData: PropTypes.func.isRequired,
     triggerUserBarcodeValidation: PropTypes.func.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
+    isUserPreselected: PropTypes.bool.isRequired,
+    isEditMode: PropTypes.bool.isRequired,
+    stripes: PropTypes.object.isRequired,
     selectedUser: PropTypes.object,
     isLoading: PropTypes.bool,
     request: PropTypes.object,
     patronGroup: PropTypes.object,
     proxy: PropTypes.object,
-    selectProxy: PropTypes.func,
+    selectRequester: PropTypes.func,
     handleCloseProxy: PropTypes.func,
   };
 
@@ -62,6 +66,17 @@ class RequesterInformation extends Component {
       isUserBlurred: false,
       validatedBarcode: null,
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const {
+      isUserPreselected,
+      selectedUser,
+    } = this.props;
+
+    if (selectedUser && isUserPreselected && isUserPreselected !== prevProps.isUserPreselected) {
+      this.setState({ validatedBarcode: selectedUser.barcode });
+    }
   }
 
   validate = memoizeValidation(async (barcode) => {
@@ -141,10 +156,12 @@ class RequesterInformation extends Component {
     const {
       onSetSelectedProxy,
       onSetSelectedUser,
+      form,
     } = this.props;
 
-    onSetSelectedUser(null);
     onSetSelectedProxy(null);
+    onSetSelectedUser(null);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
   };
 
   handleBlur = (input) => () => {
@@ -196,21 +213,23 @@ class RequesterInformation extends Component {
       patronGroup,
       isLoading,
       enterButtonClass,
-      selectProxy,
+      selectRequester,
       proxy,
       handleCloseProxy,
+      stripes,
+      isEditMode,
+      isUserPreselected,
     } = this.props;
     const {
       isUserClicked,
       isUserBlurred,
     } = this.state;
-    const isEditForm = isFormEditing(request);
-    const user = request ? request.requester : selectedUser;
+    const isEditPermission = stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
+    const isEnterButtonDisabled = submitting || !isEditPermission;
 
     return (
       <Row>
         <Col xs={12}>
-          {!isEditForm &&
           <Row>
             <Col xs={9}>
               <FormattedMessage id="ui-requests-mediated.form.requester.inputPlaceholder">
@@ -240,6 +259,7 @@ class RequesterInformation extends Component {
                             onChange={this.handleChange}
                             onBlur={this.handleBlur(input)}
                             onKeyDown={this.onKeyDown}
+                            disabled={!isEditPermission}
                           />
                         );
                       }}
@@ -247,18 +267,21 @@ class RequesterInformation extends Component {
                   );
                 }}
               </FormattedMessage>
-              <Pluggable
-                aria-haspopup="true"
-                type="find-user"
-                searchLabel={<FormattedMessage id="ui-requests-mediated.form.requester.lookupLabel" />}
-                searchButtonStyle="link"
-                dataKey="users"
-                selectUser={this.onSelectUser}
-                visibleColumns={VISIBLE_COLUMNS}
-                columnMapping={COLUMN_MAPPING}
-                disableRecordCreation
-                marginTop0
-              />
+              {
+                isEditPermission &&
+                  <Pluggable
+                    aria-haspopup="true"
+                    type="find-user"
+                    searchLabel={<FormattedMessage id="ui-requests-mediated.form.requester.lookupLabel" />}
+                    searchButtonStyle="link"
+                    dataKey="users"
+                    selectUser={this.onSelectUser}
+                    visibleColumns={VISIBLE_COLUMNS}
+                    columnMapping={COLUMN_MAPPING}
+                    disableRecordCreation
+                    marginTop0
+                  />
+              }
             </Col>
             <Col xs={3}>
               <Button
@@ -266,23 +289,26 @@ class RequesterInformation extends Component {
                 buttonClass={enterButtonClass}
                 fullWidth
                 onClick={this.handleClick}
-                disabled={submitting}
+                disabled={isEnterButtonDisabled}
               >
                 <FormattedMessage id="ui-requests-mediated.form.enterButton" />
               </Button>
             </Col>
-          </Row>}
+          </Row>
           {
             isLoading && <Icon {...BASE_SPINNER_PROPS} />
           }
-          {(selectedUser?.id || isEditForm) &&
+          {selectedUser?.id &&
             <UserForm
-              user={user}
+              user={selectedUser}
               request={request}
               patronGroup={patronGroup?.group}
               proxy={proxy}
-              selectProxy={selectProxy}
-              handleCloseProxy={handleCloseProxy}
+              selectRequester={selectRequester}
+              closeProxyManager={handleCloseProxy}
+              isEditMode={isEditMode}
+              isEditPermission={isEditPermission}
+              isUserPreselected={isUserPreselected}
             />
           }
         </Col>
@@ -291,4 +317,4 @@ class RequesterInformation extends Component {
   }
 }
 
-export default RequesterInformation;
+export default stripesConnect(RequesterInformation);

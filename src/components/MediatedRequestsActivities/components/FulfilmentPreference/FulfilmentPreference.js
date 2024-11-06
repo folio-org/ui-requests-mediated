@@ -7,38 +7,33 @@ import {
   Row,
   Select,
 } from '@folio/stripes/components';
+import { useStripes } from '@folio/stripes/core';
 
 import DeliveryAddress from '../DeliveryAddress';
 import PickupServicePoint from '../PickupServicePoint';
 import { MEDIATED_REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
-import {
-  getSelectedAddressTypeId,
-  isDeliverySelected,
-} from '../../../../utils';
+import { isDelivery } from '../../../../utils';
 
 const FulfilmentPreference = ({
-  isEditForm,
-  deliverySelected = false,
+  isDeliverySelected = false,
   deliveryAddress = '',
-  onChangeAddress,
   deliveryLocations = [],
   fulfillmentTypeOptions = [],
-  defaultDeliveryAddressTypeId,
   setDeliveryAddress,
   requestTypes,
   request,
   form,
   values,
-  shouldValidate,
 }) => {
+  const stripes = useStripes();
+  const isEditPermission = stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
   const { fulfillmentPreference } = request || {};
   const onChangeFulfillment = (e) => {
     const selectedFulfillmentPreference = e.target.value;
-    const isDelivery = isDeliverySelected(selectedFulfillmentPreference);
-    const selectedAddressTypeId = getSelectedAddressTypeId(isDelivery, defaultDeliveryAddressTypeId);
+    const isDeliveryFulfilmentPreference = isDelivery(selectedFulfillmentPreference);
 
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, selectedFulfillmentPreference);
-    setDeliveryAddress(isDelivery, selectedAddressTypeId);
+    setDeliveryAddress(isDeliveryFulfilmentPreference);
   };
 
   return (
@@ -53,6 +48,7 @@ const FulfilmentPreference = ({
             name={MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE}
             label={<FormattedMessage id="ui-requests-mediated.form.request.fulfilmentPreference" />}
             component={Select}
+            disabled={!isEditPermission}
             value={fulfillmentPreference}
             onChange={onChangeFulfillment}
             fullWidth
@@ -76,26 +72,20 @@ const FulfilmentPreference = ({
         </Col>
         <Col xs={4}>
           {
-            (!deliverySelected &&
+            isDeliverySelected ?
+              <DeliveryAddress
+                deliveryLocations={deliveryLocations}
+                disabled={!isEditPermission}
+              /> :
               <PickupServicePoint
-                isEditForm={isEditForm}
-                request={request}
                 values={values}
                 requestTypes={requestTypes}
-                shouldValidate={shouldValidate}
+                disabled={!isEditPermission}
               />
-            ) ||
-            (deliveryLocations &&
-              <DeliveryAddress
-                onChangeAddress={onChangeAddress}
-                deliveryLocations={deliveryLocations}
-                shouldValidate={shouldValidate}
-              />
-            )
           }
         </Col>
       </Row>
-      {deliverySelected &&
+      {isDeliverySelected &&
         <Row>
           <Col
             xs={4}
@@ -110,19 +100,15 @@ const FulfilmentPreference = ({
 };
 
 FulfilmentPreference.propTypes = {
-  isEditForm: PropTypes.bool.isRequired,
-  defaultDeliveryAddressTypeId: PropTypes.string.isRequired,
   setDeliveryAddress: PropTypes.func.isRequired,
   requestTypes: PropTypes.object.isRequired,
   request: PropTypes.object.isRequired,
   form: PropTypes.object.isRequired,
   values: PropTypes.object.isRequired,
-  onChangeAddress: PropTypes.func.isRequired,
-  shouldValidate: PropTypes.bool.isRequired,
   deliveryAddress: PropTypes.node,
   deliveryLocations: PropTypes.arrayOf(PropTypes.object),
   fulfillmentTypeOptions: PropTypes.arrayOf(PropTypes.object),
-  deliverySelected: PropTypes.bool,
+  isDeliverySelected: PropTypes.bool,
 };
 
 export default FulfilmentPreference;

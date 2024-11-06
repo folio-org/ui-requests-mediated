@@ -14,7 +14,6 @@ import {
 
 import ItemInformation from './ItemInformation';
 import ItemDetail from '../ItemDetail';
-import { isFormEditing } from '../../../../utils';
 import {
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
@@ -23,7 +22,6 @@ import {
 } from '../../../../constants';
 
 jest.mock('../../../../utils', () => ({
-  isFormEditing: jest.fn(() => false),
   memoizeValidation: (fn) => () => fn,
 }));
 jest.mock('../ItemDetail', () => jest.fn(() => <div />));
@@ -51,7 +49,11 @@ const basicProps = {
   isLoading: false,
   submitting: false,
   isItemIdRequest: true,
-  isItemFromItemsDialog: false,
+  isItemPreselected: false,
+  stripes: {
+    hasPerm: jest.fn(() => true),
+  },
+  resetRequestInformation: jest.fn(),
 };
 const labelIds = {
   inputPlaceholder: 'ui-requests-mediated.form.item.inputPlaceholder',
@@ -95,7 +97,7 @@ describe('ItemInformation', () => {
     jest.clearAllMocks();
   });
 
-  describe('When creation form', () => {
+  describe('Initial render', () => {
     beforeEach(() => {
       render(
         <ItemInformation
@@ -165,36 +167,6 @@ describe('ItemInformation', () => {
       };
 
       expect(TextField).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
-    });
-  });
-
-  describe('When editing form', () => {
-    beforeEach(() => {
-      isFormEditing.mockReturnValueOnce(true);
-
-      render(
-        <ItemInformation
-          {...basicProps}
-        />
-      );
-    });
-
-    it('should not render input placeholder', () => {
-      const inputPlaceholder = screen.queryByPlaceholderText(labelIds.inputPlaceholder);
-
-      expect(inputPlaceholder).not.toBeInTheDocument();
-    });
-
-    it('should not render item barcode field', () => {
-      const itemBarcodeField = screen.queryByTestId(testIds.itemBarcodeField);
-
-      expect(itemBarcodeField).not.toBeInTheDocument();
-    });
-
-    it('should not render item barcode label', () => {
-      const itemBarcodeLabel = screen.queryByText(labelIds.inputLabel);
-
-      expect(itemBarcodeLabel).not.toBeInTheDocument();
     });
   });
 
@@ -540,7 +512,7 @@ describe('ItemInformation', () => {
       const rerender = renderItemInfoWithBarcode(onBlur);
       const newProps = {
         ...basicProps,
-        isItemFromItemsDialog: true,
+        isItemPreselected: true,
         selectedItem: {
           barcode: 'itemBarcode',
         },

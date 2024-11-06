@@ -142,6 +142,7 @@ export const RESOURCE_TYPES = {
   LOAN: 'loan',
   REQUEST_TYPES: 'requestTypes',
   REQUEST_PREFERENCES: 'requestPreferences',
+  REQUEST_BY_ID: 'requestById',
 };
 
 export const RESOURCE_KEYS = {
@@ -169,6 +170,7 @@ export const MEDIATED_REQUEST_FORM_FIELD_NAMES = {
   REQUESTER: 'requester',
   REQUESTER_ID: 'requesterId',
   REQUESTER_BARCODE: 'requester.barcode',
+  PATRON_COMMENTS: 'patronComments',
   PROXY_USER_ID: 'proxyUserId',
   ITEM_ID: 'itemId',
   ITEM_BARCODE: 'item.barcode',
@@ -184,9 +186,11 @@ export const MEDIATED_REQUEST_FORM_FIELD_NAMES = {
   KEY_OF_REQUEST_TYPE_FIELD: 'keyOfRequestTypeField',
 };
 
+export const EMPTY_MEDIATED_REQUEST_FORM_VALUE = undefined;
+export const EMPTY_RESOURCE_VALUE = null;
+
 export const MEDIATED_REQUEST_OPERATIONS = {
   CREATE: 'create',
-  REPLACE: 'replace',
 };
 
 export const MEDIATED_REQUEST_TYPES = {
@@ -204,6 +208,7 @@ export const MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS = {
 export const DEFAULT_REQUEST_TYPE_VALUE = '';
 
 export const SAVE_BUTTON_ID = 'saveRequestButton';
+export const CONFIRM_BUTTON_ID = 'confirmRequestButton';
 
 export const FULFILMENT_TYPES = {
   DELIVERY: 'Delivery',

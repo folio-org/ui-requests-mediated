@@ -4,22 +4,19 @@ import { FormattedMessage } from 'react-intl';
 
 import { Select } from '@folio/stripes/components';
 
-import { validateDropDownValue } from '../../../../utils';
+import { MEDIATED_REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
 
 const DeliveryAddress = ({
-  onChangeAddress,
   deliveryLocations,
-  shouldValidate,
+  disabled,
 }) => {
   return (
     <Field
-      name="deliveryAddressTypeId"
-      data-testid="deliveryAddress"
+      name={MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID}
       label={<FormattedMessage id="ui-requests-mediated.form.request.delivery" />}
       component={Select}
+      disabled={disabled}
       fullWidth
-      onChange={onChangeAddress}
-      validate={validateDropDownValue(shouldValidate)}
     >
       {deliveryLocations.map(({
         value,
@@ -37,8 +34,7 @@ const DeliveryAddress = ({
 };
 
 DeliveryAddress.propTypes = {
-  onChangeAddress: PropTypes.func.isRequired,
-  shouldValidate: PropTypes.bool.isRequired,
+  disabled: PropTypes.bool.isRequired,
   deliveryLocations: PropTypes.arrayOf({
     value: PropTypes.string,
     label: PropTypes.string,

@@ -257,7 +257,7 @@ const MediatedRequestsActivities = ({
     <SearchAndSortQuery
       data-testid="mediatedRequestsActivitiesSearchAndSortQuery"
       initialSearchState={{ query: '' }}
-      syncToLocationSearch={false}
+      syncToLocationSearch
       querySetter={querySetter}
       queryGetter={queryGetter}
     >
