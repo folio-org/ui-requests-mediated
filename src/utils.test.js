@@ -1,9 +1,21 @@
+import { useIntl } from 'react-intl';
+
+import {
+  escape,
+} from 'lodash';
+
 import {
   render,
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import { NoValue } from '@folio/stripes/components';
+
+import {
+  STAFF_SLIP_WITH_OUT_DATA,
+  SOURCE_FOR_STAFF_SLIP_DATA,
+  STAFF_SLIP_DATA,
+} from '../test/jest/__mock__/staffSlipData.mock';
 
 import {
   transformRequestFilterOptions,
@@ -36,6 +48,12 @@ import {
   getDeliveryAddressForCsvRecords,
   modifyRecordsToExport,
   handleConfirmItemSubmit,
+  getStaffSlipsTemplateByType,
+  escapeValue,
+  buildTemplate,
+  shouldProcessNode,
+  buildLocaleDateAndTime,
+  convertToSlipData, processNode,
 } from './utils';
 import {
   FULFILMENT_TYPES,
@@ -45,6 +63,7 @@ import {
   ID_TYPE_MAP,
   MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
   MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
+  STAFF_SLIPS_TYPE,
 } from './constants';
 
 jest.mock('react-router-dom', () => ({
@@ -951,6 +970,7 @@ describe('handleConfirmItemSubmit', () => {
   const confirmItemProps = {
     ky,
     url: 'confirm-item-props-url',
+    onSuccess: jest.fn(),
   };
 
   it('should trigger "ky.post" with correct props', async () => {
@@ -969,6 +989,12 @@ describe('handleConfirmItemSubmit', () => {
     expect(confirmItemState.setContentData).toHaveBeenCalledWith([response]);
   });
 
+  it('should trigger "onSuccess" on success', async () => {
+    await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemProps);
+
+    expect(confirmItemProps.onSuccess).toHaveBeenCalledWith(response);
+  });
+
   it('should trigger "setIsErrorModalOpen" on errors', async () => {
     const confirmItemPropsWithErrors = {
       ...confirmItemProps,
@@ -980,5 +1006,126 @@ describe('handleConfirmItemSubmit', () => {
     await handleConfirmItemSubmit(itemBarcode, confirmItemState, confirmItemPropsWithErrors);
 
     expect(confirmItemState.setIsErrorModalOpen).toHaveBeenCalledWith(true);
+  });
+});
+
+describe('getStaffSlipsTemplateByType', () => {
+  const slipTypeName = STAFF_SLIPS_TYPE.TRANSIT_MEDIATED_REQUESTS;
+  const slipTypeTemplate = <p>${slipTypeName}</p>;
+  const otherSlipTypeName = 'otherSlipTypeName';
+  const otherSlipTypeTemplate = <p>otherSlipTypeName</p>;
+  const staffSlips = [{
+    active: true,
+    id: 'id1',
+    name: slipTypeName,
+    template: slipTypeTemplate,
+  }, {
+    active: true,
+    id: 'id2',
+    name: otherSlipTypeName,
+    template: otherSlipTypeTemplate,
+  }];
+
+  it(`should return "${slipTypeName}" template`, () => {
+    expect(getStaffSlipsTemplateByType(staffSlips, slipTypeName)).toEqual(slipTypeTemplate);
+  });
+
+  it(`should return "${otherSlipTypeName}" template`, () => {
+    expect(getStaffSlipsTemplateByType(staffSlips, otherSlipTypeName)).toEqual(otherSlipTypeTemplate);
+  });
+
+  it('should return empty template', () => {
+    expect(getStaffSlipsTemplateByType()).toEqual('');
+  });
+});
+
+describe('escapeValue', () => {
+  it('should escapes values', () => {
+    const input = '<test>value</test>';
+
+    expect(escapeValue(input)).toEqual(escape(input));
+  });
+
+  it('should not escape "<Barcode>" values', () => {
+    const input = '<Barcode>value</Barcode>';
+
+    expect(escapeValue(input)).toEqual(input);
+  });
+});
+
+describe('buildTemplate', () => {
+  it('should substitutes strings and numbers', () => {
+    const t = buildTemplate('{{a}}, {{b}}! {{a}}, {{b}}! And {{c}} and {{c}}');
+    const v = t({ a: 1, b: 2, c: 'test' });
+
+    expect(v).toEqual('1, 2! 1, 2! And test and test');
+  });
+
+  it('should elides other types', () => {
+    const t = buildTemplate('The {{a}}{{b}}{{c}}test test-test!');
+    const v = t({
+      a: Boolean(true),
+      b: { key: 'value' },
+      c: () => 'function',
+    });
+
+    expect(v).toEqual('The test test-test!');
+  });
+});
+
+describe('processNode', () => {
+  const node = {};
+  const children = 'children';
+
+  it('should use children as value', () => {
+    expect(processNode(node, [children]).props.value).toEqual(children);
+  });
+
+  it('should use empty value', () => {
+    expect(processNode(node, []).props.value).toEqual(' ');
+  });
+});
+
+describe('shouldProcessNode', () => {
+  it('should process node', () => {
+    const node = {
+      name: 'barcode',
+    };
+
+    expect(shouldProcessNode(node)).toBeTruthy();
+  });
+
+  it('should not process node', () => {
+    const node = {
+      name: 'notBarcode',
+    };
+
+    expect(shouldProcessNode(node)).toBeFalsy();
+  });
+});
+
+describe('buildLocaleDateAndTime', () => {
+  const dateTime = '2024-12-31T24:00:00.000+00:00';
+  const timezone = 'UTC';
+  const locale = 'en-US';
+
+  it('should return date with locale date and time', () => {
+    expect(buildLocaleDateAndTime(dateTime, timezone, locale)).toEqual('01/01/2025 12:00 AM');
+  });
+});
+
+describe('convertToSlipData', () => {
+  const intl = useIntl();
+  const timeZone = 'UTC';
+  const locale = 'en-US';
+
+  it('should return slip data with out value', () => {
+    const source = {};
+
+    expect(convertToSlipData(source, intl, timeZone, locale)).toEqual(STAFF_SLIP_WITH_OUT_DATA);
+  });
+
+  it('should return slip data with value', () => {
+    expect(convertToSlipData(SOURCE_FOR_STAFF_SLIP_DATA, intl, timeZone, locale)).toEqual(STAFF_SLIP_DATA);
   });
 });
