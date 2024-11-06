@@ -495,7 +495,7 @@ describe('RequestFormContainer', () => {
         requestId: 'requestId',
         operation: 'operation',
       };
-      const expectedUrl = `circulation/requests/allowed-service-points?operation=${params.operation}&requestId=${params.requestId}`;
+      const expectedUrl = `circulation-bff/requests/allowed-service-points?operation=${params.operation}&requestId=${params.requestId}`;
 
       expect(urls[RESOURCE_TYPES.REQUEST_TYPES](params)).toBe(expectedUrl);
     });
@@ -506,7 +506,7 @@ describe('RequestFormContainer', () => {
         requesterId: 'requesterId',
         operation: 'operation',
       };
-      const expectedUrl = `circulation/requests/allowed-service-points?requesterId=${params.requesterId}&operation=${params.operation}&itemId=${params.itemId}`;
+      const expectedUrl = `circulation-bff/requests/allowed-service-points?requesterId=${params.requesterId}&operation=${params.operation}&itemId=${params.itemId}`;
 
       expect(urls[RESOURCE_TYPES.REQUEST_TYPES](params)).toBe(expectedUrl);
     });
@@ -517,7 +517,7 @@ describe('RequestFormContainer', () => {
         requesterId: 'requesterId',
         operation: 'operation',
       };
-      const expectedUrl = `circulation/requests/allowed-service-points?requesterId=${params.requesterId}&operation=${params.operation}&instanceId=${params.instanceId}`;
+      const expectedUrl = `circulation-bff/requests/allowed-service-points?requesterId=${params.requesterId}&operation=${params.operation}&instanceId=${params.instanceId}`;
 
       expect(urls[RESOURCE_TYPES.REQUEST_TYPES](params)).toBe(expectedUrl);
     });

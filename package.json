@@ -104,7 +104,6 @@
           "configuration.entries.collection.get",
           "requests-mediated.mediated-request.collection.get",
           "requests-mediated.mediated-request.item.get",
-          "circulation-bff.requests.search-instances.get",
           "addresstypes.collection.get"
         ],
         "visible": true
@@ -113,10 +112,11 @@
         "permissionName": "ui-requests-mediated.create",
         "displayName": "Mediated requests: Create",
         "subPermissions": [
-          "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
-          "requests-mediated.mediated-request.item.post"
+          "requests-mediated.mediated-request.item.post",
+          "circulation-bff.requests.search-instances.get",
+          "circulation-bff.requests.allowed-service-points.get"
         ],
         "visible": false
       },
@@ -127,10 +127,11 @@
           "ui-requests-mediated.edit"
         ],
         "subPermissions": [
-          "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
-          "requests-mediated.mediated-request.item.put"
+          "requests-mediated.mediated-request.item.put",
+          "circulation-bff.requests.search-instances.get",
+          "circulation-bff.requests.allowed-service-points.get"
         ],
         "visible": false
       },
@@ -141,10 +142,11 @@
           "ui-requests-mediated.confirm"
         ],
         "subPermissions": [
-          "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
-          "circulation-bff.confirm-mediated-request.execute"
+          "circulation-bff.confirm-mediated-request.execute",
+          "circulation-bff.requests.search-instances.get",
+          "circulation-bff.requests.allowed-service-points.get"
         ],
         "visible": false
       },

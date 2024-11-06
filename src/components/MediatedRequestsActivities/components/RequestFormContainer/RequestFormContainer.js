@@ -73,7 +73,7 @@ export const urls = {
     requestId,
     operation,
   }) => {
-    const url = 'circulation/requests/allowed-service-points';
+    const url = 'circulation-bff/requests/allowed-service-points';
 
     if (requestId) {
       return `${url}?operation=${operation}&requestId=${requestId}`;
