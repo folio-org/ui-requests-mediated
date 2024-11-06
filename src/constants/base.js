@@ -16,6 +16,10 @@ export const ICONS = {
   DOWNLOAD: 'download',
 };
 
+export const STAFF_SLIPS_TYPE = {
+  TRANSIT_MEDIATED_REQUESTS: 'Transit (mediated requests)',
+};
+
 export const ENTER_EVENT_KEY = 'Enter';
 
 export const BASE_SPINNER_PROPS = {

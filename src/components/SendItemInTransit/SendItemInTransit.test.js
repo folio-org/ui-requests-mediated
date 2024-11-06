@@ -11,6 +11,14 @@ import {
   getSendItemInTransitUrl,
 } from '../../constants';
 
+jest.mock('../../hooks', () => ({
+  useStaffSlipsTemplate: jest.fn(() => ({
+    staffSlips: [],
+  })),
+}));
+jest.mock('../../utils', () => ({
+  getStaffSlipsTemplateByType: jest.fn(() => ''),
+}));
 jest.mock('../ConfirmItem', () => jest.fn((props) => (<div {...props} />)));
 jest.mock('../ErrorModal', () => jest.fn((props) => (<div {...props} />)));
 
