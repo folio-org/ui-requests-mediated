@@ -168,11 +168,13 @@ jest.mock('@folio/stripes/components', () => ({
     firstMenu,
     lastMenu,
     fluidContentWidth,
+    actionMenu,
     ...rest
   }) => {
     return (
       <div className={className} {...rest} style={!fluidContentWidth ? { width: '960px' } : { width: defaultWidth }}>
         <div>
+          <div>{actionMenu ? actionMenu({ onToggle: () => {} }) : null}</div>
           {firstMenu ?? null}
           <span>{paneTitle}</span>
           <span>{paneSub}</span>

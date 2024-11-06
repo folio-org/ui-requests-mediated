@@ -1,6 +1,6 @@
 {
   "name": "@folio/requests-mediated",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "description": "Mediated requests",
   "main": "src/index.js",
   "repository": "folio-org/ui-requests-mediated",
@@ -72,7 +72,13 @@
         "title": "Mediated requests manager"
       }
     ],
-    "okapiInterfaces": {},
+    "okapiInterfaces": {
+      "circulation-bff-requests": "1.0",
+      "requests-mediated": "2.0",
+      "requests-mediated-actions": "1.0",
+      "request-preference-storage": "2.0",
+      "circulation": "14.2"
+    },
     "permissionSets": [
       {
         "permissionName": "module.requests-mediated.enabled",
@@ -87,7 +93,6 @@
           "mod-settings.global.read.circulation",
           "mod-settings.entries.collection.get",
           "mod-settings.entries.item.get",
-          "circulation.items-by-instance.get",
           "circulation.loans.collection.get",
           "circulation.requests.item.get",
           "circulation-storage.loans.collection.get",
@@ -98,7 +103,9 @@
           "users.item.get",
           "configuration.entries.collection.get",
           "requests-mediated.mediated-request.collection.get",
-          "requests-mediated.mediated-request.item.get"
+          "requests-mediated.mediated-request.item.get",
+          "circulation-bff.requests.search-instances.get",
+          "addresstypes.collection.get"
         ],
         "visible": true
       },
@@ -137,8 +144,7 @@
           "circulation.requests.allowed-service-points.get",
           "circulation-storage.request-preferences.collection.get",
           "proxiesfor.collection.get",
-          "requests-mediated.mediated-request.item.put",
-          "requests-mediated.mediated-request.item.post"
+          "circulation-bff.confirm-mediated-request.execute"
         ],
         "visible": false
       },

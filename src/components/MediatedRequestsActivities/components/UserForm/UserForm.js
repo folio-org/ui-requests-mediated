@@ -20,34 +20,31 @@ const UserForm = ({
   user,
   request,
   proxy,
-  selectProxy,
-  handleCloseProxy,
+  selectRequester,
+  closeProxyManager,
   patronGroup = '',
+  isEditMode,
+  isEditPermission,
+  isUserPreselected,
 }) => {
   const stripes = useStripes();
-  const id = user?.id ?? request.requesterId;
   const name = getRequesterName(user);
   const ConnectedProxyManager = useMemo(() => stripes.connect(ProxyManager), [stripes]);
   const proxyInformation = getProxyInformation(proxy, request?.proxyUserId);
-  const userSection = proxyInformation.id ?
-    <UserHighlightBox
-      title={<FormattedMessage id="ui-requests-mediated.requesterDetails.requester" />}
-      name={proxyInformation.name}
-      id={proxyInformation.id}
-      barcode={proxyInformation.barcode}
-    /> :
+  const isProxyManagerAvailable = !isEditMode || (!isUserPreselected && isEditPermission);
+  const userSection =
     <UserHighlightBox
       title={<FormattedMessage id="ui-requests-mediated.requesterDetails.requester" />}
       name={name}
-      id={id}
+      id={user.id}
       barcode={user.barcode}
     />;
   const proxySection = proxyInformation.id ?
     <UserHighlightBox
       title={<FormattedMessage id="ui-requests-mediated.requesterDetails.proxy" />}
-      name={name}
-      id={id}
-      barcode={user.barcode}
+      name={proxyInformation.name}
+      id={proxyInformation.id}
+      barcode={proxyInformation.barcode}
     /> :
     null;
 
@@ -63,12 +60,14 @@ const UserForm = ({
         </Col>
       </Row>
       {proxySection}
-      <ConnectedProxyManager
-        patron={user}
-        proxy={proxy}
-        onSelectPatron={selectProxy}
-        onClose={handleCloseProxy}
-      />
+      {isProxyManagerAvailable &&
+        <ConnectedProxyManager
+          patron={user}
+          proxy={proxy}
+          onSelectPatron={selectRequester}
+          onClose={closeProxyManager}
+        />
+      }
     </div>
   );
 };
@@ -79,13 +78,15 @@ UserForm.propTypes = {
     barcode: PropTypes.string,
   }),
   request: PropTypes.shape({
-    requesterId: PropTypes.string,
     proxyUserId: PropTypes.string,
   }),
   proxy: PropTypes.object,
   patronGroup: PropTypes.string,
-  selectProxy: PropTypes.func.isRequired,
-  handleCloseProxy: PropTypes.func.isRequired,
+  selectRequester: PropTypes.func.isRequired,
+  closeProxyManager: PropTypes.func.isRequired,
+  isUserPreselected: PropTypes.bool.isRequired,
+  isEditPermission: PropTypes.bool.isRequired,
+  isEditMode: PropTypes.bool.isRequired,
 };
 
 export default UserForm;

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useIntl } from 'react-intl';
 import { parse } from 'query-string';
@@ -36,6 +37,7 @@ const RequestsMediated = (props) => {
   const stripes = useStripes();
   const location = useLocation();
   const { formatMessage } = useIntl();
+  const [request, setRequest] = useState(null);
   const { settings } = useGeneralTlrSettings(!props.showSettings);
   const { patronGroups } = usePatronGroups(!props.showSettings);
   const getPageTitle = () => {
@@ -57,7 +59,8 @@ const RequestsMediated = (props) => {
     },
   } = props;
   const pageTitle = getPageTitle();
-  const isRequestCreationAvailable = stripes.hasPerm('ui-requests-mediated.all') || stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
+  const isRequestCreationAvailable = stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
+  const isRequestEditingAvailable = isRequestCreationAvailable || stripes.hasPerm('ui-requests-mediated.requests-mediated.view-confirm.execute');
 
   return (
     <>
@@ -67,6 +70,19 @@ const RequestsMediated = (props) => {
           isRequestCreationAvailable &&
           <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}/create`}>
             <RequestFormContainer
+              isEditMode={false}
+              settings={settings}
+              patronGroups={patronGroups?.usergroups}
+            />
+          </Route>
+        }
+        {
+          isRequestEditingAvailable &&
+          <Route path={`${path}/${MEDIATED_REQUESTS_ACTIVITIES}/edit/:id`}>
+            <RequestFormContainer
+              isEditMode
+              setRequest={setRequest}
+              request={request}
               settings={settings}
               patronGroups={patronGroups?.usergroups}
             />
@@ -80,6 +96,7 @@ const RequestsMediated = (props) => {
             <MediatedRequestsDetail
               {...props}
               patronGroups={patronGroups?.usergroups}
+              setRequest={setRequest}
             />
           </MediatedRequestsActivitiesContainer>
         </Route>

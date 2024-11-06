@@ -17,7 +17,6 @@ import InstanceInformation, {
   INSTANCE_SEGMENT_FOR_PLUGIN,
 } from './InstanceInformation';
 import TitleInformation from '../TitleInformation';
-import { isFormEditing } from '../../../../utils';
 import {
   BASE_SPINNER_PROPS,
   ENTER_EVENT_KEY,
@@ -26,7 +25,6 @@ import {
 
 jest.mock('../../../../utils', () => ({
   memoizeValidation: (fn) => () => fn,
-  isFormEditing: jest.fn(() => false),
 }));
 jest.mock('../TitleInformation', () => jest.fn(() => <div />));
 
@@ -49,7 +47,10 @@ const basicProps = {
   },
   isLoading: false,
   submitting: false,
-  isInstanceFromItem: false,
+  isInstancePreselected: false,
+  stripes: {
+    hasPerm: jest.fn(() => true),
+  },
 };
 const labelIds = {
   inputPlaceholder: 'ui-requests-mediated.form.instance.inputPlaceholder',
@@ -94,7 +95,7 @@ describe('InstanceInformation', () => {
     jest.clearAllMocks();
   });
 
-  describe('When creation form', () => {
+  describe('Initial render', () => {
     beforeEach(() => {
       render(
         <InstanceInformation
@@ -194,36 +195,6 @@ describe('InstanceInformation', () => {
       fireEvent.click(searchButton);
 
       expect(basicProps.findInstance).toHaveBeenCalledWith(hrid);
-    });
-  });
-
-  describe('When editing form', () => {
-    beforeEach(() => {
-      isFormEditing.mockReturnValueOnce(true);
-
-      render(
-        <InstanceInformation
-          {...basicProps}
-        />
-      );
-    });
-
-    it('should not render input placeholder', () => {
-      const scanOrEnterBarcodePlaceholder = screen.queryByPlaceholderText(labelIds.inputPlaceholder);
-
-      expect(scanOrEnterBarcodePlaceholder).not.toBeInTheDocument();
-    });
-
-    it('should not render instance hrid field', () => {
-      const instanceHridField = screen.queryByTestId(testIds.instanceHridField);
-
-      expect(instanceHridField).not.toBeInTheDocument();
-    });
-
-    it('should not render instance hrid label', () => {
-      const instanceHridLabel = screen.queryByText(labelIds.instanceHrid);
-
-      expect(instanceHridLabel).not.toBeInTheDocument();
     });
   });
 
@@ -540,10 +511,10 @@ describe('InstanceInformation', () => {
     describe('When instance is selected', () => {
       const selectedInstance = {
         title: 'instance title',
-        contributors: {},
-        publication: {},
-        editions: {},
-        identifiers: {},
+        contributors: [],
+        publication: [],
+        editions: [],
+        identifiers: [],
       };
 
       it('should trigger TitleInformation with correct props', () => {
@@ -567,51 +538,6 @@ describe('InstanceInformation', () => {
         };
 
         expect(TitleInformation).toHaveBeenCalledWith(expectedProps, {});
-      });
-
-      it('should trigger TitleInformation with "request.instanceId"', () => {
-        const instanceId = 'instanceId';
-        const props = {
-          ...basicProps,
-          selectedInstance,
-          request: {
-            ...basicProps.request,
-            instanceId,
-          },
-        };
-        const expectedProps = {
-          instanceId,
-        };
-
-        render(
-          <InstanceInformation
-            {...props}
-          />
-        );
-
-        expect(TitleInformation).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
-      });
-
-      it('should trigger TitleInformation with "selectedInstance.id"', () => {
-        const selectedInstanceId = 'selectedInstanceId';
-        const props = {
-          ...basicProps,
-          selectedInstance: {
-            ...selectedInstance,
-            id: selectedInstanceId,
-          },
-        };
-        const expectedProps = {
-          instanceId: selectedInstanceId,
-        };
-
-        render(
-          <InstanceInformation
-            {...props}
-          />
-        );
-
-        expect(TitleInformation).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
       });
     });
 
@@ -637,7 +563,7 @@ describe('InstanceInformation', () => {
       const rerender = renderInstanceInfoWithHrid(onBlur);
       const newProps = {
         ...basicProps,
-        isInstanceFromItem: true,
+        isInstancePreselected: true,
         selectedInstance: {
           hrid: 'hrid',
         },

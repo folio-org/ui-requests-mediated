@@ -11,18 +11,19 @@ import {
   Row,
   TextField,
 } from '@folio/stripes/components';
-import { Pluggable } from '@folio/stripes/core';
+import {
+  Pluggable,
+  stripesConnect,
+} from '@folio/stripes/core';
 
 import {
   BASE_SPINNER_PROPS,
   ENTER_EVENT_KEY,
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
+  DEFAULT_REQUEST_TYPE_VALUE,
 } from '../../../../constants';
 import TitleInformation from '../TitleInformation';
-import {
-  isFormEditing,
-  memoizeValidation,
-} from '../../../../utils';
+import { memoizeValidation } from '../../../../utils';
 
 export const INSTANCE_SEGMENT_FOR_PLUGIN = 'instances';
 
@@ -37,8 +38,8 @@ class InstanceInformation extends Component {
     onSetSelectedInstance: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
-    isInstanceFromItem: PropTypes.bool.isRequired,
-    request: PropTypes.object,
+    isInstancePreselected: PropTypes.bool.isRequired,
+    stripes: PropTypes.object.isRequired,
     selectedInstance: PropTypes.object,
   };
 
@@ -55,11 +56,11 @@ class InstanceInformation extends Component {
 
   componentDidUpdate(prevProps) {
     const {
-      isInstanceFromItem,
+      isInstancePreselected,
       selectedInstance,
     } = this.props;
 
-    if (isInstanceFromItem && isInstanceFromItem !== prevProps.isInstanceFromItem) {
+    if (selectedInstance && isInstancePreselected && isInstancePreselected !== prevProps.isInstancePreselected) {
       this.setState({ validatedId: selectedInstance.hrid });
     }
   }
@@ -108,15 +109,22 @@ class InstanceInformation extends Component {
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, instanceId);
   };
 
-  handleBlur = (input) => () => {
+  resetInstance = () => {
     const {
-      triggerValidation,
+      form,
       onSetSelectedInstance,
     } = this.props;
+
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
+    onSetSelectedInstance(null);
+  };
+
+  handleBlur = (input) => () => {
+    const { triggerValidation } = this.props;
     const { validatedId } = this.state;
 
     if (input.value && input.value !== validatedId) {
-      onSetSelectedInstance(null);
+      this.resetInstance();
       this.setState({
         shouldValidate: true,
         isInstanceBlurred: true,
@@ -126,7 +134,7 @@ class InstanceInformation extends Component {
         triggerValidation();
       });
     } else if (!input.value) {
-      onSetSelectedInstance(null);
+      this.resetInstance();
       input.onBlur();
     }
   };
@@ -169,75 +177,77 @@ class InstanceInformation extends Component {
 
   render() {
     const {
-      request,
       selectedInstance,
       submitting,
       values,
       isLoading,
       enterButtonClass,
+      stripes,
     } = this.props;
     const {
       isInstanceClicked,
       isInstanceBlurred,
     } = this.state;
-    const isEditForm = isFormEditing(request);
+    const isEditPermission = stripes.hasPerm('ui-requests-mediated.requests-mediated.view-create-edit.execute');
+
+    const isEnterButtonDisabled = submitting || !isEditPermission;
 
     return (
       <Row>
         <Col xs={12}>
+          <Row>
+            <Col xs={9}>
+              <FormattedMessage id="ui-requests-mediated.form.instance.inputPlaceholder">
+                {placeholder => {
+                  const key = values.keyOfInstanceIdField ?? 0;
+
+                  return (
+                    <Field
+                      data-testid="instanceHridField"
+                      key={key}
+                      name={MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID}
+                      validate={this.validate(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, key)}
+                      validateFields={[]}
+                    >
+                      {({ input, meta }) => {
+                        const selectInstanceError = meta.touched && meta.error;
+                        const instanceDoesntExistError = (isInstanceClicked || isInstanceBlurred) && meta.error;
+                        const error = selectInstanceError || instanceDoesntExistError || null;
+
+                        return (
+                          <TextField
+                            {...input}
+                            required
+                            placeholder={placeholder}
+                            label={<FormattedMessage id="ui-requests-mediated.form.instance.inputLabel" />}
+                            error={error}
+                            onChange={this.handleChange}
+                            onBlur={this.handleBlur(input)}
+                            onKeyDown={this.onKeyDown}
+                            disabled={!isEditPermission}
+                          />
+                        );
+                      }}
+                    </Field>
+                  );
+                }}
+              </FormattedMessage>
+            </Col>
+            <Col xs={3}>
+              <Button
+                id="selectInstanceButton"
+                buttonStyle="primary noRadius"
+                buttonClass={enterButtonClass}
+                fullWidth
+                onClick={this.handleClick}
+                disabled={isEnterButtonDisabled}
+              >
+                <FormattedMessage id="ui-requests-mediated.form.enterButton" />
+              </Button>
+            </Col>
+          </Row>
           {
-            !isEditForm &&
-            <>
-              <Row>
-                <Col xs={9}>
-                  <FormattedMessage id="ui-requests-mediated.form.instance.inputPlaceholder">
-                    {placeholder => {
-                      const key = values.keyOfInstanceIdField ?? 0;
-
-                      return (
-                        <Field
-                          data-testid="instanceHridField"
-                          key={key}
-                          name={MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID}
-                          validate={this.validate(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, key)}
-                          validateFields={[]}
-                        >
-                          {({ input, meta }) => {
-                            const selectInstanceError = meta.touched && meta.error;
-                            const instanceDoesntExistError = (isInstanceClicked || isInstanceBlurred) && meta.error;
-                            const error = selectInstanceError || instanceDoesntExistError || null;
-
-                            return (
-                              <TextField
-                                {...input}
-                                required
-                                placeholder={placeholder}
-                                label={<FormattedMessage id="ui-requests-mediated.form.instance.inputLabel" />}
-                                error={error}
-                                onChange={this.handleChange}
-                                onBlur={this.handleBlur(input)}
-                                onKeyDown={this.onKeyDown}
-                              />
-                            );
-                          }}
-                        </Field>
-                      );
-                    }}
-                  </FormattedMessage>
-                </Col>
-                <Col xs={3}>
-                  <Button
-                    id="selectInstanceButton"
-                    buttonStyle="primary noRadius"
-                    buttonClass={enterButtonClass}
-                    fullWidth
-                    onClick={this.handleClick}
-                    disabled={submitting}
-                  >
-                    <FormattedMessage id="ui-requests-mediated.form.enterButton" />
-                  </Button>
-                </Col>
-              </Row>
+            isEditPermission &&
               <Row>
                 <Col xs={12}>
                   <Pluggable
@@ -253,7 +263,6 @@ class InstanceInformation extends Component {
                   />
                 </Col>
               </Row>
-            </>
           }
           {
             isLoading && <Icon {...BASE_SPINNER_PROPS} />
@@ -261,7 +270,7 @@ class InstanceInformation extends Component {
           {
             selectedInstance &&
               <TitleInformation
-                instanceId={request?.instanceId || selectedInstance.id}
+                instanceId={selectedInstance.id}
                 title={selectedInstance.title}
                 contributors={selectedInstance.contributors}
                 publications={selectedInstance.publication}
@@ -275,4 +284,4 @@ class InstanceInformation extends Component {
   }
 }
 
-export default InstanceInformation;
+export default stripesConnect(InstanceInformation);

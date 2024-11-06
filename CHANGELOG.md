@@ -3,6 +3,7 @@
 ## 2.0.0 (IN PROGRESS)
 * Print slip for Mediated requests activity - Send item in transit. Refs UIREQMED-40.
 * Persist filters when changing between actions. Refs UIREQMED-44.
+* Implement functionality for editing mediated request. Refs UIREQMED-22.
 
 ## [1.1.0](https://github.com/folio-org/ui-requests-mediated/tree/v1.1.0) (2024-10-30)
 * Update github actions. Refs UIREQMED-14.

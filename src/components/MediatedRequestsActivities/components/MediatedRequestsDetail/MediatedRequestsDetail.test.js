@@ -1,4 +1,7 @@
+import { useHistory } from 'react-router-dom';
+
 import {
+  fireEvent,
   render,
   screen,
 } from '@folio/jest-config-stripes/testing-library/react';
@@ -25,7 +28,7 @@ import {
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => ({ pathname: '' })),
+  useLocation: jest.fn(() => ({ pathname: '/id' })),
   useHistory: jest.fn(),
 }));
 jest.mock('../../../../hooks', () => ({
@@ -53,6 +56,7 @@ const labelIds = {
   mediatedRequestAccordion: 'ui-requests-mediated.mediatedRequestDetail.mediatedRequest.accordionLabel',
   requesterAccordion: 'ui-requests-mediated.mediatedRequestDetail.requester.accordionLabel',
   noItemInformation: 'ui-requests-mediated.mediatedRequestDetail.item.noInformation',
+  editAndConfirmButton: 'ui-requests-mediated.mediatedRequestDetails.actionMenu.editAndConfirm',
 };
 
 describe('MediatedRequestsDetail', () => {
@@ -61,6 +65,7 @@ describe('MediatedRequestsDetail', () => {
       hasPerm: jest.fn(),
     },
     patronGroups: [],
+    setRequest: jest.fn(),
   };
   const mediatedRequest = {
     requesterId: 'requesterId',
@@ -91,6 +96,10 @@ describe('MediatedRequestsDetail', () => {
     jest.clearAllMocks();
   });
 
+  beforeEach(() => {
+    getPatronGroup.mockReturnValueOnce(patronGroup);
+  });
+
   describe('When data is loading', () => {
     beforeEach(() => {
       useMediatedRequestById.mockReturnValueOnce({ isFetching: true });
@@ -117,7 +126,6 @@ describe('MediatedRequestsDetail', () => {
         isFetching: false,
         mediatedRequest,
       });
-      getPatronGroup.mockReturnValueOnce(patronGroup);
 
       render(
         <MediatedRequestsDetail
@@ -232,7 +240,6 @@ describe('MediatedRequestsDetail', () => {
           item: null,
         },
       });
-      getPatronGroup.mockReturnValueOnce(patronGroup);
 
       render(
         <MediatedRequestsDetail
@@ -311,6 +318,36 @@ describe('MediatedRequestsDetail', () => {
       };
 
       expect(isEditAndConfirmButtonVisible(stripes)).toBe(false);
+    });
+  });
+
+  describe('Action menu', () => {
+    const push = jest.fn();
+
+    beforeEach(() => {
+      props.stripes.hasPerm.mockReturnValue(true);
+      useHistory.mockReturnValue({ push });
+      useMediatedRequestById.mockReturnValueOnce({ mediatedRequest });
+
+      render(
+        <MediatedRequestsDetail
+          {...props}
+        />
+      );
+    });
+
+    it('should render "Edit and Confirm" button', () => {
+      const editAndConfirmButton = screen.getByText(labelIds.editAndConfirmButton);
+
+      expect(editAndConfirmButton).toBeInTheDocument();
+    });
+
+    it('should redirect on edit mediated request page', () => {
+      const editAndConfirmButton = screen.getByText(labelIds.editAndConfirmButton);
+
+      fireEvent.click(editAndConfirmButton);
+
+      expect(push).toHaveBeenCalledWith(`${getMediatedRequestsActivitiesUrl()}/edit/id`);
     });
   });
 });

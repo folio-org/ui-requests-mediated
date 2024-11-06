@@ -77,7 +77,8 @@
   "mediatedRequestDetails.actionMenu.editAndConfirm": "Edit & confirm",
   "mediatedRequestDetails.actionMenu.decline": "Decline",
 
-  "form.title": "New mediated request",
+  "form.create.title": "New mediated request",
+  "form.edit.title": "Edit mediated request",
   "form.tlrCheckboxLabel": "Create title level request",
   "form.enterButton": "Enter",
   "form.cancelButton": "Cancel",
@@ -123,14 +124,13 @@
   "form.errors.itemDoesNotExist": "Item with this barcode does not exist",
   "form.errors.selectUser": "Please fill out requester information to continue",
   "form.errors.userDoesNotExist": "User with this barcode does not exist",
-  "form.errors.requiredToConfirm": "Required to Confirm request",
   "form.errors.requestType.titleLevelRequest": "None available for this title and patron combination",
   "form.errors.requestType.itemLevelRequest": "None available for this item and patron combination",
 
   "form.saveRequest.success": "Mediated request has been successfully saved",
   "form.createRequest.success": "Request has been successfully created for {requester}",
   "form.saveRequest.error": "Mediated request cannot be successfully saved",
-  "form.confirmRequest.error": "Request was not successfully confirmed",
+  "form.createRequest.error": "Request was not successfully created",
 
   "itemDetails.barcode": "Item barcode",
   "itemDetails.id": "Item id",

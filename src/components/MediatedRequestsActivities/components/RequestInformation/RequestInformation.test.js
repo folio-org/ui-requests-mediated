@@ -9,13 +9,8 @@ import { Select } from '@folio/stripes/components';
 import { ViewMetaData } from '@folio/stripes/smart-components';
 
 import RequestInformation from './RequestInformation';
+import { getNoRequestTypeErrorMessageId } from '../../../../utils';
 import {
-  isFormEditing,
-  resetFieldState,
-  getNoRequestTypeErrorMessageId,
-} from '../../../../utils';
-import {
-  MEDIATED_REQUEST_FORM_FIELD_NAMES,
   MEDIATED_REQUEST_STATUS,
   MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
   MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
@@ -24,8 +19,6 @@ import {
 } from '../../../../constants';
 
 jest.mock('../../../../utils', () => ({
-  isFormEditing: jest.fn(),
-  resetFieldState: jest.fn(),
   getNoRequestTypeErrorMessageId: jest.fn(),
 }));
 
@@ -53,11 +46,7 @@ const basicProps = {
   values: {
     keyOfRequestTypeField: 1,
   },
-  form: {
-    change: jest.fn(),
-  },
-  updateRequestPreferencesFields: jest.fn(),
-  shouldValidate: true,
+  isEditMode: false,
 };
 
 describe('RequestInformation', () => {
@@ -67,7 +56,6 @@ describe('RequestInformation', () => {
 
   describe('Request creation', () => {
     beforeEach(() => {
-      isFormEditing.mockReturnValue(false);
       render(
         <RequestInformation
           {...basicProps}
@@ -103,8 +91,9 @@ describe('RequestInformation', () => {
   describe('Request editing', () => {
     const props = {
       ...basicProps,
+      isEditMode: true,
       request: {
-        status: MEDIATED_REQUEST_STATUS.OPEN_AWAITING_PICKUP,
+        status: MEDIATED_REQUEST_STATUS.NEW_AWAITING_CONFIRMATION,
         patronComments: 'comments',
         id: 'id',
         metadata: {},
@@ -112,7 +101,6 @@ describe('RequestInformation', () => {
     };
 
     beforeEach(() => {
-      isFormEditing.mockReturnValue(true);
       render(
         <RequestInformation
           {...props}
@@ -145,7 +133,6 @@ describe('RequestInformation', () => {
     };
 
     beforeEach(() => {
-      isFormEditing.mockReturnValue(false);
       render(
         <RequestInformation
           {...props}
@@ -186,38 +173,7 @@ describe('RequestInformation', () => {
         );
       }));
 
-      isFormEditing.mockReturnValue(false);
       getNoRequestTypeErrorMessageId.mockReturnValue(MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.TITLE_LEVEL_ERROR]);
-    });
-
-    it('should render required to confirm error', () => {
-      const props = {
-        ...basicProps,
-        requestTypeOptions: [
-          {
-            id: 'id',
-            value: 'value',
-          }
-        ],
-      };
-
-      render(
-        <RequestInformation
-          {...props}
-        />
-      );
-
-      const event = {
-        target: {
-          value: '',
-        },
-      };
-      const requestTypeSelect = screen.getByTestId(testIds.requestTypeDropDown);
-      const errorMessage = screen.getByTestId(testIds.errorMessage);
-
-      fireEvent.change(requestTypeSelect, event);
-
-      expect(errorMessage).toHaveTextContent(labelIds.requiredToConfirm);
     });
 
     it('should render title lever request type error', () => {
@@ -295,47 +251,6 @@ describe('RequestInformation', () => {
       fireEvent.change(requestTypeSelect, event);
 
       expect(errorMessage).toBeEmpty();
-    });
-  });
-
-  describe('Request type changing', () => {
-    beforeEach(() => {
-      const event = {
-        target: {
-          value: 'test',
-        },
-      };
-
-      isFormEditing.mockReturnValue(false);
-      render(
-        <RequestInformation
-          {...basicProps}
-        />
-      );
-
-      const requestTypeSelect = screen.getByTestId(testIds.requestTypeDropDown);
-
-      fireEvent.change(requestTypeSelect, event);
-    });
-
-    afterEach(() => {
-      basicProps.updateRequestPreferencesFields.mockClear();
-    });
-
-    it('should trigger change pickup service point id form value', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, undefined];
-
-      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
-    });
-
-    it('should reset field state', () => {
-      const expectedArgs = [basicProps.form, MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID];
-
-      expect(resetFieldState).toHaveBeenCalledWith(...expectedArgs);
-    });
-
-    it('should update request preferences', () => {
-      expect(basicProps.updateRequestPreferencesFields).toHaveBeenCalled();
     });
   });
 });
