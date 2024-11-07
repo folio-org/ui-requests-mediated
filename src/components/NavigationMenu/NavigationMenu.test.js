@@ -133,7 +133,7 @@ describe('NavigationMenu', () => {
       }));
     });
 
-    it('should handle correct when pathname not equal mediated requests activities', () => {
+    it('should handle correct when pathname not equal mediated requests activities with empty search', () => {
       const event = {
         target: {
           value: getConfirmItemArrivalUrl(),
@@ -143,6 +143,29 @@ describe('NavigationMenu', () => {
         pathname: getMediatedRequestsActivitiesUrl(),
         state: '',
         search: '',
+      };
+      const history = {
+        location,
+        push,
+      };
+
+      handleChangeMenu(event, location, history);
+
+      expect(push).toHaveBeenCalledWith(expect.objectContaining({
+        pathname: getConfirmItemArrivalUrl(),
+      }));
+    });
+
+    it('should handle correct when pathname not equal mediated requests activities with not empty search', () => {
+      const event = {
+        target: {
+          value: getConfirmItemArrivalUrl(),
+        },
+      };
+      const location = {
+        pathname: getMediatedRequestsActivitiesUrl(),
+        state: '',
+        search: '?query=Test',
       };
       const history = {
         location,

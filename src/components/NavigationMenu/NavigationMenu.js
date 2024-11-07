@@ -57,7 +57,7 @@ export const handleChangeMenu = (event, location, history) => {
   if (pathname === getMediatedRequestsActivitiesUrl()) {
     destination.search = location.state;
   } else {
-    destination.state = location.search;
+    destination.state = location.search ? location.search : destination.state;
   }
 
   history.push(destination);
