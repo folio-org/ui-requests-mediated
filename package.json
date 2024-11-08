@@ -207,7 +207,8 @@
         ],
         "subPermissions": [
           "ui-requests-mediated.view",
-          "requests-mediated.send-item-in-transit.post"
+          "requests-mediated.send-item-in-transit.post",
+          "circulation-storage.staff-slips.collection.get"
         ],
         "visible": true
       },
