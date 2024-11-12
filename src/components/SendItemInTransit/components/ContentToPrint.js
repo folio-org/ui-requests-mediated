@@ -5,9 +5,7 @@ import {
 import HtmlToReact, {
   Parser,
 } from 'html-to-react';
-import {
-  sanitize,
-} from 'dompurify';
+import DOMPurify from 'dompurify';
 
 import {
   useStripes,
@@ -54,7 +52,7 @@ const ContentToPrint = ({
     currentDateTime: dataSource?.inTransitDate,
     ...dataSource?.staffSlipContext,
   };
-  const componentStr = sanitize(cathedralTemplate(convertToSlipData(staffSlipContext, intl, timezone, locale)), { ADD_TAGS: ['Barcode'] });
+  const componentStr = DOMPurify.sanitize(cathedralTemplate(convertToSlipData(staffSlipContext, intl, timezone, locale)), { ADD_TAGS: ['Barcode'] });
   const Component = parser.parseWithInstructions(componentStr, () => true, rules) || null;
 
   return (
