@@ -6,6 +6,7 @@ import userEvent from '@folio/jest-config-stripes/testing-library/user-event';
 
 import MediatedRequestsActivitiesContainer, {
   buildQuery,
+  updateMediatedRequestList,
 } from './MediatedRequestsActivitiesContainer';
 import MediatedRequestsActivities from '../components/MediatedRequestsActivities';
 
@@ -70,6 +71,9 @@ const props = {
       pathname: '',
     },
   },
+  history: {
+    push: jest.fn(),
+  },
   stripes: {
     logger,
   },
@@ -115,6 +119,22 @@ describe('buildQuery', () => {
   it('should include search fields when building CQL query', () => {
     expect(buildQuery(queryParams, pathComponents, resources, logger)).toEqual(expect.stringContaining(
       'instanceTitle=="queryValue*" or itemBarcode=="queryValue*" or requesterBarcode=="queryValue*" or callNumber=="queryValue*" or fullCallNumber=="queryValue*") sortby sortValue'
+    ));
+  });
+});
+
+describe('updateMediatedRequestList', () => {
+  const source = {
+    resources: {
+      query: ['query=Test'],
+    },
+  };
+
+  it('should trigger history push', () => {
+    updateMediatedRequestList(source, props);
+
+    expect(props.history.push).toHaveBeenCalledWith(expect.stringContaining(
+      'query%3DTest'
     ));
   });
 });

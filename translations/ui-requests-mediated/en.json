@@ -34,6 +34,11 @@
   "confirmItem.errorModal.sendItemInTransit.message": "No \"Send item in transit\" transaction could be found for this item",
   "confirmItem.errorModal.close": "Close",
 
+  "declineModal.title": "Confirm Mediated request decline",
+  "declineModal.message": "<b>{title}</b> will be <b>declined</b>",
+  "declineModal.confirm": "Confirm",
+  "declineModal.back": "Back",
+
   "confirmItemList.columnName.arrivalDate": "Arrival date",
   "confirmItemList.columnName.inTransitDate": "In transit date",
   "confirmItemList.columnName.title": "Title",

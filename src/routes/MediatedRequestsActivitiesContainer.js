@@ -39,6 +39,21 @@ export const buildQuery = (queryParams, pathComponents, resourceData, logger, pr
   return getCql(queryParams, pathComponents, resourceData, logger, props);
 };
 
+export const updateMediatedRequestList = (source, props) => {
+  const {
+    location,
+    history,
+  } = props;
+  const {
+    resources: {
+      query,
+    },
+  } = source;
+  const url = buildUrl(location, query);
+
+  history.push(url);
+};
+
 class MediatedRequestsActivitiesContainer extends React.Component {
   static manifest = Object.freeze({
     query: {
@@ -62,6 +77,7 @@ class MediatedRequestsActivitiesContainer extends React.Component {
           query: buildQuery,
         },
       },
+      resourceShouldRefresh: true,
       throwErrors: false,
     },
     reportRecords: {
@@ -161,6 +177,10 @@ class MediatedRequestsActivitiesContainer extends React.Component {
     }
   };
 
+  updateMediatedRequestList = () => {
+    updateMediatedRequestList(this.source, this.props);
+  };
+
   render() {
     if (this.source) {
       this.source.update(this.props, MEDIATED_REQUESTS_RECORDS_NAME);
@@ -176,7 +196,13 @@ class MediatedRequestsActivitiesContainer extends React.Component {
         mutator={this.props.mutator}
         settings={this.props.settings}
       >
-        {this.props.children}
+        {
+          React.Children.map(
+            this.props.children, child => React.cloneElement(child, {
+              updateMediatedRequestList: this.updateMediatedRequestList,
+            })
+          )
+        }
       </MediatedRequestsActivities>
     );
   }

@@ -378,6 +378,29 @@ export const handleConfirmItemSubmit = async (itemBarcode, confirmItemState, con
     });
 };
 
+export const confirmDeclineModal = (declineModalState, declineModalProps) => {
+  const {
+    shouldUpdateMediatedRequestById,
+    setShouldUpdateMediatedRequestById,
+    setDeclineModalOpen,
+  } = declineModalState;
+  const {
+    ky,
+    url,
+    updateMediatedRequestList,
+  } = declineModalProps;
+
+  ky.post(url)
+    .then(() => {
+      updateMediatedRequestList();
+      setShouldUpdateMediatedRequestById(shouldUpdateMediatedRequestById + 1);
+      setDeclineModalOpen(false);
+    })
+    .catch(() => {
+      setDeclineModalOpen(false);
+    });
+};
+
 export const getStaffSlipsTemplateByType = (staffSlips = [], slipType = STAFF_SLIPS_TYPE.TRANSIT_MEDIATED_REQUESTS) => {
   const slipTypeInLowerCase = slipType.toLowerCase();
   const slipTemplate = staffSlips.find(slip => slip.name.toLowerCase() === slipTypeInLowerCase);
