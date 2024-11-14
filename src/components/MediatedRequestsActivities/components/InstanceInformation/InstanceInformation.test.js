@@ -48,6 +48,7 @@ const basicProps = {
   isLoading: false,
   submitting: false,
   isInstancePreselected: false,
+  isEditMode: false,
   stripes: {
     hasPerm: jest.fn(() => true),
   },
@@ -557,9 +558,8 @@ describe('InstanceInformation', () => {
   });
 
   describe('Component updating', () => {
-    const onBlur = jest.fn();
-
-    beforeEach(() => {
+    it('should not trigger onBlur handler', () => {
+      const onBlur = jest.fn();
       const rerender = renderInstanceInfoWithHrid(onBlur);
       const newProps = {
         ...basicProps,
@@ -574,15 +574,36 @@ describe('InstanceInformation', () => {
           {...newProps}
         />
       );
-    });
 
-    it('should not trigger onBlur handler', () => {
       const instanceHridField = screen.getByTestId(testIds.instanceHridField);
 
       fireEvent.click(instanceHridField);
       fireEvent.blur(instanceHridField);
 
       expect(onBlur).not.toHaveBeenCalled();
+    });
+
+    it('should trigger validation', () => {
+      const rerender = renderInstanceInfoWithHrid();
+      const newProps = {
+        ...basicProps,
+        isInstancePreselected: true,
+        selectedInstance: null,
+        isEditMode: true,
+        request: {
+          instance: {
+            hrid: 'hrid',
+          },
+        },
+      };
+
+      rerender(
+        <InstanceInformation
+          {...newProps}
+        />
+      );
+
+      expect(basicProps.triggerValidation).toHaveBeenCalled();
     });
   });
 });

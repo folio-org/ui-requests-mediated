@@ -30,13 +30,14 @@ class ItemInformation extends Component {
     getItemValidationData: PropTypes.func.isRequired,
     form: PropTypes.object.isRequired,
     values: PropTypes.object.isRequired,
-    request: PropTypes.object.isRequired,
     onSetSelectedItem: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     submitting: PropTypes.bool.isRequired,
     isItemIdRequest: PropTypes.bool.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
     isItemPreselected: PropTypes.bool.isRequired,
+    isEditMode: PropTypes.bool.isRequired,
+    request: PropTypes.object,
     stripes: PropTypes.shape({
       hasPerm: PropTypes.func,
     }).isRequired,
@@ -59,10 +60,21 @@ class ItemInformation extends Component {
     const {
       isItemPreselected,
       selectedItem,
+      isEditMode,
+      triggerValidation,
+      request,
     } = this.props;
+    const isNewPreselectedValue = isItemPreselected && isItemPreselected !== prevProps.isItemPreselected;
 
-    if (selectedItem && isItemPreselected && isItemPreselected !== prevProps.isItemPreselected) {
+    if (selectedItem && isNewPreselectedValue) {
       this.setState({ validatedBarcode: selectedItem.barcode });
+    }
+
+    if (isEditMode && !selectedItem && isNewPreselectedValue) {
+      this.setState({
+        shouldValidate: true,
+        validatedBarcode: request?.item?.barcode,
+      }, triggerValidation);
     }
   }
 
@@ -186,6 +198,7 @@ class ItemInformation extends Component {
       selectedLoan,
       enterButtonClass,
       stripes,
+      isEditMode,
     } = this.props;
     const {
       isItemClicked,
@@ -213,7 +226,7 @@ class ItemInformation extends Component {
                     >
                       {({ input, meta }) => {
                         const selectItemError = meta.touched && meta.error;
-                        const itemDoesntExistError = (isItemClicked || isItemBlurred) && meta.error;
+                        const itemDoesntExistError = (isItemClicked || isItemBlurred || (isEditMode && !selectedItem)) && meta.error;
                         const error = selectItemError || itemDoesntExistError || null;
 
                         return (

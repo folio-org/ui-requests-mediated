@@ -8,6 +8,7 @@
 * Add circulation-storage.staff-slips.collection.get for get staff-slips on Send item in transit. Refs UIREQMED-55.
 * Add Decline Action for Mediated request with status of New - Awaiting confirmation. Refs UIREQMED-42.
 * Fix DOMPurify import. Refs UIREQMED-56.
+* Add functionality for managing missing data related to item, instance, requester. Refs UIREQMED-51.
 
 ## [1.1.0](https://github.com/folio-org/ui-requests-mediated/tree/v1.1.0) (2024-10-30)
 * Update github actions. Refs UIREQMED-14.

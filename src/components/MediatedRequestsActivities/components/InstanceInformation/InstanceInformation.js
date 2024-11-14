@@ -39,7 +39,9 @@ class InstanceInformation extends Component {
     isLoading: PropTypes.bool.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
     isInstancePreselected: PropTypes.bool.isRequired,
+    isEditMode: PropTypes.bool.isRequired,
     stripes: PropTypes.object.isRequired,
+    request: PropTypes.object,
     selectedInstance: PropTypes.object,
   };
 
@@ -58,10 +60,21 @@ class InstanceInformation extends Component {
     const {
       isInstancePreselected,
       selectedInstance,
+      isEditMode,
+      triggerValidation,
+      request,
     } = this.props;
+    const isNewPreselectedValue = isInstancePreselected && isInstancePreselected !== prevProps.isInstancePreselected;
 
-    if (selectedInstance && isInstancePreselected && isInstancePreselected !== prevProps.isInstancePreselected) {
+    if (selectedInstance && isNewPreselectedValue) {
       this.setState({ validatedId: selectedInstance.hrid });
+    }
+
+    if (isEditMode && !selectedInstance && isNewPreselectedValue) {
+      this.setState({
+        validatedId: request?.instance?.hrid,
+        shouldValidate: true,
+      }, triggerValidation);
     }
   }
 
@@ -183,6 +196,7 @@ class InstanceInformation extends Component {
       isLoading,
       enterButtonClass,
       stripes,
+      isEditMode,
     } = this.props;
     const {
       isInstanceClicked,
@@ -211,7 +225,7 @@ class InstanceInformation extends Component {
                     >
                       {({ input, meta }) => {
                         const selectInstanceError = meta.touched && meta.error;
-                        const instanceDoesntExistError = (isInstanceClicked || isInstanceBlurred) && meta.error;
+                        const instanceDoesntExistError = (isInstanceClicked || isInstanceBlurred || (isEditMode && !selectedInstance)) && meta.error;
                         const error = selectInstanceError || instanceDoesntExistError || null;
 
                         return (
