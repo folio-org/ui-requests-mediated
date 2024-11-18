@@ -23,6 +23,7 @@ import {
   getRequestInformation,
   getFulfillmentPreference,
   getDefaultRequestPreferences,
+  isProxyFunctionalityAvailable,
 } from '../../../../utils';
 
 const basicProps = {
@@ -169,6 +170,7 @@ jest.mock('../../../../utils', () => ({
   getRequestInformation: jest.fn((isTlr, instance, item) => {
     return isTlr ? instance : item;
   }),
+  isProxyFunctionalityAvailable: jest.fn(),
 }));
 
 describe('RequestForm', () => {
@@ -253,6 +255,7 @@ describe('RequestForm', () => {
         };
 
         beforeEach(() => {
+          isProxyFunctionalityAvailable.mockReturnValue(true);
           props.findResource
             .mockResolvedValueOnce(foundInstance)
             .mockResolvedValueOnce(user);

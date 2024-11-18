@@ -10,6 +10,7 @@ import {
 import {
   getRequesterName,
   getProxyInformation,
+  isProxyFunctionalityAvailable,
 } from '../../../../utils';
 import UserHighlightBox from '../UserHighlightBox';
 
@@ -23,7 +24,7 @@ const UserDetail = ({
   const id = user?.id ?? request.requesterId;
   const name = getRequesterName(user);
   const proxyInformation = getProxyInformation(proxy, request.proxyUserId);
-  const proxySection = proxyInformation.id ?
+  const proxySection = (isProxyFunctionalityAvailable() && proxyInformation.id) ?
     <UserHighlightBox
       title={<FormattedMessage id="ui-requests-mediated.requesterDetails.proxy" />}
       name={proxyInformation.name}

@@ -25,10 +25,12 @@ import {
   ENTER_EVENT_KEY,
   BASE_SPINNER_PROPS,
 } from '../../../../constants';
+import { isProxyFunctionalityAvailable } from '../../../../utils';
 
 jest.mock('../../../../utils', () => ({
   ...jest.requireActual('../../../../utils'),
   memoizeValidation: (fn) => () => fn,
+  isProxyFunctionalityAvailable: jest.fn(),
 }));
 jest.mock('../UserForm', () => jest.fn(() => <div />));
 
@@ -376,6 +378,18 @@ describe('RequesterInformation', () => {
 
   describe('handleBlur', () => {
     const onBlur = jest.fn();
+
+    it('should reset proxy if proxy functionality is available', () => {
+      isProxyFunctionalityAvailable.mockReturnValueOnce(true);
+      renderRequesterInfoWithBarcode(onBlur);
+
+      const requesterBarcodeField = screen.getByTestId(testIds.requesterBarcodeField);
+
+      fireEvent.click(requesterBarcodeField);
+      fireEvent.blur(requesterBarcodeField);
+
+      expect(basicProps.onSetSelectedProxy).toHaveBeenCalledWith(null);
+    });
 
     it('should trigger "input.onBlur" if requester barcode is presented', () => {
       renderRequesterInfoWithBarcode(onBlur);

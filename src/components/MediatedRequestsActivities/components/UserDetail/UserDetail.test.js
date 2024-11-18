@@ -35,6 +35,7 @@ const proxy = {
 jest.mock('../../../../utils', () => ({
   getRequesterName: jest.fn((user) => user.lastName),
   getProxyInformation: jest.fn(() => proxy),
+  isProxyFunctionalityAvailable: jest.fn(() => true),
 }));
 jest.mock('../UserHighlightBox', () => jest.fn(({
   title,

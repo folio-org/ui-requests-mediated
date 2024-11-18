@@ -37,6 +37,7 @@ const labelIds = {
 jest.mock('../../../../utils', () => ({
   getProxyInformation: jest.fn(() => proxy),
   getRequesterName: jest.fn((user) => user.lastName),
+  isProxyFunctionalityAvailable: jest.fn(() => true),
 }));
 jest.mock('../UserHighlightBox', () => jest.fn(({
   title,

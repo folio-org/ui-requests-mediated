@@ -51,6 +51,7 @@ import {
 import {
   getTotalCount,
   modifyRecordsToExport,
+  isProxyFunctionalityAvailable,
 } from '../../utils';
 
 export const getActionMenu = ({
@@ -146,7 +147,11 @@ export const getActionMenu = ({
     const queryString = queryParams.join(' and ');
     const records = await getRecords(queryString);
     const recordsToCSV = buildRecords(records);
-    const columns = getColumnHeaders(REPORT_HEADERS);
+    const columnHeaders = [
+      ...REPORT_HEADERS,
+      ...(isProxyFunctionalityAvailable() ? ['proxy.name', 'proxy.barcode'] : []),
+    ]
+    const columns = getColumnHeaders(columnHeaders);
 
     exportToCsv(recordsToCSV, {
       onlyFields: columns,

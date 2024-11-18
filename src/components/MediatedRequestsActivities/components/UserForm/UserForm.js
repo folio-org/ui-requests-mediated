@@ -14,6 +14,7 @@ import UserHighlightBox from '../UserHighlightBox';
 import {
   getProxyInformation,
   getRequesterName,
+  isProxyFunctionalityAvailable,
 } from '../../../../utils';
 
 const UserForm = ({
@@ -31,7 +32,8 @@ const UserForm = ({
   const name = getRequesterName(user);
   const ConnectedProxyManager = useMemo(() => stripes.connect(ProxyManager), [stripes]);
   const proxyInformation = getProxyInformation(proxy, request?.proxyUserId);
-  const isProxyManagerAvailable = !isEditMode || (!isUserPreselected && isEditPermission);
+  const isProxyAvailable = isProxyFunctionalityAvailable();
+  const isProxyManagerAvailable = (!isEditMode || (!isUserPreselected && isEditPermission)) && isProxyAvailable;
   const userSection =
     <UserHighlightBox
       title={<FormattedMessage id="ui-requests-mediated.requesterDetails.requester" />}
@@ -39,7 +41,7 @@ const UserForm = ({
       id={user.id}
       barcode={user.barcode}
     />;
-  const proxySection = proxyInformation.id ?
+  const proxySection = (isProxyAvailable && proxyInformation.id) ?
     <UserHighlightBox
       title={<FormattedMessage id="ui-requests-mediated.requesterDetails.proxy" />}
       name={proxyInformation.name}

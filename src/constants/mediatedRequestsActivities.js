@@ -344,7 +344,7 @@ export const REPORT_HEADERS = [
   'fulfillmentPreference',
   'pickupServicePoint.name',
   'deliveryAddress',
-  'proxy.name',
-  'proxy.barcode',
   'patronComments',
 ];
+
+export const IS_PROXY_AVAILABLE = false;
