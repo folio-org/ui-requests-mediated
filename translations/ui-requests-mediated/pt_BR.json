@@ -206,7 +206,7 @@
     "form.create.title": "Nova requisição mediada",
     "form.edit.title": "Editar requisição mediada",
     "form.createRequest.error": "A requisição não foi criada com sucesso",
-    "declineModal.title": "Confirmar recusa de solicitação mediada",
+    "declineModal.title": "Confirmar recusa de requisição mediada",
     "declineModal.message": "<b>{title}</b> será <b>recusado</b>",
     "declineModal.confirm": "Confirmar",
     "declineModal.back": "Voltar"
