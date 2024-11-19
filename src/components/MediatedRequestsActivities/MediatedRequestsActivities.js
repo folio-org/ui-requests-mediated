@@ -150,7 +150,7 @@ export const getActionMenu = ({
     const columnHeaders = [
       ...REPORT_HEADERS,
       ...(isProxyFunctionalityAvailable() ? ['proxy.name', 'proxy.barcode'] : []),
-    ]
+    ];
     const columns = getColumnHeaders(columnHeaders);
 
     exportToCsv(recordsToCSV, {
