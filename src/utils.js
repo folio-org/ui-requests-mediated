@@ -26,6 +26,7 @@ import {
   REQUEST_PARAMS,
   USER_NAMES,
   STAFF_SLIPS_TYPE,
+  IS_PROXY_AVAILABLE,
 } from './constants';
 
 export const transformRequestFilterOptions = (formatMessage, source = []) => (
@@ -337,7 +338,7 @@ export const modifyRecordsToExport = (records) => {
       instance.contributorNames = '';
     }
 
-    if (proxy) {
+    if (isProxyFunctionalityAvailable() && proxy) {
       proxy.name = getFullNameForCsvRecords(proxy);
     }
 
@@ -517,3 +518,5 @@ export const convertToSlipData = (source, intl, timeZone, locale) => {
 
   return slipData;
 };
+
+export const isProxyFunctionalityAvailable = () => IS_PROXY_AVAILABLE;
