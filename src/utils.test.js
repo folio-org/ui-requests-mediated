@@ -54,7 +54,8 @@ import {
   buildTemplate,
   shouldProcessNode,
   buildLocaleDateAndTime,
-  convertToSlipData, processNode,
+  convertToSlipData,
+  processNode,
 } from './utils';
 import {
   FULFILMENT_TYPES,
@@ -930,10 +931,6 @@ describe('utils', () => {
           instance: {
             ...records[0].instance,
             contributorNames: records[0].instance.contributorNames[0].name,
-          },
-          proxy: {
-            ...records[0].proxy,
-            name: records[0].proxy.lastName,
           },
           requester: {
             ...records[0].requester,
