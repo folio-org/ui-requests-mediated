@@ -55,6 +55,7 @@ import {
   getDeliveryInformation,
   getResourceTypeId,
   getRequestInformation,
+  isProxyFunctionalityAvailable,
 } from '../../../../utils';
 
 import css from './RequestForm.css';
@@ -198,7 +199,7 @@ class RequestForm extends React.Component {
           });
         }
 
-        if (request.proxy) {
+        if (isProxyFunctionalityAvailable() && request.proxy) {
           form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, request.proxyUserId);
           onSetSelectedProxy(request.proxy);
         }
@@ -299,6 +300,7 @@ class RequestForm extends React.Component {
       onSetSelectedUser,
       onSetSelectedProxy,
     } = this.props;
+    const isProxyAvailable = isProxyFunctionalityAvailable();
 
     this.setState({
       isUserLoading: true,
@@ -306,13 +308,20 @@ class RequestForm extends React.Component {
       isRequestTypesReceived: false,
       isUserPreselected: false,
     });
-    onSetSelectedProxy(EMPTY_RESOURCE_VALUE);
+
+    if (isProxyAvailable) {
+      onSetSelectedProxy(EMPTY_RESOURCE_VALUE);
+    }
+
     onSetSelectedUser(EMPTY_RESOURCE_VALUE);
 
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+
+    if (isProxyAvailable) {
+      form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+    }
 
     return findResource(RESOURCE_TYPES.USER, value, fieldName)
       .then((result) => {

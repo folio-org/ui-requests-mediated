@@ -17,7 +17,10 @@ import {
 } from '@folio/stripes/core';
 
 import UserForm from '../UserForm';
-import { memoizeValidation } from '../../../../utils';
+import {
+  memoizeValidation,
+  isProxyFunctionalityAvailable,
+} from '../../../../utils';
 import {
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   RESOURCE_KEYS,
@@ -170,7 +173,10 @@ class RequesterInformation extends Component {
       form,
     } = this.props;
 
-    onSetSelectedProxy(null);
+    if (isProxyFunctionalityAvailable()) {
+      onSetSelectedProxy(null);
+    }
+
     onSetSelectedUser(null);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
   };
