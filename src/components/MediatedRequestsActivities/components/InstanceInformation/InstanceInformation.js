@@ -92,7 +92,7 @@ class InstanceInformation extends Component {
       const instance = await getInstanceValidationData(instanceId);
 
       return !instance
-        ? <FormattedMessage id="ui-requests-mediated.form.errors.instanceDoesNotExist" />
+        ? <FormattedMessage id="ui-requests-mediated.form.errors.titleDoesNotExist" />
         : undefined;
     }
 
