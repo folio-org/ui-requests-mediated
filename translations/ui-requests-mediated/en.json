@@ -124,7 +124,7 @@
   "form.requesterLookup.barcode": "Barcode",
 
   "form.errors.selectInstance": "Please select an instance and hit enter",
-  "form.errors.instanceDoesNotExist": "Instance with this HRID or UUID does not exist",
+  "form.errors.titleDoesNotExist": "Title with this HRID or UUID does not exist",
   "form.errors.selectItem": "Please select an item and hit enter",
   "form.errors.itemDoesNotExist": "Item with this barcode does not exist",
   "form.errors.selectUser": "Please fill out requester information to continue",

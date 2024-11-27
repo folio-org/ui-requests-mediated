@@ -54,6 +54,7 @@ const basicProps = {
     hasPerm: jest.fn(() => true),
   },
   resetRequestInformation: jest.fn(),
+  isEditMode: false,
 };
 const labelIds = {
   inputPlaceholder: 'ui-requests-mediated.form.item.inputPlaceholder',
@@ -506,9 +507,8 @@ describe('ItemInformation', () => {
   });
 
   describe('Component updating', () => {
-    const onBlur = jest.fn();
-
-    beforeEach(() => {
+    it('should not trigger onBlur handler', () => {
+      const onBlur = jest.fn();
       const rerender = renderItemInfoWithBarcode(onBlur);
       const newProps = {
         ...basicProps,
@@ -523,15 +523,31 @@ describe('ItemInformation', () => {
           {...newProps}
         />
       );
-    });
 
-    it('should not trigger onBlur handler', () => {
       const itemBarcodeField = screen.getByTestId(testIds.itemBarcodeField);
 
       fireEvent.click(itemBarcodeField);
       fireEvent.blur(itemBarcodeField);
 
       expect(onBlur).not.toHaveBeenCalled();
+    });
+
+    it('should trigger validation', () => {
+      const rerender = renderItemInfoWithBarcode();
+      const newProps = {
+        ...basicProps,
+        isItemPreselected: true,
+        selectedItem: null,
+        isEditMode: true,
+      };
+
+      rerender(
+        <ItemInformation
+          {...newProps}
+        />
+      );
+
+      expect(basicProps.triggerValidation).toHaveBeenCalled();
     });
   });
 });

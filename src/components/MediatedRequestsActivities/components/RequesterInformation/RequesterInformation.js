@@ -75,10 +75,21 @@ class RequesterInformation extends Component {
     const {
       isUserPreselected,
       selectedUser,
+      triggerUserBarcodeValidation,
+      isEditMode,
+      request,
     } = this.props;
+    const isNewPreselectedValue = isUserPreselected && isUserPreselected !== prevProps.isUserPreselected;
 
-    if (selectedUser && isUserPreselected && isUserPreselected !== prevProps.isUserPreselected) {
+    if (selectedUser && isNewPreselectedValue) {
       this.setState({ validatedBarcode: selectedUser.barcode });
+    }
+
+    if (isEditMode && !selectedUser && isNewPreselectedValue) {
+      this.setState({
+        validatedBarcode: request?.requester?.barcode,
+        shouldValidate: true,
+      }, triggerUserBarcodeValidation);
     }
   }
 
@@ -252,7 +263,7 @@ class RequesterInformation extends Component {
                     >
                       {({ input, meta }) => {
                         const selectUserError = meta.touched && !selectedUser?.id && meta.error;
-                        const userDoesntExistError = (isUserClicked || isUserBlurred) && meta.error;
+                        const userDoesntExistError = (isUserClicked || isUserBlurred || (isEditMode && !selectedUser)) && meta.error;
                         const error = selectUserError || userDoesntExistError || null;
 
                         return (

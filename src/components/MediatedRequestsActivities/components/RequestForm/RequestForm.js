@@ -176,7 +176,7 @@ class RequestForm extends React.Component {
       form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, request.item.barcode);
     }
 
-    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, request.requester.barcode);
+    form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, request.requester?.barcode);
     form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PATRON_COMMENTS, request.patronComments);
 
     Promise.allSettled([
@@ -657,20 +657,22 @@ class RequestForm extends React.Component {
       const { requestPreferences } = await findResource(RESOURCE_TYPES.REQUEST_PREFERENCES, userId);
       const preferences = requestPreferences[0];
       const fulfillmentPreference = getFulfillmentPreference(preferences, initialValues);
+      const defaultDeliveryAddressTypeId = preferences?.defaultDeliveryAddressTypeId;
+      const defaultServicePointId = preferences?.defaultServicePointId;
 
       this.setState({
-        defaultDeliveryAddressTypeId: preferences.defaultDeliveryAddressTypeId,
-        defaultServicePointId: preferences.defaultServicePointId,
+        defaultDeliveryAddressTypeId,
+        defaultServicePointId,
         fulfillmentPreference,
       });
 
       return {
         ...defaultPreferences,
-        defaultDeliveryAddressTypeId: preferences.defaultDeliveryAddressTypeId,
-        defaultServicePointId: preferences.defaultServicePointId,
-        hasDelivery: Boolean(preferences.delivery),
+        hasDelivery: Boolean(preferences?.delivery),
         isDeliverySelected: isDelivery(fulfillmentPreference),
-        selectedAddress: preferences.defaultDeliveryAddressTypeId,
+        selectedAddress: defaultDeliveryAddressTypeId,
+        defaultDeliveryAddressTypeId,
+        defaultServicePointId,
         fulfillmentPreference,
       };
     } catch (e) {
@@ -961,6 +963,8 @@ class RequestForm extends React.Component {
                             onSetSelectedInstance={onSetSelectedInstance}
                             isLoading={isItemOrInstanceLoading}
                             enterButtonClass={css.enterButton}
+                            isEditMode={isEditMode}
+                            request={request}
                           />
                         </Accordion>
                       )
@@ -984,6 +988,7 @@ class RequestForm extends React.Component {
                             selectedLoan={selectedLoan}
                             isLoading={isItemOrInstanceLoading}
                             enterButtonClass={css.enterButton}
+                            isEditMode={isEditMode}
                           />
                         </Accordion>
                       )

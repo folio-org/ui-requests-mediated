@@ -216,9 +216,8 @@ describe('RequesterInformation', () => {
   });
 
   describe('Component updating', () => {
-    const onBlur = jest.fn();
-
-    beforeEach(() => {
+    it('should not trigger onBlur handler', () => {
+      const onBlur = jest.fn();
       const rerender = renderRequesterInfoWithBarcode(onBlur);
       const newProps = {
         ...basicProps,
@@ -230,15 +229,30 @@ describe('RequesterInformation', () => {
           {...newProps}
         />
       );
-    });
-
-    it('should not trigger onBlur handler', () => {
       const requesterBarcodeField = screen.getByTestId(testIds.requesterBarcodeField);
 
       fireEvent.click(requesterBarcodeField);
       fireEvent.blur(requesterBarcodeField);
 
       expect(onBlur).not.toHaveBeenCalled();
+    });
+
+    it('should trigger validation', () => {
+      const rerender = renderRequesterInfoWithBarcode();
+      const newProps = {
+        ...basicProps,
+        isUserPreselected: true,
+        selectedUser: null,
+        isEditMode: true,
+      };
+
+      rerender(
+        <RequesterInformation
+          {...newProps}
+        />
+      );
+
+      expect(basicProps.triggerUserBarcodeValidation).toHaveBeenCalled();
     });
   });
 

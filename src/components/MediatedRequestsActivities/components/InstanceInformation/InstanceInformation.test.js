@@ -48,6 +48,7 @@ const basicProps = {
   isLoading: false,
   submitting: false,
   isInstancePreselected: false,
+  isEditMode: false,
   stripes: {
     hasPerm: jest.fn(() => true),
   },
@@ -57,7 +58,7 @@ const labelIds = {
   instanceHrid: 'ui-requests-mediated.form.instance.inputLabel',
   enterButton: 'ui-requests-mediated.form.enterButton',
   selectInstance: 'ui-requests-mediated.form.errors.selectInstance',
-  instanceDoesNotExist: 'ui-requests-mediated.form.errors.instanceDoesNotExist',
+  titleDoesNotExist: 'ui-requests-mediated.form.errors.titleDoesNotExist',
   lookupLabel: 'ui-requests-mediated.form.instance.lookupLabel',
 };
 const testIds = {
@@ -374,14 +375,14 @@ describe('InstanceInformation', () => {
         });
       });
 
-      it('should render "instanceDoesNotExist" error message', async () => {
+      it('should render "titleDoesNotExist" error message', async () => {
         const instanceHridField = screen.getByTestId(testIds.instanceHridField);
 
         fireEvent.keyDown(instanceHridField, { key: ENTER_EVENT_KEY });
         fireEvent.change(instanceHridField, event);
 
         await waitFor(() => {
-          const errorMessage = screen.queryByText(labelIds.instanceDoesNotExist);
+          const errorMessage = screen.queryByText(labelIds.titleDoesNotExist);
 
           expect(errorMessage).toBeVisible();
         });
@@ -557,9 +558,8 @@ describe('InstanceInformation', () => {
   });
 
   describe('Component updating', () => {
-    const onBlur = jest.fn();
-
-    beforeEach(() => {
+    it('should not trigger onBlur handler', () => {
+      const onBlur = jest.fn();
       const rerender = renderInstanceInfoWithHrid(onBlur);
       const newProps = {
         ...basicProps,
@@ -574,15 +574,36 @@ describe('InstanceInformation', () => {
           {...newProps}
         />
       );
-    });
 
-    it('should not trigger onBlur handler', () => {
       const instanceHridField = screen.getByTestId(testIds.instanceHridField);
 
       fireEvent.click(instanceHridField);
       fireEvent.blur(instanceHridField);
 
       expect(onBlur).not.toHaveBeenCalled();
+    });
+
+    it('should trigger validation', () => {
+      const rerender = renderInstanceInfoWithHrid();
+      const newProps = {
+        ...basicProps,
+        isInstancePreselected: true,
+        selectedInstance: null,
+        isEditMode: true,
+        request: {
+          instance: {
+            hrid: 'hrid',
+          },
+        },
+      };
+
+      rerender(
+        <InstanceInformation
+          {...newProps}
+        />
+      );
+
+      expect(basicProps.triggerValidation).toHaveBeenCalled();
     });
   });
 });
