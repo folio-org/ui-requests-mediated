@@ -171,7 +171,7 @@
         ],
         "subPermissions": [
           "ui-requests-mediated.view",
-          "requests-mediated.decline-mediated-request.execute"
+          "requests-mediated.mediated-requests.decline.execute"
         ],
         "visible": true
       },
