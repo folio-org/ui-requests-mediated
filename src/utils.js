@@ -91,8 +91,6 @@ export const getPatronGroup = (patron, patronGroups) => {
   return patronGroups.find(group => group.id === id);
 };
 
-export const isSubmittingButtonDisabled = (pristine, submitting) => pristine || submitting;
-
 const isYear = (value) => {
   const YEAR_REGEX = /^([1-9]\d{0,3})$/;
 

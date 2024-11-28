@@ -48,7 +48,6 @@ const basicProps = {
   form: {
     change: jest.fn(),
   },
-  pristine: true,
   submitting: false,
   patronGroups: [],
   selectedItem: {},
@@ -155,7 +154,6 @@ jest.mock('../../../../utils', () => ({
   })),
   handleKeyCommand: jest.fn(),
   getPatronGroup: jest.fn(),
-  isSubmittingButtonDisabled: jest.fn(),
   resetFieldState: jest.fn(),
   getFulfillmentTypeOptions: jest.fn(() => []),
   getDefaultRequestPreferences: jest.fn(),
