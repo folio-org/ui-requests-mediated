@@ -30,7 +30,6 @@
     "form.requesterLookup.username": "ユーザー名",
     "form.requesterLookup.barcode": "バーコード",
     "form.errors.selectInstance": "インスタンスを選択してEnterキーを押してください",
-    "form.errors.instanceDoesNotExist": "このHRIDまたはUUIDを持つインスタンスは存在しません",
     "form.errors.selectItem": "項目を選択してEnterキーを押してください",
     "form.errors.itemDoesNotExist": "このバーコードを持つ資料は存在しません",
     "form.errors.selectUser": "続行するには、リクエスト者の情報を入力してください",
@@ -209,5 +208,6 @@
     "declineModal.title": "Confirm Mediated request decline",
     "declineModal.message": "<b>{title}</b> will be <b>declined</b>",
     "declineModal.confirm": "Confirm",
-    "declineModal.back": "Back"
+    "declineModal.back": "Back",
+    "form.errors.titleDoesNotExist": "Title with this HRID or UUID does not exist"
 }

@@ -30,7 +30,6 @@
     "form.requesterLookup.username": "Nome de usuário",
     "form.requesterLookup.barcode": "Código de barras",
     "form.errors.selectInstance": "Por favor, selecione uma instância e pressione enter",
-    "form.errors.instanceDoesNotExist": "Não existe registro de instância com este HRID ou UUID",
     "form.errors.selectItem": "Selecione um item e pressione Enter",
     "form.errors.itemDoesNotExist": "Item com este código de barras não existe",
     "form.errors.selectUser": "Preencha as informações do solicitante para continuar",
@@ -209,5 +208,6 @@
     "declineModal.title": "Confirmar recusa de requisição mediada",
     "declineModal.message": "<b>{title}</b> será <b>recusado</b>",
     "declineModal.confirm": "Confirmar",
-    "declineModal.back": "Voltar"
+    "declineModal.back": "Voltar",
+    "form.errors.titleDoesNotExist": "Title with this HRID or UUID does not exist"
 }
