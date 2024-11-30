@@ -30,7 +30,6 @@
     "form.requesterLookup.username": "Uživatelské jméno",
     "form.requesterLookup.barcode": "Čárový kód",
     "form.errors.selectInstance": "Vyberte prosím titul a stiskněte Enter",
-    "form.errors.instanceDoesNotExist": "Titul s tímto HRID nebo UUID neexistuje",
     "form.errors.selectItem": "Vyberte prosím jednotku a stiskněte klávesu Enter",
     "form.errors.itemDoesNotExist": "Jednotka s tímto čárovým kódem neexistuje",
     "form.errors.selectUser": "Pro pokračování vyplňte prosím údaje o žadateli",
@@ -203,11 +202,12 @@
     "permission.requests-mediated.view-confirm.execute": "Zprostředkované žádanky: Zobrazit, potvrdit",
     "permission.requests-mediated.confirm-item-arrival.execute": "Zprostředkované žádanky: Potvrdit příchod jednotky",
     "permission.requests-mediated.send-item-in-transit.execute": "Zprostředkované žádanky: Odeslat jednotku v přepravě",
-    "form.create.title": "New mediated request",
-    "form.edit.title": "Edit mediated request",
-    "form.createRequest.error": "Request was not successfully created",
-    "declineModal.title": "Confirm Mediated request decline",
-    "declineModal.message": "<b>{title}</b> will be <b>declined</b>",
-    "declineModal.confirm": "Confirm",
-    "declineModal.back": "Back"
+    "form.create.title": "Nová zprostředkovaná žádanka",
+    "form.edit.title": "Upravit zprostředkovanou žádanku",
+    "form.createRequest.error": "Požadavek nebyl úspěšně vytvořen",
+    "declineModal.title": "Potvrdit odmítnutí zprostředkované žádanky",
+    "declineModal.message": "<b>{title}</b> bude <b>odmítnut</b>",
+    "declineModal.confirm": "Potvrdit",
+    "declineModal.back": "Zpět",
+    "form.errors.titleDoesNotExist": "Název s tímto HRID nebo UUID neexistuje"
 }
