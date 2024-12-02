@@ -30,7 +30,6 @@
     "form.requesterLookup.username": "用户名",
     "form.requesterLookup.barcode": "条码",
     "form.errors.selectInstance": "请选择一个实例，然后按回车",
-    "form.errors.instanceDoesNotExist": "此 HRID 或 UUID 的实例不存在",
     "form.errors.selectItem": "请选择一个单件，然后按回车",
     "form.errors.itemDoesNotExist": "不存在此条码对应的单件",
     "form.errors.selectUser": "请填写请求者信息以继续",
@@ -209,5 +208,6 @@
     "declineModal.title": "Confirm Mediated request decline",
     "declineModal.message": "<b>{title}</b> will be <b>declined</b>",
     "declineModal.confirm": "Confirm",
-    "declineModal.back": "Back"
+    "declineModal.back": "Back",
+    "form.errors.titleDoesNotExist": "Title with this HRID or UUID does not exist"
 }

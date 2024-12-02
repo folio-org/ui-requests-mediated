@@ -30,7 +30,6 @@
     "form.requesterLookup.username": "Nom d'utilisateur",
     "form.requesterLookup.barcode": "Code-barres",
     "form.errors.selectInstance": "Veuillez sélectionner une notice bibliographique et appuyez sur Entrée",
-    "form.errors.instanceDoesNotExist": "La notice bibliographique avec cet HRID ou UUID n'existe pas",
     "form.errors.selectItem": "Veuillez sélectionner un exemplaire et appuyez sur Entrée",
     "form.errors.itemDoesNotExist": "L'exemplaire avec ce code-barres n'existe pas",
     "form.errors.selectUser": "Veuillez remplir les informations du réservataire pour continuer",
@@ -209,5 +208,6 @@
     "declineModal.title": "Confirm Mediated request decline",
     "declineModal.message": "<b>{title}</b> will be <b>declined</b>",
     "declineModal.confirm": "Confirm",
-    "declineModal.back": "Back"
+    "declineModal.back": "Back",
+    "form.errors.titleDoesNotExist": "Title with this HRID or UUID does not exist"
 }
