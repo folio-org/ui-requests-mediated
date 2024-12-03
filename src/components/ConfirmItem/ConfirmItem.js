@@ -59,7 +59,10 @@ const ConfirmItem = ({
         defaultWidth="fill"
         paneTitle={<FormattedMessage id="ui-requests-mediated.confirmItem.mainSection.paneTitle" />}
       >
-        <form onSubmit={onSubmit}>
+        <form
+          data-testid="confirmItemForm"
+          onSubmit={onSubmit}
+        >
           <Row>
             <Col xs={9} sm={4}>
               <Field

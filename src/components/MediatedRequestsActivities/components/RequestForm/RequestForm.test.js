@@ -47,6 +47,7 @@ const basicProps = {
   },
   form: {
     change: jest.fn(),
+    reset: jest.fn(),
   },
   submitting: false,
   patronGroups: [],

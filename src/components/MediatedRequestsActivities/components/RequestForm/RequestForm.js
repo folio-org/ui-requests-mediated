@@ -172,7 +172,6 @@ class RequestForm extends React.Component {
 
     if (isTlr && request.instance?.hrid) {
       this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, request.instance.hrid);
-      this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, request.instanceId);
     } else if (request.item?.barcode) {
       this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, request.item.barcode);
     }
@@ -705,10 +704,7 @@ class RequestForm extends React.Component {
   };
 
   setRequestPreferencesForEditing = (resourceId, requesterId, isTlr, request) => {
-    const {
-      form,
-      selectedUser,
-    } = this.props;
+    const { selectedUser } = this.props;
 
     if (resourceId && requesterId) {
       const resourceType = isTlr ? ID_TYPE_MAP.INSTANCE_ID : ID_TYPE_MAP.ITEM_ID;
@@ -758,18 +754,24 @@ class RequestForm extends React.Component {
               isDeliverySelected: requestPreferences.isDeliverySelected,
             });
           }
-
-          /* resetting form values for edit mediated request page let us click "Cancel" button
-             or cross at the left top corner without having "Are you sure?" modal */
-          form.reset(this.editMediatedRequestData);
         })
         .catch(() => {
-          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
-          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
-          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
-          form.change(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
-        });
+          this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE);
+          this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.FULFILLMENT_PREFERENCE, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+          this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.PICKUP_SERVICE_POINT_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+          this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE);
+        })
+        .then(this.resetEditMediatedRequestForm);
+    } else {
+      this.resetEditMediatedRequestForm();
     }
+  };
+
+  /* resetting form values for edit mediated request page let us click "Cancel" button
+     or cross at the left top corner without having "Are you sure?" modal.
+     Form resetting happens only once and only after first loading of "Edit mediated request" page */
+  resetEditMediatedRequestForm = () => {
+    this.props.form.reset(this.editMediatedRequestData);
   };
 
   findRequestTypes = (resourceId, requesterId, resourceType) => {
