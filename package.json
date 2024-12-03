@@ -1,6 +1,6 @@
 {
   "name": "@folio/requests-mediated",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Mediated requests",
   "main": "src/index.js",
   "repository": "folio-org/ui-requests-mediated",
@@ -77,7 +77,8 @@
       "requests-mediated": "2.0",
       "requests-mediated-actions": "1.0",
       "request-preference-storage": "2.0",
-      "circulation": "14.2"
+      "circulation": "14.4",
+      "users": "16.3"
     },
     "permissionSets": [
       {

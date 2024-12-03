@@ -28,7 +28,7 @@ import {
 const ConfirmItem = ({
   pristine,
   paneTitle,
-  navigationMenuFunction,
+  navigationMenuUrl,
   confirmItemType,
   contentData,
   handleSubmit,
@@ -52,7 +52,7 @@ const ConfirmItem = ({
         defaultWidth={FILTER_PANE_WIDTH}
         paneTitle={paneTitle}
       >
-        <NavigationMenu value={navigationMenuFunction} />
+        <NavigationMenu value={navigationMenuUrl} />
       </Pane>
       <Pane
         data-testid="confirmItemPane"
@@ -101,7 +101,7 @@ const ConfirmItem = ({
 ConfirmItem.propTypes = {
   pristine: PropTypes.bool,
   paneTitle: PropTypes.node.isRequired,
-  navigationMenuFunction: PropTypes.func.isRequired,
+  navigationMenuUrl: PropTypes.string.isRequired,
   confirmItemType: PropTypes.oneOf([CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL, CONFIRM_ITEM_TYPES.SEND_ITEM_IN_TRANSIT]).isRequired,
   contentData: PropTypes.arrayOf(PropTypes.object),
   handleSubmit: PropTypes.func.isRequired,

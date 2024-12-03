@@ -75,6 +75,7 @@ const NavigationMenu = ({
   return (
     <>
       <Select
+        aria-label={intl.formatMessage({ id: 'ui-requests-mediated.app.filterPane.selectActivity' })}
         data-testid="navigationMenu"
         value={value}
         disabled={isNavigationMenuDisabled(stripes)}

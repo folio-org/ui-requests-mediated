@@ -79,7 +79,7 @@ const SendItemInTransit = () => {
     <>
       <ConfirmItem
         paneTitle={intl.formatMessage({ id: 'ui-requests-mediated.sendItemInTransit.paneTitle' })}
-        navigationMenuFunction={getSendItemInTransitUrl()}
+        navigationMenuUrl={getSendItemInTransitUrl()}
         confirmItemType={CONFIRM_ITEM_TYPES.SEND_ITEM_IN_TRANSIT}
         contentData={sendItemInTransitData}
         onSubmit={handleSubmit}
