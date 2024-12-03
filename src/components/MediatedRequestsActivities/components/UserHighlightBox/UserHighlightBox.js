@@ -45,7 +45,7 @@ const UserHighlightBox = ({
 };
 
 UserHighlightBox.propTypes = {
-  title: PropTypes.string.isRequired,
+  title: PropTypes.node.isRequired,
   name: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   barcode: PropTypes.string.isRequired,

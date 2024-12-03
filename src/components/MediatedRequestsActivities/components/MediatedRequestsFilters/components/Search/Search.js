@@ -4,6 +4,7 @@ import {
 import PropTypes from 'prop-types';
 import {
   FormattedMessage,
+  useIntl,
 } from 'react-intl';
 import {
   isEmpty,
@@ -30,6 +31,7 @@ const Search = ({
   resetAll,
   activeFilters,
 }) => {
+  const intl = useIntl();
   const handleChange = useCallback((e) => {
     if (e.target.value) {
       getSearchHandlers().query(e);
@@ -47,6 +49,7 @@ const Search = ({
       className={styles.searchFieldContainer}
     >
       <SearchField
+        aria-label={intl.formatMessage({ id: 'stripes-smart-components.search' })}
         data-testid="mediatedRequestsActivitiesSearch"
         autoFocus
         autoComplete="off"
@@ -88,7 +91,7 @@ Search.propTypes = {
     ...MEDIATED_REQUEST_LEVEL_PROP_TYPES,
   }).isRequired,
   searchValue: PropTypes.shape({
-    query: PropTypes.string.isRequired,
+    query: PropTypes.string,
   }).isRequired,
   getSearchHandlers: PropTypes.func.isRequired,
   resetAll: PropTypes.func.isRequired,
