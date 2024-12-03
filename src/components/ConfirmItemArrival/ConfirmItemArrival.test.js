@@ -28,7 +28,7 @@ describe('ConfirmItemArrival', () => {
   it('should render ConfirmItem with correct props', () => {
     expect(ConfirmItem).toHaveBeenCalledWith(expect.objectContaining({
       paneTitle: messageIds.paneTitle,
-      navigationMenuFunction: getConfirmItemArrivalUrl(),
+      navigationMenuUrl: getConfirmItemArrivalUrl(),
       confirmItemType: CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL,
       contentData: [],
       onSubmit: expect.any(Function),

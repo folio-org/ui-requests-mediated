@@ -44,7 +44,7 @@ const ConfirmItemArrival = () => {
     <>
       <ConfirmItem
         paneTitle={intl.formatMessage({ id: 'ui-requests-mediated.confirmItemArrival.paneTitle' })}
-        navigationMenuFunction={getConfirmItemArrivalUrl()}
+        navigationMenuUrl={getConfirmItemArrivalUrl()}
         confirmItemType={CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL}
         contentData={confirmItemArrivalData}
         onSubmit={handleSubmit}

@@ -63,7 +63,7 @@ MediatedRequestsFilters.propTypes = {
     ...MEDIATED_REQUEST_LEVEL_PROP_TYPES,
   }).isRequired,
   searchValue: PropTypes.shape({
-    query: PropTypes.string.isRequired,
+    query: PropTypes.string,
   }).isRequired,
   getSearchHandlers: PropTypes.func.isRequired,
   resetAll: PropTypes.func.isRequired,

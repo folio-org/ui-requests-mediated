@@ -35,7 +35,7 @@ const labelIds = {
 const basicProps = {
   pristine: false,
   paneTitle: 'paneTitle',
-  navigationMenuFunction: jest.fn(),
+  navigationMenuUrl: 'confirmItem',
   confirmItemType: CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL,
   contentData: [],
   handleSubmit: jest.fn(),
@@ -72,7 +72,7 @@ describe('ConfirmItem', () => {
 
   it('should render navigation menu with correct props', () => {
     expect(NavigationMenu).toHaveBeenCalledWith(expect.objectContaining({
-      value: basicProps.navigationMenuFunction,
+      value: basicProps.navigationMenuUrl,
     }), {});
   });
 
