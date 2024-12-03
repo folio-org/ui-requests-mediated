@@ -142,7 +142,7 @@ const MediatedRequestsList = ({
 };
 
 MediatedRequestsList.propTypes = {
-  visibleColumns: PropTypes.object,
+  visibleColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
   contentData: PropTypes.arrayOf(PropTypes.object).isRequired,
   source: PropTypes.shape({
     totalCount: PropTypes.func,

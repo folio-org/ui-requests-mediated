@@ -265,7 +265,10 @@ const RequestFormContainer = ({
 
 RequestFormContainer.propTypes = {
   settings: PropTypes.object.isRequired,
-  patronGroups: PropTypes.object.isRequired,
+  patronGroups: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    group: PropTypes.string,
+  })).isRequired,
   isEditMode: PropTypes.bool.isRequired,
   setRequest: PropTypes.func,
   request: PropTypes.object,

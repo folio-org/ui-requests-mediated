@@ -86,7 +86,7 @@ const props = {
   resources,
   mutator,
   settings,
-  children: <div/>,
+  children: <div />,
 };
 
 describe('MediatedRequestsActivitiesContainer', () => {

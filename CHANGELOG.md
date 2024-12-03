@@ -1,6 +1,7 @@
 # Change history for ui-requests-mediated
 
-## [2.1.0] IN PROGRESS
+## 2.1.0 (IN PROGRESS)
+* Minor improvements and code fixes. Refs UIREQMED-65.
 * Create a solution to not display "Are you sure?" modal when no changes have been made, increase code coverage. Refs UIREQMED-64.
 
 ## [2.0.0] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.0) (2024-11-30)

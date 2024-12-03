@@ -321,6 +321,8 @@ export const getDeliveryAddressForCsvRecords = (address) => {
   return [addressLine1, city, region, postalCode, countryId].filter(Boolean).join(' ');
 };
 
+export const isProxyFunctionalityAvailable = () => IS_PROXY_AVAILABLE;
+
 export const modifyRecordsToExport = (records) => {
   return records.map(record => {
     const {
@@ -516,5 +518,3 @@ export const convertToSlipData = (source, intl, timeZone, locale) => {
 
   return slipData;
 };
-
-export const isProxyFunctionalityAvailable = () => IS_PROXY_AVAILABLE;

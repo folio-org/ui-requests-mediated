@@ -45,7 +45,7 @@ jest.mock('../ErrorModal', () => jest.fn(({
 }) => {
   return (
     <button
-      role="button"
+      type="button"
       data-testid={testIds.closeModalButton}
       onClick={onClose}
     >
@@ -86,7 +86,7 @@ describe('SendItemInTransit', () => {
   it('should render ConfirmItem with correct props', () => {
     expect(ConfirmItem).toHaveBeenCalledWith(expect.objectContaining({
       paneTitle: messageIds.paneTitle,
-      navigationMenuFunction: getSendItemInTransitUrl(),
+      navigationMenuUrl: getSendItemInTransitUrl(),
       confirmItemType: CONFIRM_ITEM_TYPES.SEND_ITEM_IN_TRANSIT,
       contentData: [],
       onSubmit: expect.any(Function),
