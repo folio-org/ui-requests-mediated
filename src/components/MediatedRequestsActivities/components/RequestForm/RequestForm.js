@@ -177,8 +177,8 @@ class RequestForm extends React.Component {
       this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_ID, request.itemId);
     }
 
-    this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, request.requester?.barcode);
     this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_ID, request.requesterId);
+    this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUESTER_BARCODE, request.requester?.barcode);
     this.setEditFormValue(MEDIATED_REQUEST_FORM_FIELD_NAMES.PATRON_COMMENTS, request.patronComments);
 
     Promise.allSettled([
