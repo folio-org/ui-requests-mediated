@@ -30,8 +30,8 @@ import ContentToPrint from './components';
 import css from './SendItemInTransit.css';
 
 const SEND_ITEM_IN_TRANSIT_URL = 'requests-mediated/send-item-in-transit';
-const PRINT_BUTTON_SELECTOR = 'printButton';
 const CONTENT_TO_PRINT_ID = 'contentToPrint';
+export const PRINT_BUTTON_SELECTOR = 'printButton';
 
 const SendItemInTransit = () => {
   const contentToPrintRef = useRef();

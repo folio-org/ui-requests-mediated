@@ -1,15 +1,25 @@
 import {
   render,
+  screen,
+  fireEvent,
 } from '@folio/jest-config-stripes/testing-library/react';
 
-import SendItemInTransit from './SendItemInTransit';
+import SendItemInTransit, {
+  PRINT_BUTTON_SELECTOR,
+} from './SendItemInTransit';
 import ConfirmItem from '../ConfirmItem';
 import ErrorModal from '../ErrorModal';
+import { handleConfirmItemSubmit } from '../../utils';
 
 import {
   CONFIRM_ITEM_TYPES,
   getSendItemInTransitUrl,
 } from '../../constants';
+
+const testIds = {
+  confirmItemForm: 'confirmItemForm',
+  closeModalButton: 'closeModalButton',
+};
 
 jest.mock('../../hooks', () => ({
   useStaffSlipsTemplate: jest.fn(() => ({
@@ -18,9 +28,45 @@ jest.mock('../../hooks', () => ({
 }));
 jest.mock('../../utils', () => ({
   getStaffSlipsTemplateByType: jest.fn(() => ''),
+  handleConfirmItemSubmit: jest.fn((itemBarcode, confirmItemState, confirmItemProps) => {
+    confirmItemProps.onSuccess();
+  }),
 }));
-jest.mock('../ConfirmItem', () => jest.fn((props) => (<div {...props} />)));
-jest.mock('../ErrorModal', () => jest.fn((props) => (<div {...props} />)));
+jest.mock('../ConfirmItem', () => jest.fn(({
+  onSubmit,
+}) => {
+  return <form
+    data-testid={testIds.confirmItemForm}
+    onSubmit={onSubmit}
+  />;
+}));
+jest.mock('../ErrorModal', () => jest.fn(({
+  onClose,
+}) => {
+  return (
+    <button
+      type="button"
+      data-testid={testIds.closeModalButton}
+      onClick={onClose}
+    >
+      Close
+    </button>
+  );
+}));
+jest.mock('react-to-print', () => jest.fn(({
+  content,
+  trigger,
+  onAfterPrint,
+}) => {
+  onAfterPrint();
+  content();
+
+  return (
+    <div>
+      {trigger()}
+    </div>
+  );
+}));
 
 const messageIds = {
   paneTitle: 'ui-requests-mediated.sendItemInTransit.paneTitle',
@@ -31,6 +77,10 @@ const messageIds = {
 describe('SendItemInTransit', () => {
   beforeEach(() => {
     render(<SendItemInTransit />);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should render ConfirmItem with correct props', () => {
@@ -49,6 +99,37 @@ describe('SendItemInTransit', () => {
       message: messageIds.message,
       open: false,
       onClose: expect.any(Function),
+    }), {});
+  });
+
+  it('should handle data submitting', () => {
+    const confirmItemForm = screen.getByTestId(testIds.confirmItemForm);
+
+    fireEvent.submit(confirmItemForm);
+
+    expect(handleConfirmItemSubmit).toHaveBeenCalled();
+  });
+
+  it('should render print button', () => {
+    const printButton = screen.getByText(PRINT_BUTTON_SELECTOR);
+
+    expect(printButton).toBeInTheDocument();
+  });
+
+  it('should close error modal', () => {
+    const confirmItemForm = screen.getByTestId(testIds.confirmItemForm);
+
+    handleConfirmItemSubmit.mockImplementationOnce((itemBarcode, confirmItemState) => {
+      confirmItemState.setIsErrorModalOpen(true);
+    });
+    fireEvent.submit(confirmItemForm);
+
+    const closeModalButton = screen.getByTestId(testIds.closeModalButton);
+
+    fireEvent.click(closeModalButton);
+
+    expect(ErrorModal).toHaveBeenCalledWith(expect.objectContaining({
+      open: false,
     }), {});
   });
 });

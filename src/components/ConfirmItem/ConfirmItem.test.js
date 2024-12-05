@@ -3,6 +3,7 @@ import { Field } from 'react-final-form';
 import {
   render,
   screen,
+  fireEvent,
 } from '@folio/jest-config-stripes/testing-library/react';
 import {
   Button,
@@ -27,6 +28,7 @@ const testIds = {
   confirmItemPaneSet: 'confirmItemPaneSet',
   navigationMenuPane: 'navigationMenuPane',
   confirmItemPane: 'confirmItemPane',
+  confirmItemForm: 'confirmItemForm',
 };
 const labelIds = {
   paneTitle: 'ui-requests-mediated.confirmItem.mainSection.paneTitle',
@@ -39,6 +41,9 @@ const basicProps = {
   confirmItemType: CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL,
   contentData: [],
   handleSubmit: jest.fn(),
+  form: {
+    change: jest.fn(),
+  },
 };
 
 describe('ConfirmItem', () => {
@@ -103,5 +108,28 @@ describe('ConfirmItem', () => {
       confirmItemType: basicProps.confirmItemType,
       contentData: basicProps.contentData,
     }), {});
+  });
+
+  describe('Form submitting', () => {
+    const submitEvent = {
+      stopPropagation: jest.fn(),
+      preventDefault: jest.fn(),
+    };
+
+    beforeEach(() => {
+      const confirmItemForm = screen.getByTestId(testIds.confirmItemForm);
+
+      fireEvent.submit(confirmItemForm, submitEvent);
+    });
+
+    it('should handle data submitting', () => {
+      expect(basicProps.handleSubmit).toHaveBeenCalled();
+    });
+
+    it('should reset item barcode', () => {
+      const expectedArgs = ['itemBarcode', ''];
+
+      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+    });
   });
 });

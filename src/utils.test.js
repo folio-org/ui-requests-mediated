@@ -26,7 +26,6 @@ import {
   memoizeValidation,
   getTlrSettings,
   getPatronGroup,
-  isSubmittingButtonDisabled,
   getFormattedYears,
   getInstanceQueryString,
   getFulfillmentTypeOptions,
@@ -363,32 +362,6 @@ describe('utils', () => {
 
       it('should return undefined', () => {
         expect(getPatronGroup(patron, patronGroups)).toBeUndefined();
-      });
-    });
-  });
-
-  describe('isSubmittingButtonDisabled', () => {
-    describe('when pristine is true and submitting is false', () => {
-      it('should return true', () => {
-        expect(isSubmittingButtonDisabled(true, false)).toBe(true);
-      });
-    });
-
-    describe('when pristine is false and submitting is true', () => {
-      it('should return true', () => {
-        expect(isSubmittingButtonDisabled(false, true)).toBe(true);
-      });
-    });
-
-    describe('when pristine is true and submitting is true', () => {
-      it('should return true', () => {
-        expect(isSubmittingButtonDisabled(true, true)).toBe(true);
-      });
-    });
-
-    describe('when pristine is false and submitting is false', () => {
-      it('should return true', () => {
-        expect(isSubmittingButtonDisabled(false, false)).toBe(false);
       });
     });
   });
