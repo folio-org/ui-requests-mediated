@@ -44,7 +44,7 @@
     "itemDetails.dueDate": "Current due date",
     "itemsDialog.barcode": "Barcode",
     "itemsDialog.status": "Item status",
-    "itemsDialog.location": "Location",
+    "itemsDialog.location": "館藏地",
     "itemsDialog.materialType": "Material type",
     "itemsDialog.loanType": "Loan type",
     "itemsDialog.selectItem": "Select item",
