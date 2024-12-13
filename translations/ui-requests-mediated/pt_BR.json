@@ -209,5 +209,5 @@
     "declineModal.message": "<b>{title}</b> será <b>recusado</b>",
     "declineModal.confirm": "Confirmar",
     "declineModal.back": "Voltar",
-    "form.errors.titleDoesNotExist": "Title with this HRID or UUID does not exist"
+    "form.errors.titleDoesNotExist": "O título com este HRID ou UUID não existe"
 }
