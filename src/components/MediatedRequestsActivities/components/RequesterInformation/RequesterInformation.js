@@ -29,6 +29,8 @@ import {
   DEFAULT_REQUEST_TYPE_VALUE,
 } from '../../../../constants';
 
+import css from './RequesterInformation.css';
+
 export const VISIBLE_COLUMNS = ['active', 'name', 'patronGroup', 'username', 'barcode'];
 export const COLUMN_MAPPING = {
   name: <FormattedMessage id="ui-requests-mediated.form.requesterLookup.name" />,
@@ -248,7 +250,10 @@ class RequesterInformation extends Component {
       <Row>
         <Col xs={12}>
           <Row>
-            <Col xs={9}>
+            <Col
+              xs={12}
+              className={css.fieldWrapper}
+            >
               <FormattedMessage id="ui-requests-mediated.form.requester.inputPlaceholder">
                 {placeholder => {
                   const key = values.keyOfUserBarcodeField ?? 0;
@@ -277,6 +282,7 @@ class RequesterInformation extends Component {
                             onBlur={this.handleBlur(input)}
                             onKeyDown={this.onKeyDown}
                             disabled={!isEditPermission}
+                            className={css.requesterBarcodeField}
                           />
                         );
                       }}
@@ -284,27 +290,9 @@ class RequesterInformation extends Component {
                   );
                 }}
               </FormattedMessage>
-              {
-                isEditPermission &&
-                  <Pluggable
-                    aria-haspopup="true"
-                    type="find-user"
-                    searchLabel={<FormattedMessage id="ui-requests-mediated.form.requester.lookupLabel" />}
-                    searchButtonStyle="link"
-                    dataKey="users"
-                    selectUser={this.onSelectUser}
-                    visibleColumns={VISIBLE_COLUMNS}
-                    columnMapping={COLUMN_MAPPING}
-                    disableRecordCreation
-                    marginTop0
-                  />
-              }
-            </Col>
-            <Col xs={3}>
               <Button
-                buttonStyle="primary noRadius"
+                buttonStyle="default"
                 buttonClass={enterButtonClass}
-                fullWidth
                 onClick={this.handleClick}
                 disabled={isEnterButtonDisabled}
               >
@@ -312,6 +300,21 @@ class RequesterInformation extends Component {
               </Button>
             </Col>
           </Row>
+          {
+            isEditPermission &&
+              <Pluggable
+                aria-haspopup="true"
+                type="find-user"
+                searchLabel={<FormattedMessage id="ui-requests-mediated.form.requester.lookupLabel" />}
+                searchButtonStyle="link"
+                dataKey="users"
+                selectUser={this.onSelectUser}
+                visibleColumns={VISIBLE_COLUMNS}
+                columnMapping={COLUMN_MAPPING}
+                disableRecordCreation
+                marginTop0
+              />
+          }
           {
             isLoading && <Icon {...BASE_SPINNER_PROPS} />
           }

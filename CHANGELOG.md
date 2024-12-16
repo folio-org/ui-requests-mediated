@@ -1,7 +1,7 @@
 # Change history for ui-requests-mediated
 
 ## 2.1.0 (IN PROGRESS)
-
+* Make "Enter" buttons shorter using default styles. Refs UIREQMED-71.
 
 ## [2.0.1] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.1) (2024-12-06)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.0...v2.0.1)
