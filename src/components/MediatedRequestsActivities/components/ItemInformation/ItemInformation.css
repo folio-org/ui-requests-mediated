@@ -1,0 +1,8 @@
+.fieldWrapper {
+  display: flex;
+  align-items: start;
+}
+
+.itemBarcodeField {
+  margin-right: 20px;
+}

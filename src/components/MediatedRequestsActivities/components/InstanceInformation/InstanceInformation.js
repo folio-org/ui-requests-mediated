@@ -25,6 +25,8 @@ import {
 import TitleInformation from '../TitleInformation';
 import { memoizeValidation } from '../../../../utils';
 
+import css from './InstanceInformation.css';
+
 export const INSTANCE_SEGMENT_FOR_PLUGIN = 'instances';
 
 class InstanceInformation extends Component {
@@ -210,7 +212,10 @@ class InstanceInformation extends Component {
       <Row>
         <Col xs={12}>
           <Row>
-            <Col xs={9}>
+            <Col
+              xs={12}
+              className={css.fieldWrapper}
+            >
               <FormattedMessage id="ui-requests-mediated.form.instance.inputPlaceholder">
                 {placeholder => {
                   const key = values.keyOfInstanceIdField ?? 0;
@@ -239,6 +244,7 @@ class InstanceInformation extends Component {
                             onBlur={this.handleBlur(input)}
                             onKeyDown={this.onKeyDown}
                             disabled={!isEditPermission}
+                            className={css.instanceHridField}
                           />
                         );
                       }}
@@ -246,13 +252,10 @@ class InstanceInformation extends Component {
                   );
                 }}
               </FormattedMessage>
-            </Col>
-            <Col xs={3}>
               <Button
                 id="selectInstanceButton"
-                buttonStyle="primary noRadius"
+                buttonStyle="default"
                 buttonClass={enterButtonClass}
-                fullWidth
                 onClick={this.handleClick}
                 disabled={isEnterButtonDisabled}
               >

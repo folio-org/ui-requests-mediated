@@ -23,6 +23,8 @@ import {
 import ItemDetail from '../ItemDetail';
 import { memoizeValidation } from '../../../../utils';
 
+import css from './ItemInformation.css';
+
 class ItemInformation extends Component {
   static propTypes = {
     triggerValidation: PropTypes.func.isRequired,
@@ -211,7 +213,10 @@ class ItemInformation extends Component {
       <Row>
         <Col xs={12}>
           <Row>
-            <Col xs={9}>
+            <Col
+              xs={12}
+              className={css.fieldWrapper}
+            >
               <FormattedMessage id="ui-requests-mediated.form.item.inputPlaceholder">
                 {placeholder => {
                   const key = values.keyOfItemBarcodeField ?? 0;
@@ -240,6 +245,7 @@ class ItemInformation extends Component {
                             onBlur={this.handleBlur(input)}
                             onKeyDown={this.onKeyDown}
                             disabled={!isEditPermission}
+                            className={css.itemBarcodeField}
                           />
                         );
                       }}
@@ -247,13 +253,10 @@ class ItemInformation extends Component {
                   );
                 }}
               </FormattedMessage>
-            </Col>
-            <Col xs={3}>
               <Button
                 id="selectItemButton"
-                buttonStyle="primary noRadius"
+                buttonStyle="default"
                 buttonClass={enterButtonClass}
-                fullWidth
                 onClick={this.handleClick}
                 disabled={isEnterButtonDisabled}
               >
