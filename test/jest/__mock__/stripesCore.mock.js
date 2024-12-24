@@ -38,6 +38,9 @@ jest.mock('@folio/stripes/core', () => ({
       </>
     );
   }),
+  Redirect: jest.fn(() => <div />),
+  Route: jest.fn(({ children }) => children),
+  Switch: jest.fn(({ children }) => children),
   TitleManager: jest.fn(() => <div />),
   useStripes: jest.fn(() => ({
     connect: Component => Component,
