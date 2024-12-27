@@ -169,6 +169,7 @@ jest.mock('@folio/stripes/components', () => ({
     lastMenu,
     fluidContentWidth,
     actionMenu,
+    footer,
     ...rest
   }) => {
     return (
@@ -181,6 +182,7 @@ jest.mock('@folio/stripes/components', () => ({
           {lastMenu ?? null}
         </div>
         {children}
+        <footer>{footer}</footer>
       </div>
     );
   }),
