@@ -4,6 +4,7 @@ import {
   screen,
   waitFor,
 } from '@folio/jest-config-stripes/testing-library/react';
+import userEvent from '@folio/jest-config-stripes/testing-library/user-event';
 
 import RequestForm from './RequestForm';
 import RequestInformation from '../RequestInformation';
@@ -18,13 +19,17 @@ import {
   DEFAULT_REQUEST_TYPE_VALUE,
   MEDIATED_REQUEST_LEVEL,
   EMPTY_MEDIATED_REQUEST_FORM_VALUE,
+  EMPTY_RESOURCE_VALUE,
 } from '../../../../constants';
 import {
   getRequestInformation,
   getFulfillmentPreference,
   getDefaultRequestPreferences,
   isProxyFunctionalityAvailable,
+  getTlrSettings,
 } from '../../../../utils';
+import FulfilmentPreference from '../FulfilmentPreference';
+import AddressDetails from '../AddressDetails';
 
 const basicProps = {
   handleSubmit: jest.fn(),
@@ -56,6 +61,13 @@ const basicProps = {
   selectedUser: {},
   isEditMode: false,
   setRequest: jest.fn(),
+  settings: {
+    items: [
+      {
+        value: {},
+      }
+    ],
+  },
 };
 const labelIds = {
   itemAccordion: 'ui-requests-mediated.form.item.accordionLabel',
@@ -66,25 +78,64 @@ const testIds = {
   findUser: 'findUser',
   selectProxy: 'selectProxy',
   tlrCheckbox: 'tlrCheckbox',
+  closeProxy: 'closeProxy',
+  requesterField: 'requesterField',
+  instanceHridField: 'instanceHridField',
+  itemField: 'itemField',
+  saveAndCloseButton: 'saveAndCloseButton',
+  confirmButton: 'confirmButton',
+  closeItemDialogButton: 'closeItemDialogButton',
+  rowElement: 'rowElement',
 };
 const itemBarcode = 'itemBarcode';
 const instanceId = 'instanceId';
 const userBarcode = 'userBarcode';
 const proxyId = 'proxyId';
+const requesterKey = 'barcode';
+const itemKey = 'barcode';
+const rowItem = {
+  id: 'itemId',
+  barcode: 'itemBarcode',
+};
 
 jest.mock('@folio/stripes/final-form', () => () => jest.fn((component) => component));
 jest.mock('../RequestFormShortcutsWrapper', () => jest.fn(({ children }) => <div>{children}</div>));
 jest.mock('../RequestFormFirstMenu', () => jest.fn(() => <div />));
-jest.mock('../RequestFormFooter', () => jest.fn(() => <div />));
+jest.mock('../RequestFormFooter', () => jest.fn(() => (
+  <footer>
+    <button
+      type="submit"
+      data-testid={testIds.saveAndCloseButton}
+    >
+      Save and Close
+    </button>
+    <button
+      type="submit"
+      data-testid={testIds.confirmButton}
+    >
+      Confirm
+    </button>
+  </footer>
+)));
 jest.mock('../ItemInformation', () => jest.fn(({
   findItem,
+  getItemValidationData,
+  triggerValidation,
 }) => {
   const onFindItem = () => {
-    findItem('barcode', itemBarcode);
+    findItem(itemKey, itemBarcode);
+  };
+  const validateItem = () => {
+    getItemValidationData(itemKey, itemBarcode);
+    triggerValidation();
   };
 
   return (
     <>
+      <input
+        data-testid={testIds.itemField}
+        onBlur={validateItem}
+      />
       <button
         type="button"
         data-testid={testIds.findItem}
@@ -97,13 +148,23 @@ jest.mock('../ItemInformation', () => jest.fn(({
 }));
 jest.mock('../InstanceInformation', () => jest.fn(({
   findInstance,
+  getInstanceValidationData,
+  triggerValidation,
 }) => {
   const onFindInstance = () => {
     findInstance(instanceId);
   };
+  const validateInstance = () => {
+    getInstanceValidationData(instanceId);
+    triggerValidation();
+  };
 
   return (
     <>
+      <input
+        data-testid={testIds.instanceHridField}
+        onBlur={validateInstance}
+      />
       <button
         type="button"
         data-testid={testIds.findInstance}
@@ -117,16 +178,27 @@ jest.mock('../InstanceInformation', () => jest.fn(({
 jest.mock('../RequesterInformation', () => jest.fn(({
   findUser,
   selectRequester,
+  handleCloseProxy,
+  getUserValidationData,
+  triggerUserBarcodeValidation,
 }) => {
   const onFindUser = () => {
-    findUser('barcode', userBarcode);
+    findUser(requesterKey, userBarcode);
   };
   const onSelectProxy = () => {
     selectRequester({ id: proxyId });
   };
+  const validateRequester = () => {
+    getUserValidationData(requesterKey, userBarcode);
+    triggerUserBarcodeValidation();
+  };
 
   return (
     <>
+      <input
+        data-testid={testIds.requesterField}
+        onBlur={validateRequester}
+      />
       <button
         type="button"
         data-testid={testIds.findUser}
@@ -141,13 +213,50 @@ jest.mock('../RequesterInformation', () => jest.fn(({
       >
         Select proxy
       </button>
+      <button
+        type="button"
+        data-testid={testIds.closeProxy}
+        onClick={handleCloseProxy}
+      >
+        Close proxy
+      </button>
     </>
   );
 }));
 jest.mock('../RequestInformation', () => jest.fn(() => <div />));
-jest.mock('../FulfilmentPreference', () => jest.fn(() => <div />));
+jest.mock('../FulfilmentPreference', () => jest.fn(({
+  deliveryAddress,
+}) => (
+  <div>{deliveryAddress}</div>
+)));
 jest.mock('../AddressDetails', () => jest.fn(() => <div />));
-jest.mock('../ItemsDialog', () => jest.fn(() => <div />));
+jest.mock('../ItemsDialog', () => jest.fn(({
+  onClose,
+  onRowClick,
+}) => {
+  const handleItemClick = () => {
+    onRowClick({}, rowItem);
+  };
+
+  return (
+    <div>
+      <button
+        data-testid={testIds.closeItemDialogButton}
+        type="button"
+        onClick={onClose}
+      >
+        Close
+      </button>
+      <button
+        data-testid={testIds.rowElement}
+        type="button"
+        onClick={handleItemClick}
+      >
+        Row element
+      </button>
+    </div>
+  );
+}));
 jest.mock('../../../../utils', () => ({
   ...jest.requireActual('../../../../utils'),
   getTlrSettings: jest.fn(() => ({
@@ -198,6 +307,22 @@ describe('RequestForm', () => {
         const args = [RESOURCE_TYPES.USER, expect.any(String), expect.any(String)];
 
         expect(basicProps.findResource).not.toHaveBeenCalledWith(...args);
+      });
+
+      it('should handle data submitting after clicking on "Save and Close" button', async () => {
+        const saveAndCloseButton = screen.getByTestId(testIds.saveAndCloseButton);
+
+        await userEvent.click(saveAndCloseButton);
+
+        expect(basicProps.handleSubmit).toHaveBeenCalled();
+      });
+
+      it('should handle data submitting after clicking on "Confirm" button', async () => {
+        const confirmButton = screen.getByTestId(testIds.confirmButton);
+
+        await userEvent.click(confirmButton);
+
+        expect(basicProps.handleSubmit).toHaveBeenCalled();
       });
     });
 
@@ -673,54 +798,216 @@ describe('RequestForm', () => {
     });
   });
 
-  describe('TLR checkbox', () => {
-    const props = {
+  describe('Component updating', () => {
+    const newProps = {
       ...basicProps,
-      values: {
-        createTitleLevelRequest: true,
+      settings: {
+        items: [
+          {
+            value: {
+              titleLevelRequestsFeatureEnabled: true,
+            },
+          }
+        ],
       },
     };
 
     beforeEach(() => {
-      render(
+      const { rerender } = render(
         <RequestForm
-          {...props}
+          {...basicProps}
         />
       );
 
-      const tlrCheckbox = screen.getByTestId(testIds.tlrCheckbox);
-
-      fireEvent.click(tlrCheckbox);
+      rerender(
+        <RequestForm
+          {...newProps}
+        />
+      );
     });
 
-    it('should change tlr value to false', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false];
+    it('should trigger "getTlrSettings" with correct argument', () => {
+      expect(getTlrSettings).toHaveBeenCalledWith(newProps.settings.items[0].value);
+    });
+  });
 
-      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+  describe('TLR checkbox', () => {
+    describe('When tlr checkbox is selected and instance is found', () => {
+      const props = {
+        ...basicProps,
+        values: {
+          createTitleLevelRequest: true,
+        },
+      };
+
+      beforeEach(async () => {
+        render(
+          <RequestForm
+            {...props}
+          />
+        );
+
+        const tlrCheckbox = screen.getByTestId(testIds.tlrCheckbox);
+
+        basicProps.findResource.mockResolvedValue({});
+        await userEvent.click(tlrCheckbox);
+      });
+
+      it('should change tlr value to false', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should reset item barcode value', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should reset instance hrid value', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should reset instance id value', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should set default request type value', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should reset selected instance after closing items dialog', async () => {
+        const closeItemDialogButton = screen.getByTestId(testIds.closeItemDialogButton);
+
+        await userEvent.click(closeItemDialogButton);
+
+        expect(basicProps.onSetSelectedInstance).toHaveBeenCalledWith(EMPTY_RESOURCE_VALUE);
+      });
+
+      it('should reset selected instance after clicking on item from items dialog', async () => {
+        const rowElement = screen.getByTestId(testIds.rowElement);
+
+        await userEvent.click(rowElement);
+
+        expect(basicProps.onSetSelectedInstance).toHaveBeenCalledWith(EMPTY_RESOURCE_VALUE);
+      });
+
+      it('should find item after clicking on item from items dialog', async () => {
+        const rowElement = screen.getByTestId(testIds.rowElement);
+        const expectedArgs = [RESOURCE_TYPES.ITEM, rowItem.id, RESOURCE_KEYS.ID];
+
+        await userEvent.click(rowElement);
+
+        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+      });
     });
 
-    it('should reset item barcode value', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.ITEM_BARCODE, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
+    describe('When tlr checkbox is selected and instance is not found', () => {
+      const props = {
+        ...basicProps,
+        selectedInstance: EMPTY_RESOURCE_VALUE,
+        values: {
+          createTitleLevelRequest: true,
+        },
+      };
 
-      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      beforeEach(async () => {
+        render(
+          <RequestForm
+            {...props}
+          />
+        );
+
+        const tlrCheckbox = screen.getByTestId(testIds.tlrCheckbox);
+
+        await userEvent.click(tlrCheckbox);
+      });
+
+      it('should change tlr value to false', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, false];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should reset selected instance', () => {
+        expect(basicProps.onSetSelectedInstance).toHaveBeenCalledWith(EMPTY_RESOURCE_VALUE);
+      });
     });
 
-    it('should reset instance hrid value', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_HRID, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
+    describe('When tlr checkbox is not selected and item previously found', () => {
+      const props = {
+        ...basicProps,
+        selectedItem: {
+          instanceId: 'instanceId',
+        },
+      };
+      const foundInstance = {
+        id: instanceId,
+        hrid: 'hrid',
+      };
 
-      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      beforeEach(async () => {
+        render(
+          <RequestForm
+            {...props}
+          />
+        );
+
+        const tlrCheckbox = screen.getByTestId(testIds.tlrCheckbox);
+
+        basicProps.findResource.mockResolvedValueOnce(foundInstance);
+        await userEvent.click(tlrCheckbox);
+      });
+
+      it('should change tlr value to true', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.CREATE_TLR, true];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should find instance', () => {
+        const expectedArgs = [RESOURCE_TYPES.INSTANCE, props.selectedItem.instanceId];
+
+        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should reset selected item', () => {
+        expect(basicProps.onSetSelectedItem).toHaveBeenCalledWith(EMPTY_RESOURCE_VALUE);
+      });
     });
 
-    it('should reset instance id value', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.INSTANCE_ID, EMPTY_MEDIATED_REQUEST_FORM_VALUE];
+    describe('When tlr checkbox is not selected and item is not found previously', () => {
+      const props = {
+        ...basicProps,
+        selectedItem: EMPTY_RESOURCE_VALUE,
+      };
 
-      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
-    });
+      beforeEach(async () => {
+        render(
+          <RequestForm
+            {...props}
+          />
+        );
 
-    it('should set default request type value', () => {
-      const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE, DEFAULT_REQUEST_TYPE_VALUE];
+        const tlrCheckbox = screen.getByTestId(testIds.tlrCheckbox);
 
-      expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+        await userEvent.click(tlrCheckbox);
+      });
+
+      it('should not find instance', () => {
+        expect(basicProps.findResource).not.toHaveBeenCalled();
+      });
+
+      it('should reset selected item', () => {
+        expect(basicProps.onSetSelectedItem).toHaveBeenCalledWith(EMPTY_RESOURCE_VALUE);
+      });
     });
   });
 
@@ -782,6 +1069,57 @@ describe('RequestForm', () => {
       });
     });
 
+    describe('When user information loaded before', () => {
+      const foundItem = {
+        items: [
+          {
+            id: 'itemId',
+            barcode: 'itemBarcode',
+          }
+        ],
+      };
+      const foundLoan = {
+        loans: [],
+      };
+      const foundRequestTypes = {};
+      const selectedUser = {
+        id: 'selectedUserId',
+      };
+      const props = {
+        ...basicProps,
+        selectedUser,
+      };
+
+      beforeEach(async () => {
+        render(
+          <RequestForm
+            {...props}
+          />
+        );
+
+        const findItemButton = screen.getByTestId(testIds.findItem);
+
+        basicProps.findResource
+          .mockResolvedValueOnce(foundItem)
+          .mockResolvedValueOnce(foundRequestTypes)
+          .mockResolvedValueOnce(foundLoan);
+        await userEvent.click(findItemButton);
+      });
+
+      it('should find request types', () => {
+        const expectedArgs = [
+          RESOURCE_TYPES.REQUEST_TYPES,
+          {
+            operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
+            [ID_TYPE_MAP.ITEM_ID]: foundItem.items[0].id,
+            requesterId: selectedUser.id,
+          }
+        ];
+
+        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+      });
+    });
+
     describe('When item data does not exist', () => {
       const foundItem = {
         items: [],
@@ -835,6 +1173,44 @@ describe('RequestForm', () => {
         await waitFor(() => {
           expect(basicProps.onSetSelectedItem).toHaveBeenCalledWith(null);
         });
+      });
+    });
+
+    describe('Field validation', () => {
+      const foundItem = {
+        items: [
+          {
+            id: 'itemId',
+            barcode: itemBarcode,
+          }
+        ],
+      };
+
+      beforeEach(async () => {
+        basicProps.findResource.mockResolvedValueOnce(foundItem);
+
+        render(
+          <RequestForm
+            {...basicProps}
+          />
+        );
+
+        const itemField = screen.getByTestId(testIds.itemField);
+
+        await userEvent.click(itemField);
+        await userEvent.click(document.body);
+      });
+
+      it('should validate item barcode on blur', async () => {
+        const expectedArgs = [RESOURCE_TYPES.ITEM, itemBarcode, itemKey];
+
+        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should trigger "form.change" with correct arguments', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_ITEM_BARCODE_FIELD, 1];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
       });
     });
   });
@@ -1072,6 +1448,14 @@ describe('RequestForm', () => {
         it('should not set proxy user id', () => {
           expect(basicProps.form.change).not.toHaveBeenCalledWith(MEDIATED_REQUEST_FORM_FIELD_NAMES.PROXY_USER_ID, props.selectedUser.id);
         });
+
+        it('should reset proxy data', async () => {
+          const closeProxyButton = screen.getByTestId(testIds.closeProxy);
+
+          await userEvent.click(closeProxyButton);
+
+          expect(basicProps.onSetSelectedProxy).toHaveBeenCalledWith(EMPTY_RESOURCE_VALUE);
+        });
       });
 
       describe('When user is acting as a proxy', () => {
@@ -1146,6 +1530,45 @@ describe('RequestForm', () => {
         });
       });
     });
+
+    describe('Field validation', () => {
+      const foundUser = {
+        totalRecords: 1,
+        users: [
+          {
+            id: 'userId',
+            barcode: userBarcode,
+          }
+        ],
+      };
+
+      beforeEach(async () => {
+        basicProps.findResource.mockResolvedValueOnce(foundUser);
+
+        render(
+          <RequestForm
+            {...basicProps}
+          />
+        );
+
+        const requesterField = screen.getByTestId(testIds.requesterField);
+
+        await userEvent.click(requesterField);
+        await userEvent.click(document.body);
+      });
+
+      it('should validate user barcode on blur', async () => {
+        const expectedArgs = [RESOURCE_TYPES.USER, userBarcode, requesterKey];
+
+        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should trigger "form.change" with correct arguments', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_USER_BARCODE_FIELD, 1];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+    });
   });
 
   describe('InstanceInformation', () => {
@@ -1195,6 +1618,49 @@ describe('RequestForm', () => {
 
       it('should set selected instance', () => {
         expect(basicProps.onSetSelectedInstance).toHaveBeenCalledWith(foundInstance);
+      });
+    });
+
+    describe('When user information loaded before', () => {
+      const foundInstance = {
+        id: instanceId,
+        hrid: 'hrid',
+      };
+      const foundRequestTypes = {};
+      const selectedUser = {
+        id: 'selectedUserId',
+      };
+      const receivedProps = {
+        ...props,
+        selectedUser,
+      };
+
+      beforeEach(async () => {
+        render(
+          <RequestForm
+            {...receivedProps}
+          />
+        );
+
+        const findInstanceButton = screen.getByTestId(testIds.findInstance);
+
+        basicProps.findResource
+          .mockResolvedValueOnce(foundInstance)
+          .mockResolvedValueOnce(foundRequestTypes);
+        await userEvent.click(findInstanceButton);
+      });
+
+      it('should find request types', () => {
+        const expectedArgs = [
+          RESOURCE_TYPES.REQUEST_TYPES,
+          {
+            operation: MEDIATED_REQUEST_OPERATIONS.CREATE,
+            [ID_TYPE_MAP.INSTANCE_ID]: foundInstance.id,
+            requesterId: selectedUser.id,
+          }
+        ];
+
+        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
       });
     });
 
@@ -1251,6 +1717,40 @@ describe('RequestForm', () => {
         });
       });
     });
+
+    describe('Field validation', () => {
+      const foundInstance = {
+        id: instanceId,
+        hrid: 'hrid',
+      };
+
+      beforeEach(async () => {
+        basicProps.findResource.mockResolvedValueOnce(foundInstance);
+
+        render(
+          <RequestForm
+            {...props}
+          />
+        );
+
+        const instanceHridField = screen.getByTestId(testIds.instanceHridField);
+
+        await userEvent.click(instanceHridField);
+        await userEvent.click(document.body);
+      });
+
+      it('should validate instance hrid on blur', async () => {
+        const expectedArgs = [RESOURCE_TYPES.INSTANCE, instanceId];
+
+        expect(basicProps.findResource).toHaveBeenCalledWith(...expectedArgs);
+      });
+
+      it('should trigger "form.change" with correct arguments', () => {
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_INSTANCE_ID_FIELD, 1];
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
+      });
+    });
   });
 
   describe('RequestInformation', () => {
@@ -1277,6 +1777,51 @@ describe('RequestForm', () => {
       };
 
       expect(RequestInformation).toHaveBeenCalledWith(expect.objectContaining(expectedProps), {});
+    });
+  });
+
+  describe('FulfilmentPreference', () => {
+    const foundInstance = {
+      id: instanceId,
+      hrid: 'hrid',
+    };
+    const foundRequestTypes = {
+      [MEDIATED_REQUEST_TYPES.HOLD]: [],
+    };
+    const selectedUser = {
+      id: 'selectedUserId',
+    };
+    const props = {
+      ...basicProps,
+      selectedUser,
+      values: {
+        createTitleLevelRequest: true,
+        requestType: MEDIATED_REQUEST_TYPES.HOLD,
+        [MEDIATED_REQUEST_FORM_FIELD_NAMES.DELIVERY_ADDRESS_TYPE_ID]: 'addressTypeId',
+      },
+    };
+
+    beforeEach(async () => {
+      render(
+        <RequestForm
+          {...props}
+        />
+      );
+
+      const findInstanceButton = screen.getByTestId(testIds.findInstance);
+
+      basicProps.findResource
+        .mockResolvedValueOnce(foundInstance)
+        .mockResolvedValueOnce(foundRequestTypes);
+      await userEvent.click(findInstanceButton);
+    });
+
+    it('should trigger "FulfilmentPreference" if user and instance are set', () => {
+      expect(FulfilmentPreference).toHaveBeenCalled();
+    });
+
+    it('should trigger "AddressDetails" if address type id is provided', () => {
+      expect(AddressDetails).toHaveBeenCalled();
     });
   });
 });
