@@ -13,6 +13,7 @@ import MediatedRequestsActivities from '../components/MediatedRequestsActivities
 import {
   PAGE_AMOUNT,
   MEDIATED_REQUESTS_RECORDS_NAME,
+  MEDIATED_REQUEST_STATUS,
 } from '../constants';
 
 const testIds = {
@@ -141,6 +142,7 @@ describe('MediatedRequestsActivitiesContainer', () => {
         state: {
           sortChanged: true,
           changeType: 'reset',
+          filterFields: {},
         },
       };
 
@@ -173,6 +175,9 @@ describe('MediatedRequestsActivitiesContainer', () => {
         state: {
           sortChanged: false,
           changeType: '',
+          filterFields: {
+            status: [MEDIATED_REQUEST_STATUS.NEW_AWAITING_CONFIRMATION],
+          },
         },
       };
 

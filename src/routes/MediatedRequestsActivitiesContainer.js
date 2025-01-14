@@ -137,6 +137,7 @@ class MediatedRequestsActivitiesContainer extends React.Component {
         resultOffset,
       },
     } = this.props;
+    const isAnyFilterSelected = Object.keys(state.filterFields).some(filterName => state.filterFields[filterName]?.length);
 
     if (nsValues.query) {
       nsValues.query = nsValues.query.replace('*', '');
@@ -146,7 +147,7 @@ class MediatedRequestsActivitiesContainer extends React.Component {
       resultOffset.replace(0);
     }
 
-    if (/reset/.test(state.changeType)) {
+    if (/reset/.test(state.changeType) && !isAnyFilterSelected) {
       query.replace(nsValues);
     } else {
       query.update(nsValues);
