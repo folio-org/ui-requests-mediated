@@ -284,9 +284,13 @@ export const formatNoteReferrerEntityData = (entityData) => {
 };
 
 export const getUserHighlightBoxLink = (linkText, id, ariaLabel) => {
+  const additionalProps = {
+    ...(ariaLabel ? { ariaLabel } : {}),
+  };
+
   return linkText ?
     <Link
-      {...(ariaLabel ? { ariaLabel } : {})}
+      {...additionalProps}
       to={`/users/view/${id}`}
     >
       {linkText}

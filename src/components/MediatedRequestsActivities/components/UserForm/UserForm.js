@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import { useMemo } from 'react';
-import { FormattedMessage } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 
 import { useStripes } from '@folio/stripes/core';
 import { ProxyManager } from '@folio/stripes/smart-components';
@@ -29,6 +32,7 @@ const UserForm = ({
   isUserPreselected,
 }) => {
   const stripes = useStripes();
+  const { formatMessage } = useIntl();
   const name = getRequesterName(user);
   const ConnectedProxyManager = useMemo(() => stripes.connect(ProxyManager), [stripes]);
   const proxyInformation = getProxyInformation(proxy, request?.proxyUserId);
@@ -40,7 +44,7 @@ const UserForm = ({
       name={name}
       id={user.id}
       barcode={user.barcode}
-      ariaLabel={<FormattedMessage id="ui-requests-mediated.form.requester.ariaLabel" />}
+      ariaLabel={formatMessage({ id: 'ui-requests-mediated.form.requester.ariaLabel' }) }
     />;
   const proxySection = (isProxyAvailable && proxyInformation.id) ?
     <UserHighlightBox
