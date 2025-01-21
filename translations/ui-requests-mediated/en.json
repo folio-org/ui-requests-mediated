@@ -97,13 +97,11 @@
   "form.item.accordionLabel": "Item information",
   "form.item.inputPlaceholder": "Scan or enter item barcode",
   "form.item.inputLabel": "Item barcode",
-  "form.item.ariaLabel": "View item record",
 
   "form.requester.accordionLabel": "Requester information",
   "form.requester.inputPlaceholder": "Scan or enter requester barcode",
   "form.requester.inputLabel": "Requester barcode",
   "form.requester.lookupLabel": "Requester look-up",
-  "form.requester.ariaLabel": "View requester record",
 
   "form.request.accordionLabel": "Request information",
   "form.request.requestType": "Request type",
@@ -147,6 +145,7 @@
   "itemDetails.callNumber": "Effective call number string",
   "itemDetails.status": "Item status",
   "itemDetails.dueDate": "Current due date",
+  "itemDetails.barcode.ariaLabel": "View item record",
 
   "itemsDialog.barcode": "Barcode",
   "itemsDialog.status": "Item status",
@@ -171,6 +170,7 @@
   "requesterDetails.deliveryAddress": "Delivery address",
   "requesterDetails.pickupServicePoint": "Pickup service point",
   "requesterDetails.fulfillmentPreference": "Fulfillment preference",
+  "requesterDetails.barcode.ariaLabel": "View requester record",
 
   "item.status.agedToLost": "Aged to lost",
   "item.status.available": "Available",

@@ -285,7 +285,7 @@ export const formatNoteReferrerEntityData = (entityData) => {
 
 export const getUserHighlightBoxLink = (linkText, id, ariaLabel) => {
   const additionalProps = {
-    ...(ariaLabel ? { ariaLabel } : {}),
+    ...(ariaLabel ? { 'aria-label': ariaLabel } : {}),
   };
 
   return linkText ?

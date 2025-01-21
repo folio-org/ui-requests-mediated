@@ -43,7 +43,7 @@ const ItemDetail = ({
   const itemLabel = item.barcode ? 'ui-requests-mediated.itemDetails.barcode' : 'ui-requests-mediated.itemDetails.id';
   const recordLink = itemId ?
     <Link
-      aria-label={formatMessage({ id: 'ui-requests-mediated.form.item.ariaLabel' })}
+      aria-label={formatMessage({ id: 'ui-requests-mediated.itemDetails.barcode.ariaLabel' })}
       to={`/inventory/view/${instanceId}/${holdingsRecordId}/${itemId}`}
       className={css.itemLink}
     >

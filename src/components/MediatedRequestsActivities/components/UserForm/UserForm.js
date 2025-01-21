@@ -44,7 +44,7 @@ const UserForm = ({
       name={name}
       id={user.id}
       barcode={user.barcode}
-      ariaLabel={formatMessage({ id: 'ui-requests-mediated.form.requester.ariaLabel' }) }
+      ariaLabel={formatMessage({ id: 'ui-requests-mediated.requesterDetails.barcode.ariaLabel' })}
     />;
   const proxySection = (isProxyAvailable && proxyInformation.id) ?
     <UserHighlightBox
