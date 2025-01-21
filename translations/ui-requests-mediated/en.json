@@ -97,11 +97,13 @@
   "form.item.accordionLabel": "Item information",
   "form.item.inputPlaceholder": "Scan or enter item barcode",
   "form.item.inputLabel": "Item barcode",
+  "form.item.ariaLabel": "View item record",
 
   "form.requester.accordionLabel": "Requester information",
   "form.requester.inputPlaceholder": "Scan or enter requester barcode",
   "form.requester.inputLabel": "Requester barcode",
   "form.requester.lookupLabel": "Requester look-up",
+  "form.requester.ariaLabel": "View requester record",
 
   "form.request.accordionLabel": "Request information",
   "form.request.requestType": "Request type",

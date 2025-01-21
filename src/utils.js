@@ -283,8 +283,15 @@ export const formatNoteReferrerEntityData = (entityData) => {
   return false;
 };
 
-export const getUserHighlightBoxLink = (linkText, id) => {
-  return linkText ? <Link to={`/users/view/${id}`}>{linkText}</Link> : <></>;
+export const getUserHighlightBoxLink = (linkText, id, ariaLabel) => {
+  return linkText ?
+    <Link
+      {...(ariaLabel ? { ariaLabel } : {})}
+      to={`/users/view/${id}`}
+    >
+      {linkText}
+    </Link> :
+    <></>;
 };
 
 export const getProxyInformation = (proxy, proxyIdFromRequest) => {

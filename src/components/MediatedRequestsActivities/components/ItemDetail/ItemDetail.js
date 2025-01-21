@@ -1,6 +1,9 @@
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 
 import {
   Col,
@@ -14,11 +17,14 @@ import { ClipCopy } from '@folio/stripes/smart-components';
 
 import { ITEM_STATUS_TRANSLATION_KEYS } from '../../../../constants';
 
+import css from './ItemDetail.css';
+
 const ItemDetail = ({
   request,
   item,
   loan,
 }) => {
+  const { formatMessage } = useIntl();
   const itemId = request?.itemId || item.id;
 
   if (!itemId && !item.barcode) {
@@ -35,7 +41,15 @@ const ItemDetail = ({
   const dueDate = loan?.dueDate ? <FormattedDate value={loan.dueDate} /> : <NoValue />;
   const effectiveCallNumberString = effectiveCallNumber(item);
   const itemLabel = item.barcode ? 'ui-requests-mediated.itemDetails.barcode' : 'ui-requests-mediated.itemDetails.id';
-  const recordLink = itemId ? <Link to={`/inventory/view/${instanceId}/${holdingsRecordId}/${itemId}`}>{item.barcode || itemId}</Link> : item.barcode || <NoValue />;
+  const recordLink = itemId ?
+    <Link
+      aria-label={formatMessage({ id: 'ui-requests-mediated.form.item.ariaLabel' })}
+      to={`/inventory/view/${instanceId}/${holdingsRecordId}/${itemId}`}
+      className={css.itemLink}
+    >
+      {item.barcode || itemId}
+    </Link> :
+    item.barcode || <NoValue />;
 
   return (
     <>
