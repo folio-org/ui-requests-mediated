@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
-import { FormattedMessage } from 'react-intl';
+import {
+  FormattedMessage,
+  useIntl,
+} from 'react-intl';
 
 import {
   Col,
@@ -21,6 +24,7 @@ const UserDetail = ({
   proxy,
   patronGroup = '',
 }) => {
+  const { formatMessage } = useIntl();
   const id = user?.id ?? request.requesterId;
   const name = getRequesterName(user);
   const proxyInformation = getProxyInformation(proxy, request.proxyUserId);
@@ -40,6 +44,7 @@ const UserDetail = ({
         name={name}
         id={id}
         barcode={user.barcode}
+        ariaLabel={formatMessage({ id: 'ui-requests-mediated.requesterDetails.barcode.ariaLabel' })}
       />
       <Row>
         <Col xs={4}>

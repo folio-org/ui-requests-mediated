@@ -157,4 +157,52 @@ describe('ItemDetail', () => {
       expect(dueDateValue).toBeInTheDocument();
     });
   });
+
+  describe('When item id does not exist', () => {
+    const props = {
+      ...basicProps,
+      item: {
+        ...basicProps.item,
+        id: undefined,
+      },
+    };
+
+    beforeEach(() => {
+      render(
+        <ItemDetail
+          {...props}
+        />
+      );
+    });
+
+    it('should render item barcode', () => {
+      const itemBarcode = screen.getByText(props.item.barcode);
+
+      expect(itemBarcode).toBeInTheDocument();
+    });
+  });
+
+  describe('When item barcode does not exist', () => {
+    const props = {
+      ...basicProps,
+      item: {
+        ...basicProps.item,
+        barcode: undefined,
+      },
+    };
+
+    beforeEach(() => {
+      render(
+        <ItemDetail
+          {...props}
+        />
+      );
+    });
+
+    it('should render item id', () => {
+      const itemId = screen.getByText(props.item.id);
+
+      expect(itemId).toBeInTheDocument();
+    });
+  });
 });

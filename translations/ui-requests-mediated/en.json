@@ -145,6 +145,7 @@
   "itemDetails.callNumber": "Effective call number string",
   "itemDetails.status": "Item status",
   "itemDetails.dueDate": "Current due date",
+  "itemDetails.barcode.ariaLabel": "View item record",
 
   "itemsDialog.barcode": "Barcode",
   "itemsDialog.status": "Item status",
@@ -169,6 +170,7 @@
   "requesterDetails.deliveryAddress": "Delivery address",
   "requesterDetails.pickupServicePoint": "Pickup service point",
   "requesterDetails.fulfillmentPreference": "Fulfillment preference",
+  "requesterDetails.barcode.ariaLabel": "View requester record",
 
   "item.status.agedToLost": "Aged to lost",
   "item.status.available": "Available",

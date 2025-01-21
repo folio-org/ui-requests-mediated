@@ -5,6 +5,7 @@
 * Cover src/index.js file by jest/RTL tests. Refs UIREQMED-68.
 * Increase code coverage of RequestForm.js file by jest/RTL tests. Refs UIREQMED-69.
 * Fix issue with search field when user clears search value. Refs UIREQMED-75.
+* Fix accessibility issues. Refs UIREQMED-74.
 
 ## [2.0.1] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.1) (2024-12-06)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.0...v2.0.1)

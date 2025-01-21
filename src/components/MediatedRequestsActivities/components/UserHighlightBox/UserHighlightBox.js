@@ -17,9 +17,10 @@ const UserHighlightBox = ({
   name,
   id,
   barcode,
+  ariaLabel,
 }) => {
   const recordLink = getUserHighlightBoxLink(name, id);
-  const barcodeLink = getUserHighlightBoxLink(barcode, id);
+  const barcodeLink = getUserHighlightBoxLink(barcode, id, ariaLabel);
 
   return (
     <Row>
@@ -49,6 +50,7 @@ UserHighlightBox.propTypes = {
   name: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   barcode: PropTypes.string.isRequired,
+  ariaLabel: PropTypes.node,
 };
 
 export default UserHighlightBox;
