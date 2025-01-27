@@ -4,6 +4,7 @@ import {
 
 import {
   render,
+  screen,
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import {
@@ -26,7 +27,7 @@ import MediatedRequestsList, {
   DESCENDING,
   getSortOrder,
   COLUMN_WIDTHS,
-  mediatedRequestsListFormatter,
+  getMediatedRequestsListFormatter,
   emptyMessage,
 } from './MediatedRequestsList';
 
@@ -42,6 +43,9 @@ const source = {
 };
 const query = {
   query: '',
+};
+const location = {
+  search: '?filters=requestLevel.Title',
 };
 
 jest.mock('react-router-dom', () => ({
@@ -93,7 +97,6 @@ describe('MediatedRequestsList', () => {
       columnMapping: MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
       contentData,
       totalCount: 0,
-      formatter: mediatedRequestsListFormatter,
       sortOrder: '',
       sortDirection: 'ascending',
     };
@@ -102,7 +105,7 @@ describe('MediatedRequestsList', () => {
   });
 });
 
-describe('mediatedRequestsListFormatter', () => {
+describe('getMediatedRequestsListFormatter', () => {
   const title = 'title value';
   const itemBarcode = 'barcode value';
   const requesterBarcode = 'requester barcode value';
@@ -124,30 +127,33 @@ describe('mediatedRequestsListFormatter', () => {
     item,
     status,
   };
+  const formatter = getMediatedRequestsListFormatter(location);
 
   describe('title', () => {
-    it('should return title', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE](mediatedRequest)).toBe(title);
+    beforeEach(() => {
+      render(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE](mediatedRequest));
     });
 
-    it('should return default value for title', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]()).toBe(DEFAULT_VIEW_VALUE);
+    it('should render title', () => {
+      formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE](mediatedRequest);
+
+      expect(screen.getByText(title)).toBeInTheDocument();
     });
   });
 
   describe('barcode', () => {
     it('should return barcode', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE](mediatedRequest)).toBe(itemBarcode);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE](mediatedRequest)).toBe(itemBarcode);
     });
 
     it('should return default value for barcode', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]()).toBe(DEFAULT_VIEW_VALUE);
     });
   });
 
   describe('mediated request date', () => {
     beforeEach(() => {
-      render(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE](mediatedRequest));
+      render(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE](mediatedRequest));
     });
 
     it('should render app icon with correct props', () => {
@@ -166,7 +172,7 @@ describe('mediatedRequestsListFormatter', () => {
 
   describe('effective call number', () => {
     it('should trigger effective call number with correct argument', () => {
-      mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER](mediatedRequest);
+      formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER](mediatedRequest);
 
       expect(effectiveCallNumber).toHaveBeenCalledWith(item);
     });
@@ -174,31 +180,31 @@ describe('mediatedRequestsListFormatter', () => {
 
   describe('status', () => {
     it('should return status', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS](mediatedRequest)).toBe(status);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS](mediatedRequest)).toBe(status);
     });
 
     it('should return default value for status', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]()).toBe(DEFAULT_VIEW_VALUE);
     });
   });
 
   describe('requester', () => {
     it('should return requester', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER](mediatedRequest)).toBe(lastName);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER](mediatedRequest)).toBe(lastName);
     });
 
     it('should return default value for requester', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]()).toBe(DEFAULT_VIEW_VALUE);
     });
   });
 
   describe('requester barcode', () => {
     it('should return requester barcode', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE](mediatedRequest)).toBe(requesterBarcode);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE](mediatedRequest)).toBe(requesterBarcode);
     });
 
     it('should return default value for requester barcode', () => {
-      expect(mediatedRequestsListFormatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]()).toBe(DEFAULT_VIEW_VALUE);
     });
   });
 });

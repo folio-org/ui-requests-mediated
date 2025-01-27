@@ -309,5 +309,13 @@ jest.mock('@folio/stripes/components', () => ({
       </div>
     );
   }),
+  TextLink: jest.fn(({
+    to,
+    children,
+  }) => (
+    <a href={to}>
+      {children}
+    </a>
+  )),
   MCLPagingTypes: jest.fn(() => ({})),
 }));

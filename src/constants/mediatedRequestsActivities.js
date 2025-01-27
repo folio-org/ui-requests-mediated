@@ -12,6 +12,7 @@ export const MEDIATED_REQUEST_SEARCH_PARAMS = {
 };
 
 export const MEDIATED_REQUESTS_RECORD_FIELD_NAME = {
+  ID: 'id',
   TITLE: 'instanceTitle',
   REQUESTER: 'requester',
   USER_FIRST_NAME: 'requesterFirstName',

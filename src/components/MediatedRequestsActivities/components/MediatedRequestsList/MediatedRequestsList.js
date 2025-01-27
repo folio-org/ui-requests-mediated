@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import {
-  useHistory,
   useLocation,
 } from 'react-router-dom';
 import {
@@ -15,6 +14,7 @@ import {
   MultiColumnList,
   FormattedTime,
   MCLPagingTypes,
+  TextLink,
 } from '@folio/stripes/components';
 
 import {
@@ -55,9 +55,13 @@ export const COLUMN_WIDTHS = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: { max: 120 },
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: { max: 120 },
 };
-export const mediatedRequestsListFormatter = {
+export const getMediatedRequestsListFormatter = (location) => ({
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: (mediatedRequest) => (
-    get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE], DEFAULT_VIEW_VALUE)
+    <TextLink
+      to={`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/preview/${mediatedRequest[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ID]}${location.search}`}
+    >
+      {get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE], DEFAULT_VIEW_VALUE)}
+    </TextLink>
   ),
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]: (mediatedRequest) => (
     get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE], DEFAULT_VIEW_VALUE)
@@ -87,7 +91,7 @@ export const mediatedRequestsListFormatter = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: (mediatedRequest) => (
     get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE], DEFAULT_VIEW_VALUE)
   ),
-};
+});
 export const emptyMessage = (source, query) => (
   source
     ? <SearchAndSortNoResultsMessage
@@ -107,14 +111,9 @@ const MediatedRequestsList = ({
   onSort,
   onNeedMoreData,
 }) => {
-  const history = useHistory();
   const location = useLocation();
   const sortOrder = query.sort || '';
   const totalCount = getTotalCount(source);
-
-  const onRowClick = (e, row) => {
-    history.push(`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/preview/${row.id}${location.search}`);
-  };
 
   return (
     <MultiColumnList
@@ -125,9 +124,8 @@ const MediatedRequestsList = ({
       columnMapping={MEDIATED_REQUESTS_RECORD_TRANSLATIONS}
       contentData={contentData}
       totalCount={totalCount}
-      formatter={mediatedRequestsListFormatter}
+      formatter={getMediatedRequestsListFormatter(location)}
       isEmptyMessage={emptyMessage(source, query)}
-      onRowClick={onRowClick}
       onNeedMoreData={onNeedMoreData}
       onHeaderClick={onSort}
       sortOrder={sortOrder.replace(/^-/, '').replace(/,.*/, '')}
