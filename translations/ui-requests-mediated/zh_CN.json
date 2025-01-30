@@ -209,5 +209,7 @@
     "declineModal.message": "<b> {title} </b>将被<b>拒绝</b>",
     "declineModal.confirm": "确认",
     "declineModal.back": "返回",
-    "form.errors.titleDoesNotExist": "具有此 HRID 或 UUID 的标题不存在"
+    "form.errors.titleDoesNotExist": "具有此 HRID 或 UUID 的标题不存在",
+    "itemDetails.barcode.ariaLabel": "View item record",
+    "requesterDetails.barcode.ariaLabel": "View requester record"
 }

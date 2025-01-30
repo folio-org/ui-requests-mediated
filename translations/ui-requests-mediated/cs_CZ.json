@@ -209,5 +209,7 @@
     "declineModal.message": "<b>{title}</b> bude <b>odmítnut</b>",
     "declineModal.confirm": "Potvrdit",
     "declineModal.back": "Zpět",
-    "form.errors.titleDoesNotExist": "Název s tímto HRID nebo UUID neexistuje"
+    "form.errors.titleDoesNotExist": "Název s tímto HRID nebo UUID neexistuje",
+    "itemDetails.barcode.ariaLabel": "Zobrazit záznam jednotky",
+    "requesterDetails.barcode.ariaLabel": "Zobrazit záznam čtenáře"
 }
