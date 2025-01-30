@@ -209,5 +209,7 @@
     "declineModal.message": "<b>{title}</b> será <b>recusado</b>",
     "declineModal.confirm": "Confirmar",
     "declineModal.back": "Voltar",
-    "form.errors.titleDoesNotExist": "O título com este HRID ou UUID não existe"
+    "form.errors.titleDoesNotExist": "O título com este HRID ou UUID não existe",
+    "itemDetails.barcode.ariaLabel": "Exibir registro de item",
+    "requesterDetails.barcode.ariaLabel": "Exibir registro do solicitante"
 }
