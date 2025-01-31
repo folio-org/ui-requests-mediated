@@ -8,6 +8,7 @@
 * Fix accessibility issues. Refs UIREQMED-74.
 * Fix accessibility issues related to mediated requests list. Refs UIREQMED-76.
 * Update upload-artifact actions from v3 to v4 version. Refs UIREQMED-85.
+* Fix issue with error callout while confirming request. Refs UIREQMED-84.
 
 ## [2.0.1] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.1) (2024-12-06)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.0...v2.0.1)

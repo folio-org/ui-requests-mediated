@@ -158,7 +158,7 @@ const RequestFormContainer = ({
     if (selectedProxy) {
       userData = selectedProxy;
     } else {
-      userData = requestData.requester;
+      userData = selectedUser;
     }
 
     if (!requestData.requestType) {
