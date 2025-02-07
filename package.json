@@ -1,6 +1,6 @@
 {
   "name": "@folio/requests-mediated",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Mediated requests",
   "main": "src/index.js",
   "repository": "folio-org/ui-requests-mediated",
