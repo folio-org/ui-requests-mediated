@@ -1,25 +1,30 @@
 # Change history for ui-requests-mediated
 
-## 2.1.0 (IN PROGRESS)
+## 3.0.0 (IN PROGRESS)
+
 * Make "Enter" buttons shorter using default styles. Refs UIREQMED-71.
 * Cover src/index.js file by jest/RTL tests. Refs UIREQMED-68.
 * Increase code coverage of RequestForm.js file by jest/RTL tests. Refs UIREQMED-69.
 * Fix issue with search field when user clears search value. Refs UIREQMED-75.
 * Fix accessibility issues. Refs UIREQMED-74.
 * Fix accessibility issues related to mediated requests list. Refs UIREQMED-76.
+* *BREAKING* Update `react-intl` to `^7`. Refs UIREQMED-89.
 
 ## [2.0.2] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.2) (2025-02-07)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.1...v2.0.2)
+
 * Fix issue with error callout while confirming request. Refs UIREQMED-84.
 * Update upload-artifact actions from v3 to v4 version. Refs UIREQMED-85.
 
 ## [2.0.1] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.1) (2024-12-06)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.0...v2.0.1)
+
 * Minor improvements and code fixes. Refs UIREQMED-65.
 * Create a solution to not display "Are you sure?" modal when no changes have been made, increase code coverage. Refs UIREQMED-64.
 
 ## [2.0.0] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.0) (2024-11-30)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v1.1.0...v2.0.0)
+
 * Print slip for Mediated requests activity - Send item in transit. Refs UIREQMED-40.
 * Persist filters when changing between actions. Refs UIREQMED-44.
 * Implement functionality for editing mediated request. Refs UIREQMED-22.
@@ -32,6 +37,7 @@
 * Update permission after mod-requests-mediated permission changes. Refs UIREQMED-62.
 
 ## [1.1.0](https://github.com/folio-org/ui-requests-mediated/tree/v1.1.0) (2024-10-30)
+
 * Update github actions. Refs UIREQMED-14.
 * Add landing page actions: Confirm item arrival, Mediated requests activities and Send item in transit. Refs UIREQMED-2.
 * Hide permission that should not be visible. Refs UIREQMED-20.
@@ -65,4 +71,5 @@
 * Review and cleanup Module Descriptor. Refs UIREQMED-47.
 
 ## 1.0.0
+
 * New app created with stripes-cli. Updated module after created with stripes-cli. Refs UIREQMED-1.
