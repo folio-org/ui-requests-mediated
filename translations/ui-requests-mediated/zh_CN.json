@@ -44,7 +44,7 @@
     "itemDetails.dueDate": "当前到期日",
     "itemsDialog.barcode": "条码",
     "itemsDialog.status": "单件状态",
-    "itemsDialog.location": "位置",
+    "itemsDialog.location": "馆藏地",
     "itemsDialog.materialType": "资料类型",
     "itemsDialog.loanType": "借阅类型",
     "itemsDialog.selectItem": "选择单件",
@@ -210,6 +210,6 @@
     "declineModal.confirm": "确认",
     "declineModal.back": "返回",
     "form.errors.titleDoesNotExist": "具有此 HRID 或 UUID 的标题不存在",
-    "itemDetails.barcode.ariaLabel": "View item record",
-    "requesterDetails.barcode.ariaLabel": "View requester record"
+    "itemDetails.barcode.ariaLabel": "查看单件记录",
+    "requesterDetails.barcode.ariaLabel": "查看请求者记录"
 }
