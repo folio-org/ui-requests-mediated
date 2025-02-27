@@ -13,6 +13,7 @@ import {
 import {
   MultiColumnList,
   FormattedTime,
+  NoValue,
 } from '@folio/stripes/components';
 import {
   SearchAndSortNoResultsMessage,
@@ -33,7 +34,6 @@ import MediatedRequestsList, {
 
 import {
   APP_ICON_NAME,
-  DEFAULT_VIEW_VALUE,
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
   MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
 } from '../../../../constants';
@@ -147,7 +147,7 @@ describe('getMediatedRequestsListFormatter', () => {
     });
 
     it('should return default value for barcode', () => {
-      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]()).toEqual(<NoValue />);
     });
   });
 
@@ -176,6 +176,12 @@ describe('getMediatedRequestsListFormatter', () => {
 
       expect(effectiveCallNumber).toHaveBeenCalledWith(item);
     });
+
+    it('should return default value for effective call number', () => {
+      effectiveCallNumber.mockReturnValueOnce('');
+
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]()).toEqual(<NoValue />);
+    });
   });
 
   describe('status', () => {
@@ -184,7 +190,7 @@ describe('getMediatedRequestsListFormatter', () => {
     });
 
     it('should return default value for status', () => {
-      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]()).toEqual(<NoValue />);
     });
   });
 
@@ -194,7 +200,7 @@ describe('getMediatedRequestsListFormatter', () => {
     });
 
     it('should return default value for requester', () => {
-      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]()).toEqual(<NoValue />);
     });
   });
 
@@ -204,7 +210,7 @@ describe('getMediatedRequestsListFormatter', () => {
     });
 
     it('should return default value for requester barcode', () => {
-      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(formatter[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]()).toEqual(<NoValue />);
     });
   });
 });
