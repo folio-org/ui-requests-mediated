@@ -6,6 +6,7 @@ import {
 import {
   Modal,
   MultiColumnList,
+  NoValue,
 } from '@folio/stripes/components';
 
 import {
@@ -158,6 +159,7 @@ describe('ItemsDialog', () => {
 
   describe('formatter', () => {
     const item = {
+      barcode: 'barcode',
       status: {
         name: ITEM_STATUSES.AGED_TO_LOST,
       },
@@ -172,6 +174,16 @@ describe('ItemsDialog', () => {
       },
     };
 
+    describe('barcode', () => {
+      it('should return item barcode', () => {
+        expect(formatter.barcode(item)).toBe(item.barcode);
+      });
+
+      it('should return default value', () => {
+        expect(formatter.barcode()).toEqual(<NoValue />);
+      });
+    });
+
     describe('itemStatus', () => {
       it('should return formatted message', () => {
         expect(formatter.itemStatus(item).props.id).toBe(ITEM_STATUS_TRANSLATION_KEYS[[ITEM_STATUSES.AGED_TO_LOST]]);
@@ -181,6 +193,10 @@ describe('ItemsDialog', () => {
     describe('location', () => {
       it('should return location name', () => {
         expect(formatter.location(item)).toBe(item.location.name);
+      });
+
+      it('should return default value', () => {
+        expect(formatter.location()).toEqual(<NoValue />);
       });
     });
 
@@ -195,6 +211,14 @@ describe('ItemsDialog', () => {
         it('should return temporary loan type name', () => {
           expect(formatter.loanType(item)).toBe(item.temporaryLoanType.name);
         });
+
+        it('should return default value', () => {
+          const itemWithoutLoanType = {
+            temporaryLoanType: {},
+          };
+
+          expect(formatter.loanType(itemWithoutLoanType)).toEqual(<NoValue />);
+        });
       });
 
       describe('Without temporaryLoanType', () => {
@@ -208,6 +232,14 @@ describe('ItemsDialog', () => {
           };
 
           expect(formatter.loanType(itemWithPermanentLoanType)).toBe(itemWithPermanentLoanType.permanentLoanType.name);
+        });
+
+        it('should return default value', () => {
+          const itemWithoutLoanType = {
+            permanentLoanType: {},
+          };
+
+          expect(formatter.loanType(itemWithoutLoanType)).toEqual(<NoValue />);
         });
       });
     });

@@ -15,6 +15,7 @@ import {
   FormattedTime,
   MCLPagingTypes,
   TextLink,
+  NoValue,
 } from '@folio/stripes/components';
 
 import {
@@ -56,15 +57,17 @@ export const COLUMN_WIDTHS = {
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: { max: 120 },
 };
 export const getMediatedRequestsListFormatter = (location) => ({
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: (mediatedRequest) => (
-    <TextLink
-      to={`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/preview/${mediatedRequest[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ID]}${location.search}`}
-    >
-      {get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE], DEFAULT_VIEW_VALUE)}
-    </TextLink>
-  ),
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]: (mediatedRequest) => {
+    const title = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.TITLE]);
+
+    return title ?
+      <TextLink to={`/${MODULE_ROUTE}/${MEDIATED_REQUESTS_ACTIVITIES}/preview/${mediatedRequest[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ID]}${location.search}`}>
+        {title}
+      </TextLink> :
+      <NoValue />;
+  },
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE]: (mediatedRequest) => (
-    get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE], DEFAULT_VIEW_VALUE)
+    get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM_BARCODE], <NoValue />)
   ),
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.MEDIATED_REQUEST_DATE]: (mediatedRequest) => (
     <AppIcon
@@ -82,14 +85,14 @@ export const getMediatedRequestsListFormatter = (location) => ({
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]: (mediatedRequest) => {
     const item = get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.ITEM], {});
 
-    return effectiveCallNumber(item);
+    return effectiveCallNumber(item) || <NoValue />;
   },
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS]: (mediatedRequest) => (
-    get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS], DEFAULT_VIEW_VALUE)
+    get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.STATUS], <NoValue />)
   ),
-  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: (mediatedRequest) => (getRequesterName(mediatedRequest)),
+  [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER]: (mediatedRequest) => (getRequesterName(mediatedRequest) || <NoValue />),
   [MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE]: (mediatedRequest) => (
-    get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE], DEFAULT_VIEW_VALUE)
+    get(mediatedRequest, MEDIATED_REQUESTS_RECORD_FIELD_PATH[MEDIATED_REQUESTS_RECORD_FIELD_NAME.REQUESTER_BARCODE], <NoValue />)
   ),
 });
 export const emptyMessage = (source, query) => (

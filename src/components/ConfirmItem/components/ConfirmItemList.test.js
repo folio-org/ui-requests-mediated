@@ -13,6 +13,7 @@ import {
 import {
   MultiColumnList,
   FormattedTime,
+  NoValue,
 } from '@folio/stripes/components';
 import {
   effectiveCallNumber,
@@ -29,7 +30,6 @@ import {
   APP_ICON_NAME,
   CONFIRM_ITEM_TYPES,
   CONFIRM_ITEM_RECORD_FIELD_NAME,
-  DEFAULT_VIEW_VALUE,
 } from '../../../constants';
 
 const contentData = [];
@@ -104,7 +104,7 @@ describe('getConfirmItemListFormatter', () => {
     });
 
     it('should return default value for title', () => {
-      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.TITLE]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.TITLE]()).toEqual(<NoValue />);
     });
   });
 
@@ -114,7 +114,7 @@ describe('getConfirmItemListFormatter', () => {
     });
 
     it('should return default value for barcode', () => {
-      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.ITEM_BARCODE]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.ITEM_BARCODE]()).toEqual(<NoValue />);
     });
   });
 
@@ -143,6 +143,12 @@ describe('getConfirmItemListFormatter', () => {
 
       expect(effectiveCallNumber).toHaveBeenCalledWith(item);
     });
+
+    it('should return default value for effective call number', () => {
+      effectiveCallNumber.mockReturnValueOnce('');
+
+      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]()).toEqual(<NoValue />);
+    });
   });
 
   describe('status', () => {
@@ -151,7 +157,7 @@ describe('getConfirmItemListFormatter', () => {
     });
 
     it('should return default value for status', () => {
-      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.MEDIATED_REQUEST_STATUS]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.MEDIATED_REQUEST_STATUS]()).toEqual(<NoValue />);
     });
   });
 
@@ -161,7 +167,7 @@ describe('getConfirmItemListFormatter', () => {
     });
 
     it('should return default value for requester', () => {
-      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER]()).toEqual(<NoValue />);
     });
   });
 
@@ -171,7 +177,7 @@ describe('getConfirmItemListFormatter', () => {
     });
 
     it('should return default value for requester barcode', () => {
-      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER_BARCODE]()).toBe(DEFAULT_VIEW_VALUE);
+      expect(getConfirmItemListFormatter(props.confirmItemType)[CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER_BARCODE]()).toEqual(<NoValue />);
     });
   });
 });

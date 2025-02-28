@@ -10,6 +10,7 @@ import {
   Paneset,
   Loading,
   Layout,
+  NoValue,
 } from '@folio/stripes/components';
 
 import {
@@ -42,10 +43,11 @@ export const COLUMN_MAP = {
   loanType: <FormattedMessage id="ui-requests-mediated.itemsDialog.loanType" />,
 };
 export const formatter = {
+  barcode: item => item?.barcode || <NoValue />,
   itemStatus: item => <FormattedMessage id={ITEM_STATUS_TRANSLATION_KEYS[item.status.name]} />,
-  location: item => get(item, 'location.name', ''),
+  location: item => get(item, 'location.name', <NoValue />),
   materialType: item => item.materialType.name,
-  loanType: item => (item.temporaryLoanType ? get(item, 'temporaryLoanType.name', '') : get(item, 'permanentLoanType.name', '')),
+  loanType: item => (item.temporaryLoanType ? get(item, 'temporaryLoanType.name', <NoValue />) : get(item, 'permanentLoanType.name', <NoValue />)),
 };
 export const MAX_HEIGHT = 500;
 

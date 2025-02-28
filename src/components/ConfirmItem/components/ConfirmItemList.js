@@ -13,6 +13,7 @@ import {
 import {
   FormattedTime,
   MultiColumnList,
+  NoValue,
 } from '@folio/stripes/components';
 import {
   effectiveCallNumber,
@@ -78,23 +79,23 @@ export const getConfirmItemListFormatter = (confirmItemType) => ({
     );
   },
   [CONFIRM_ITEM_RECORD_FIELD_NAME.TITLE]: (confirmItem) => (
-    get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.TITLE], DEFAULT_VIEW_VALUE)
+    get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.TITLE], <NoValue />)
   ),
   [CONFIRM_ITEM_RECORD_FIELD_NAME.ITEM_BARCODE]: (confirmItem) => (
-    get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.ITEM_BARCODE], DEFAULT_VIEW_VALUE)
+    get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.ITEM_BARCODE], <NoValue />)
   ),
 
   [CONFIRM_ITEM_RECORD_FIELD_NAME.EFFECTIVE_CALL_NUMBER]: (confirmItem) => {
     const item = get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.ITEM], {});
 
-    return effectiveCallNumber(item);
+    return effectiveCallNumber(item) || <NoValue />;
   },
   [CONFIRM_ITEM_RECORD_FIELD_NAME.MEDIATED_REQUEST_STATUS]: (confirmItem) => (
-    get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.MEDIATED_REQUEST_STATUS], DEFAULT_VIEW_VALUE)
+    get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.MEDIATED_REQUEST_STATUS], <NoValue />)
   ),
-  [CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER]: (confirmItem) => (getRequesterName(confirmItem)),
+  [CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER]: (confirmItem) => (getRequesterName(confirmItem) || <NoValue />),
   [CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER_BARCODE]: (confirmItem) => (
-    get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER_BARCODE], DEFAULT_VIEW_VALUE)
+    get(confirmItem, CONFIRM_ITEM_RECORD_FIELD_PATH[CONFIRM_ITEM_RECORD_FIELD_NAME.REQUESTER_BARCODE], <NoValue />)
   ),
 });
 export const getEmptyMessage = (contentData) => (
