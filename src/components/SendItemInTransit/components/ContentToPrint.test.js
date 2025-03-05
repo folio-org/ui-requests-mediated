@@ -4,6 +4,10 @@ import {
 
 import ContentToPrint from './ContentToPrint';
 
+jest.mock('@folio/stripes/util', () => ({
+  convertToSlipData: jest.fn(() => ([{}])),
+}));
+
 describe('ContentToPrint', () => {
   const props = {
     contentToPrintId: 'contentToPrint',

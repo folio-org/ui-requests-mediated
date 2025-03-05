@@ -1,5 +1,3 @@
-import { useIntl } from 'react-intl';
-
 import {
   escape,
 } from 'lodash';
@@ -10,12 +8,6 @@ import {
 } from '@folio/jest-config-stripes/testing-library/react';
 
 import { NoValue } from '@folio/stripes/components';
-
-import {
-  STAFF_SLIP_WITH_OUT_DATA,
-  SOURCE_FOR_STAFF_SLIP_DATA,
-  STAFF_SLIP_DATA,
-} from '../test/jest/__mock__/staffSlipData.mock';
 
 import {
   transformRequestFilterOptions,
@@ -52,8 +44,6 @@ import {
   escapeValue,
   buildTemplate,
   shouldProcessNode,
-  buildLocaleDateAndTime,
-  convertToSlipData,
   processNode,
 } from './utils';
 import {
@@ -1125,31 +1115,5 @@ describe('shouldProcessNode', () => {
     };
 
     expect(shouldProcessNode(node)).toBeFalsy();
-  });
-});
-
-describe('buildLocaleDateAndTime', () => {
-  const dateTime = '2024-12-31T24:00:00.000+00:00';
-  const timezone = 'UTC';
-  const locale = 'en-US';
-
-  it('should return date with locale date and time', () => {
-    expect(buildLocaleDateAndTime(dateTime, timezone, locale)).toEqual('01/01/2025 12:00 AM');
-  });
-});
-
-describe('convertToSlipData', () => {
-  const intl = useIntl();
-  const timeZone = 'UTC';
-  const locale = 'en-US';
-
-  it('should return slip data with out value', () => {
-    const source = {};
-
-    expect(convertToSlipData(source, intl, timeZone, locale)).toEqual(STAFF_SLIP_WITH_OUT_DATA);
-  });
-
-  it('should return slip data with value', () => {
-    expect(convertToSlipData(SOURCE_FOR_STAFF_SLIP_DATA, intl, timeZone, locale)).toEqual(STAFF_SLIP_DATA);
   });
 });
