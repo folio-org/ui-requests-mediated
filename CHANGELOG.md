@@ -12,6 +12,7 @@
 * Migrate to shared GA workflows. Refs UIREQMED-87.
 * *BREAKING* Update stripes-* dependencies to latest version. Refs UIREQMED-88.
 * Use NoValue component for missed data. Refs UIREQMED-91.
+* *BREAKING* Use `convertToSlipData` and supporting functions from `stripes-util`. Refs UIREQMED-92.
 
 ## [2.0.2] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.2) (2025-02-07)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.1...v2.0.2)
