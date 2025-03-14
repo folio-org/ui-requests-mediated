@@ -10,13 +10,19 @@ import DOMPurify from 'dompurify';
 import {
   useStripes,
 } from '@folio/stripes/core';
+import {
+  convertToSlipData,
+} from '@folio/stripes/util';
 
 import {
   buildTemplate,
   shouldProcessNode,
   processNode,
-  convertToSlipData,
 } from '../../../utils';
+
+import {
+  STAFF_SLIPS_TYPE,
+} from '../../../constants';
 
 const ContentToPrint = ({
   contentToPrintId,
@@ -52,7 +58,9 @@ const ContentToPrint = ({
     currentDateTime: dataSource?.inTransitDate,
     ...dataSource?.staffSlipContext,
   };
-  const componentStr = DOMPurify.sanitize(cathedralTemplate(convertToSlipData(staffSlipContext, intl, timezone, locale)), { ADD_TAGS: ['Barcode'] });
+  const componentStr = DOMPurify.sanitize(cathedralTemplate(convertToSlipData([staffSlipContext], intl, timezone, locale, {
+    slipName: STAFF_SLIPS_TYPE.TRANSIT_MEDIATED_REQUESTS,
+  })[0]), { ADD_TAGS: ['Barcode'] });
   const Component = parser.parseWithInstructions(componentStr, () => true, rules) || null;
 
   return (
