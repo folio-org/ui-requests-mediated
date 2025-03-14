@@ -1,6 +1,7 @@
 # Change history for ui-requests-mediated
 
-## 3.0.0 (IN PROGRESS)
+## [3.0.0] (https://github.com/folio-org/ui-requests-mediated/tree/v3.0.0) (2025-03-14)
+[Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.2...v3.0.0)
 
 * Make "Enter" buttons shorter using default styles. Refs UIREQMED-71.
 * Cover src/index.js file by jest/RTL tests. Refs UIREQMED-68.
