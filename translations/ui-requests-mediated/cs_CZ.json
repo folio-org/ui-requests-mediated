@@ -54,7 +54,7 @@
     "instanceDetails.title": "Název",
     "instanceDetails.contributor": "Autor",
     "instanceDetails.publicationDate": "Datum publikace",
-    "instanceDetails.edition": "Edice",
+    "instanceDetails.edition": "Vydání",
     "instanceDetails.identifiers": "ISBN",
     "requesterDetails.patronGroup": "Kategorie čtenáře",
     "requesterDetails.barcode": "Čárový kód",
