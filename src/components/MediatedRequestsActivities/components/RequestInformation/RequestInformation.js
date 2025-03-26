@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Field } from 'react-final-form';
 import PropTypes from 'prop-types';
@@ -19,7 +18,6 @@ import {
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   DEFAULT_REQUEST_TYPE_VALUE,
 } from '../../../../constants';
-import { getNoRequestTypeErrorMessageId } from '../../../../utils';
 
 const RequestInformation = ({
   request,
@@ -38,13 +36,6 @@ const RequestInformation = ({
   const isMetadata = isEditMode && request?.metadata;
   const isItemOrTitleSelected = isTitleLevelRequest ? isSelectedInstance : isSelectedItem;
   const isRequestTypeDisabled = requestTypeOptions.length === 0 || !(isItemOrTitleSelected && isSelectedUser) || !isEditPermission;
-  const validateRequestType = useCallback(() => {
-    if (isItemOrTitleSelected && isSelectedUser && requestTypeOptions.length === 0 && isRequestTypesReceived) {
-      return <FormattedMessage id={getNoRequestTypeErrorMessageId(isTitleLevelRequest)} />;
-    }
-
-    return undefined;
-  }, [isItemOrTitleSelected, isSelectedUser, requestTypeOptions, isTitleLevelRequest, isRequestTypesReceived]);
 
   return (
     <>
@@ -62,7 +53,6 @@ const RequestInformation = ({
                 key={values.keyOfRequestTypeField ?? 0}
                 name={MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE}
                 validateFields={[]}
-                validate={validateRequestType}
               >
                 {({
                   input,

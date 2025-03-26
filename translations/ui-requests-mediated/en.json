@@ -129,8 +129,6 @@
   "form.errors.itemDoesNotExist": "Item with this barcode does not exist",
   "form.errors.selectUser": "Please fill out requester information to continue",
   "form.errors.userDoesNotExist": "User with this barcode does not exist",
-  "form.errors.requestType.titleLevelRequest": "None available for this title and patron combination",
-  "form.errors.requestType.itemLevelRequest": "None available for this item and patron combination",
 
   "form.saveRequest.success": "Mediated request has been successfully saved",
   "form.createRequest.success": "Request has been successfully created for {requester}",
