@@ -231,16 +231,6 @@ export const FULFILMENT_TYPES_MAP = [
   },
 ];
 
-export const MEDIATED_REQUEST_TYPE_ERROR_LEVEL = {
-  TITLE_LEVEL_ERROR: 'title',
-  ITEM_LEVEL_ERROR: 'item',
-};
-
-export const MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS = {
-  [MEDIATED_REQUEST_TYPE_ERROR_LEVEL.TITLE_LEVEL_ERROR]: 'ui-requests-mediated.form.errors.requestType.titleLevelRequest',
-  [MEDIATED_REQUEST_TYPE_ERROR_LEVEL.ITEM_LEVEL_ERROR]: 'ui-requests-mediated.form.errors.requestType.itemLevelRequest',
-};
-
 export const ITEM_STATUSES = {
   AVAILABLE: 'Available',
   AGED_TO_LOST: 'Aged to lost',

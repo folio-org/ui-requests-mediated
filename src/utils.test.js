@@ -37,7 +37,6 @@ import {
   getDeliveryInformation,
   getResourceTypeId,
   getRequestInformation,
-  getNoRequestTypeErrorMessageId,
   getUserPreferences,
   getReferredRecordData,
   formatNoteReferrerEntityData,
@@ -62,8 +61,6 @@ import {
   MEDIATED_REQUEST_TYPES,
   DEFAULT_VIEW_VALUE,
   ID_TYPE_MAP,
-  MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
-  MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
   STAFF_SLIPS_TYPE,
 } from './constants';
 
@@ -613,16 +610,6 @@ describe('utils', () => {
       const isTitleLevelRequest = false;
 
       expect(getRequestInformation(isTitleLevelRequest, selectedInstance, selectedItem)).toEqual(selectedItem);
-    });
-  });
-
-  describe('getNoRequestTypeErrorMessageId', () => {
-    it('should return error for title level request', () => {
-      expect(getNoRequestTypeErrorMessageId(true)).toBe(MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.TITLE_LEVEL_ERROR]);
-    });
-
-    it('should return error for item level request', () => {
-      expect(getNoRequestTypeErrorMessageId(false)).toBe(MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.ITEM_LEVEL_ERROR]);
     });
   });
 
