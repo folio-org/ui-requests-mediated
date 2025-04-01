@@ -67,7 +67,7 @@ jest.mock('@folio/stripes/components', () => ({
   dayjs: jest.fn(() => ({
     tz: () => ({
       toISOString: () => '02/02/2022',
-    })
+    }),
   })),
   Datepicker: jest.fn(({ ref, children, ...rest }) => (
     <div ref={ref} {...rest}>
