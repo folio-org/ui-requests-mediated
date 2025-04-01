@@ -13,7 +13,6 @@ import {
   unset,
 } from 'lodash';
 import { stringify } from 'query-string';
-import moment from 'moment-timezone';
 
 import {
   useOkapiKy,
