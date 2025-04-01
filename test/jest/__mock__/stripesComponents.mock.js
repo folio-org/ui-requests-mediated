@@ -1,5 +1,3 @@
-import {dayjs} from "@folio/stripes/components";
-
 jest.mock('@folio/stripes/components', () => ({
   Accordion: jest.fn(({
     children,
