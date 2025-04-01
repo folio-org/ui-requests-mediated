@@ -19,6 +19,7 @@ import {
   useOkapiKy,
   useCallout,
 } from '@folio/stripes/core';
+import { dayjs } from '@folio/stripes/components';
 
 import RequestForm from '../RequestForm';
 import {
@@ -153,7 +154,7 @@ const RequestFormContainer = ({
       requestData.requestLevel = getRequestLevelValue(requestData.createTitleLevelRequest);
     }
 
-    requestData.requestDate = moment.tz(intl.timeZone).toISOString();
+    requestData.requestDate = dayjs().tz(intl.timeZone).toISOString();
 
     if (selectedProxy) {
       userData = selectedProxy;
