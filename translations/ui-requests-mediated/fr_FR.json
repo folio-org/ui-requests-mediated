@@ -107,8 +107,6 @@
     "form.request.type.page": "Sur exemplaire emprunté",
     "form.request.fulfillment.delivery": "Livraison",
     "form.request.fulfillment.holdShelf": "Hold Shelf",
-    "form.errors.requestType.titleLevelRequest": "Aucun disponible pour cette combinaison d'usager et de titre",
-    "form.errors.requestType.itemLevelRequest": "Aucun disponible pour cette combinaison d'usager et d'exemplaire",
     "form.saveRequest.success": "Mediated request has been successfully saved",
     "form.createRequest.success": "La réservation a été créée avec succès pour {requester}",
     "form.saveRequest.error": "Mediated request cannot be successfully saved",

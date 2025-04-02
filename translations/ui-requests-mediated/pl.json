@@ -107,8 +107,6 @@
     "form.request.type.page": "Zamówienie",
     "form.request.fulfillment.delivery": "Delivery",
     "form.request.fulfillment.holdShelf": "Hold Shelf",
-    "form.errors.requestType.titleLevelRequest": "Brak dostępnych opcji dla tej kombinacji tytułu i czytelnika",
-    "form.errors.requestType.itemLevelRequest": "Brak dostępnych opcji dla tej kombinacji egzemplarza i czytelnika",
     "form.saveRequest.success": "Mediated request has been successfully saved",
     "form.createRequest.success": "Request has been successfully created for {requester}",
     "form.saveRequest.error": "Mediated request cannot be successfully saved",

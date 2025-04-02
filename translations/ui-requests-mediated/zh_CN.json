@@ -107,8 +107,6 @@
     "form.request.type.page": "传呼",
     "form.request.fulfillment.delivery": "传递",
     "form.request.fulfillment.holdShelf": "预约架",
-    "form.errors.requestType.titleLevelRequest": "此标题/品种和读者组合均不可用",
-    "form.errors.requestType.itemLevelRequest": "此单件和读者组合均不可用",
     "form.saveRequest.success": "中介请求已成功保存",
     "form.createRequest.success": "已为{requester}成功创建请求",
     "form.saveRequest.error": "无法成功保存中介请求",

@@ -107,8 +107,6 @@
     "form.request.type.page": "Oproep",
     "form.request.fulfillment.delivery": "Levering",
     "form.request.fulfillment.holdShelf": "Reserveringen",
-    "form.errors.requestType.titleLevelRequest": "Geen beschikbaar voor deze combinatie van gebruiker en titel",
-    "form.errors.requestType.itemLevelRequest": "Geen beschikbaar voor deze combinatie van item en gebruiker",
     "form.saveRequest.success": "Aanvraag is succesvol opgeslagen",
     "form.createRequest.success": "Aanvraag is succesvol aangemaakt voor {requester}",
     "form.saveRequest.error": "Aanvraag kan niet succesvol worden opgeslagen",
