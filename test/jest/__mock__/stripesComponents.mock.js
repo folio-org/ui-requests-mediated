@@ -62,6 +62,11 @@ jest.mock('@folio/stripes/components', () => ({
   )),
   FormattedTime: jest.fn(({ value }) => <div>{value}</div>),
   collapseAllSections: jest.fn(),
+  dayjs: jest.fn(() => ({
+    tz: () => ({
+      toISOString: () => '02/02/2022',
+    }),
+  })),
   Datepicker: jest.fn(({ ref, children, ...rest }) => (
     <div ref={ref} {...rest}>
       {children}
