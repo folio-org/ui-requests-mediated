@@ -107,8 +107,6 @@
     "form.request.type.page": "Na volnou jednotku",
     "form.request.fulfillment.delivery": "Doručení",
     "form.request.fulfillment.holdShelf": "Vyzvednutí z regálu",
-    "form.errors.requestType.titleLevelRequest": "Žádné k dispozici pro tuto kombinaci názvu a čtenáře",
-    "form.errors.requestType.itemLevelRequest": "Žádné k dispozici pro tuto kombinaci jednotky a čtenáře",
     "form.saveRequest.success": "Zprostředkovaná žádanka byla úspěšně uložena",
     "form.createRequest.success": "Žádanka byla úspěšně vytvořena pro {requester}",
     "form.saveRequest.error": "Zprostředkovanou žádanku nelze úspěšně uložit",

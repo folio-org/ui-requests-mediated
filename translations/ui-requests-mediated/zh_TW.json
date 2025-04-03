@@ -107,8 +107,6 @@
     "form.request.type.page": "Page",
     "form.request.fulfillment.delivery": "Delivery",
     "form.request.fulfillment.holdShelf": "Hold Shelf",
-    "form.errors.requestType.titleLevelRequest": "None available for this title and patron combination",
-    "form.errors.requestType.itemLevelRequest": "None available for this item and patron combination",
     "form.saveRequest.success": "Mediated request has been successfully saved",
     "form.createRequest.success": "Request has been successfully created for {requester}",
     "form.saveRequest.error": "Mediated request cannot be successfully saved",

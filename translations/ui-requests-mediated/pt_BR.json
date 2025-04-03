@@ -107,8 +107,6 @@
     "form.request.type.page": "Item disponível",
     "form.request.fulfillment.delivery": "Entrega",
     "form.request.fulfillment.holdShelf": "Prateleira de espera",
-    "form.errors.requestType.titleLevelRequest": "Nenhum disponível para esta combinação de título e usuário",
-    "form.errors.requestType.itemLevelRequest": "Nenhum disponível para esta combinação de item e usuário",
     "form.saveRequest.success": "A requisição mediada foi salva com sucesso",
     "form.createRequest.success": "A requisição foi criada com sucesso para {requester}",
     "form.saveRequest.error": "A requisição mediada não pode ser salva",
