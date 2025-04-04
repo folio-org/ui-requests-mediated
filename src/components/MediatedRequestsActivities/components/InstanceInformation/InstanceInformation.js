@@ -21,6 +21,7 @@ import {
   ENTER_EVENT_KEY,
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   DEFAULT_REQUEST_TYPE_VALUE,
+  REQUEST_PROP_TYPES,
 } from '../../../../constants';
 import TitleInformation from '../TitleInformation';
 import { memoizeValidation } from '../../../../utils';
@@ -35,16 +36,34 @@ class InstanceInformation extends Component {
     findInstance: PropTypes.func.isRequired,
     getInstanceValidationData: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
-    form: PropTypes.object.isRequired,
-    values: PropTypes.object.isRequired,
+    form: PropTypes.shape({
+      change: PropTypes.func.isRequired,
+    }).isRequired,
+    values: PropTypes.shape({
+      keyOfInstanceIdField: PropTypes.string,
+      instance: PropTypes.shape({
+        hrid: PropTypes.string,
+      }),
+    }).isRequired,
     onSetSelectedInstance: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     enterButtonClass: PropTypes.string.isRequired,
     isInstancePreselected: PropTypes.bool.isRequired,
     isEditMode: PropTypes.bool.isRequired,
-    stripes: PropTypes.object.isRequired,
-    request: PropTypes.object,
-    selectedInstance: PropTypes.object,
+    stripes: PropTypes.shape({
+      hasPerm: PropTypes.func.isRequired,
+    }).isRequired,
+    request: REQUEST_PROP_TYPES,
+    selectedInstance: PropTypes.shape({
+      id: PropTypes.string,
+      hrid: PropTypes.string,
+      instanceId: PropTypes.string,
+      title: PropTypes.string,
+      contributors: PropTypes.string,
+      publications: PropTypes.string,
+      editions: PropTypes.string,
+      identifiers: PropTypes.string,
+    }),
   };
 
   constructor(props) {

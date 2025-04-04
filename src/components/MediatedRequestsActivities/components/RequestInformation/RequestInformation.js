@@ -17,6 +17,7 @@ import {
   MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS,
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   DEFAULT_REQUEST_TYPE_VALUE,
+  REQUEST_PROP_TYPES,
 } from '../../../../constants';
 
 const RequestInformation = ({
@@ -132,9 +133,14 @@ RequestInformation.propTypes = {
   isRequestTypesReceived: PropTypes.bool.isRequired,
   isRequestTypeLoading: PropTypes.bool.isRequired,
   isEditMode: PropTypes.bool.isRequired,
-  request: PropTypes.object.isRequired,
-  values: PropTypes.object.isRequired,
-  requestTypeOptions: PropTypes.arrayOf(PropTypes.object),
+  request: REQUEST_PROP_TYPES,
+  values: PropTypes.shape({
+    keyOfRequestTypeField: PropTypes.string,
+  }).isRequired,
+  requestTypeOptions: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    value: PropTypes.string,
+  })),
 };
 
 export default RequestInformation;

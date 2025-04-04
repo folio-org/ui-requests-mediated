@@ -75,7 +75,13 @@ MediatedRequestsFilters.propTypes = {
   resultOffset: PropTypes.shape({
     replace: PropTypes.func.isRequired,
   }).isRequired,
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.shape({
+    items: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.shape({
+        titleLevelRequestsFeatureEnabled: PropTypes.bool,
+      }),
+    })),
+  }).isRequired,
 };
 
 export default MediatedRequestsFilters;

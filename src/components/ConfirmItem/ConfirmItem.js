@@ -22,6 +22,7 @@ import {
 
 import {
   CONFIRM_ITEM_TYPES,
+  CONTENT_DATA_PROP_TYPES,
   FILTER_PANE_WIDTH,
 } from '../../constants';
 
@@ -106,9 +107,11 @@ ConfirmItem.propTypes = {
   paneTitle: PropTypes.node.isRequired,
   navigationMenuUrl: PropTypes.string.isRequired,
   confirmItemType: PropTypes.oneOf([CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL, CONFIRM_ITEM_TYPES.SEND_ITEM_IN_TRANSIT]).isRequired,
-  contentData: PropTypes.arrayOf(PropTypes.object),
+  contentData: CONTENT_DATA_PROP_TYPES,
   handleSubmit: PropTypes.func.isRequired,
-  form: PropTypes.object.isRequired,
+  form: PropTypes.shape({
+    change: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default stripesFinalForm({

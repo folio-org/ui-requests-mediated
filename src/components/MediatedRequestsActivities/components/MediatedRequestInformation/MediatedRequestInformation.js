@@ -88,7 +88,14 @@ MediatedRequestInformation.propTypes = {
   requestStatus: PropTypes.string.isRequired,
   requestLevel: PropTypes.string.isRequired,
   confirmedRequestId: PropTypes.string,
-  metadata: PropTypes.object,
+  metadata: PropTypes.shape({
+    createdByUserId: PropTypes.string,
+    createdByUsername: PropTypes.string,
+    createdDate: PropTypes.string,
+    updatedByUserId: PropTypes.string,
+    updatedByUsername: PropTypes.string,
+    updatedDate: PropTypes.string,
+  }),
   patronComments: PropTypes.string,
 };
 

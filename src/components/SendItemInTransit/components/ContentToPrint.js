@@ -21,6 +21,7 @@ import {
 } from '../../../utils';
 
 import {
+  SLIP_DATA_PROP_TYPES,
   STAFF_SLIPS_TYPE,
 } from '../../../constants';
 
@@ -74,9 +75,16 @@ ContentToPrint.propTypes = {
   contentToPrintId: PropTypes.string.isRequired,
   template: PropTypes.string.isRequired,
   dataSource: PropTypes.shape({
-    requester: PropTypes.object.isRequired,
+    requester: PropTypes.shape({
+      id: PropTypes.string,
+      barcode: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      middleName: PropTypes.string,
+      preferredFirstName: PropTypes.string,
+    }).isRequired,
     inTransitDate: PropTypes.string.isRequired,
-    staffSlipContext: PropTypes.object.isRequired,
+    staffSlipContext: SLIP_DATA_PROP_TYPES,
   }),
 };
 

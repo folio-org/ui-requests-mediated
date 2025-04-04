@@ -21,6 +21,7 @@ import {
   MEDIATED_REQUESTS_RECORD_FIELD_NAME,
   SEARCH_FIELDS,
   FILTER_CONFIG,
+  CONTENT_DATA_PROP_TYPES,
 } from '../constants';
 
 export const buildQuery = (queryParams, pathComponents, resourceData, logger, props) => {
@@ -90,11 +91,21 @@ class MediatedRequestsActivitiesContainer extends React.Component {
   });
 
   static propTypes = {
-    location: PropTypes.object,
-    history: PropTypes.object,
+    location:  PropTypes.shape({
+      pathname: PropTypes.string,
+      search: PropTypes.string,
+    }),
+    history: PropTypes.shape({
+      push: PropTypes.func.isRequired,
+    }),
     resources: PropTypes.shape({
-      query: PropTypes.object,
-      [MEDIATED_REQUESTS_RECORDS_NAME]: PropTypes.object,
+      query: PropTypes.shape({
+        query: PropTypes.string,
+        sort: PropTypes.string,
+      }),
+      [MEDIATED_REQUESTS_RECORDS_NAME]: PropTypes.shape({
+        records: CONTENT_DATA_PROP_TYPES,
+      }),
     }).isRequired,
     mutator: PropTypes.shape({
       [MEDIATED_REQUESTS_RECORDS_NAME]: PropTypes.shape({
@@ -109,10 +120,18 @@ class MediatedRequestsActivitiesContainer extends React.Component {
       }).isRequired,
     }).isRequired,
     stripes: PropTypes.shape({
-      logger: PropTypes.object.isRequired,
+      logger: PropTypes.shape({
+        log: PropTypes.func.isRequired,
+      }).isRequired,
       hasPerm: PropTypes.func.isRequired,
     }).isRequired,
-    settings: PropTypes.object.isRequired,
+    settings: PropTypes.shape({
+      items: PropTypes.arrayOf(PropTypes.shape({
+        value: PropTypes.shape({
+          titleLevelRequestsFeatureEnabled: PropTypes.bool,
+        }),
+      })),
+    }),
     children: PropTypes.node,
   }
 

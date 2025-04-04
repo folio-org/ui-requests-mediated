@@ -27,6 +27,7 @@ import {
   ENTER_EVENT_KEY,
   BASE_SPINNER_PROPS,
   DEFAULT_REQUEST_TYPE_VALUE,
+  REQUEST_PROP_TYPES,
 } from '../../../../constants';
 
 import css from './RequesterInformation.css';
@@ -41,8 +42,15 @@ export const COLUMN_MAPPING = {
 
 class RequesterInformation extends Component {
   static propTypes = {
-    form: PropTypes.object.isRequired,
-    values: PropTypes.object.isRequired,
+    form: PropTypes.shape({
+      change: PropTypes.func.isRequired,
+    }).isRequired,
+    values: PropTypes.shape({
+      keyOfUserBarcodeField: PropTypes.string,
+      requester: PropTypes.shape({
+        barcode: PropTypes.string,
+      }),
+    }).isRequired,
     onSetSelectedUser: PropTypes.func.isRequired,
     onSetSelectedProxy: PropTypes.func.isRequired,
     submitting: PropTypes.bool.isRequired,
@@ -52,12 +60,30 @@ class RequesterInformation extends Component {
     enterButtonClass: PropTypes.string.isRequired,
     isUserPreselected: PropTypes.bool.isRequired,
     isEditMode: PropTypes.bool.isRequired,
-    stripes: PropTypes.object.isRequired,
-    selectedUser: PropTypes.object,
+    stripes: PropTypes.shape({
+      hasPerm: PropTypes.func.isRequired,
+    }).isRequired,
+    selectedUser: PropTypes.shape({
+      id: PropTypes.string,
+      barcode: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      middleName: PropTypes.string,
+      preferredFirstName: PropTypes.string,
+    }),
     isLoading: PropTypes.bool,
-    request: PropTypes.object,
-    patronGroup: PropTypes.object,
-    proxy: PropTypes.object,
+    request: REQUEST_PROP_TYPES,
+    patronGroup: PropTypes.shape({
+      group: PropTypes.string,
+    }),
+    proxy: PropTypes.shape({
+      id: PropTypes.string,
+      barcode: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      middleName: PropTypes.string,
+      preferredFirstName: PropTypes.string,
+    }),
     selectRequester: PropTypes.func,
     handleCloseProxy: PropTypes.func,
   };

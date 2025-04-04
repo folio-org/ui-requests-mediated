@@ -38,6 +38,7 @@ import {
   MEDIATED_REQUESTS_RECORD_FIELD_PATH,
   MEDIATED_REQUESTS_RECORD_TRANSLATIONS,
   MODULE_ROUTE,
+  CONTENT_DATA_PROP_TYPES,
 } from '../../../../constants';
 
 export const SORT_DIRECTION = '-';
@@ -144,7 +145,7 @@ const MediatedRequestsList = ({
 
 MediatedRequestsList.propTypes = {
   visibleColumns: PropTypes.arrayOf(PropTypes.string).isRequired,
-  contentData: PropTypes.arrayOf(PropTypes.object).isRequired,
+  contentData: CONTENT_DATA_PROP_TYPES,
   source: PropTypes.shape({
     totalCount: PropTypes.func,
   }).isRequired,

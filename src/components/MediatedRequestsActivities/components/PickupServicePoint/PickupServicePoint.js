@@ -4,7 +4,10 @@ import { FormattedMessage } from 'react-intl';
 
 import { Select } from '@folio/stripes/components';
 
-import { MEDIATED_REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
+import {
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
+  MEDIATED_REQUEST_TYPES,
+} from '../../../../constants';
 
 const PickupServicePoint = ({
   values,
@@ -52,8 +55,23 @@ const PickupServicePoint = ({
 };
 
 PickupServicePoint.propTypes = {
-  requestTypes: PropTypes.object.isRequired,
-  values: PropTypes.object.isRequired,
+  requestTypes: PropTypes.shape({
+    [MEDIATED_REQUEST_TYPES.RECALL]: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    })),
+    [MEDIATED_REQUEST_TYPES.HOLD]: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    })),
+    [MEDIATED_REQUEST_TYPES.PAGE]: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    })),
+  }).isRequired,
+  values: PropTypes.shape({
+    requestType: PropTypes.string,
+  }).isRequired,
   disabled: PropTypes.bool.isRequired,
 };
 

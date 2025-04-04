@@ -19,6 +19,7 @@ import {
   ENTER_EVENT_KEY,
   BASE_SPINNER_PROPS,
   DEFAULT_REQUEST_TYPE_VALUE,
+  REQUEST_PROP_TYPES,
 } from '../../../../constants';
 import ItemDetail from '../ItemDetail';
 import { memoizeValidation } from '../../../../utils';
@@ -30,8 +31,15 @@ class ItemInformation extends Component {
     triggerValidation: PropTypes.func.isRequired,
     findItem: PropTypes.func.isRequired,
     getItemValidationData: PropTypes.func.isRequired,
-    form: PropTypes.object.isRequired,
-    values: PropTypes.object.isRequired,
+    form: PropTypes.shape({
+      change: PropTypes.func.isRequired,
+    }).isRequired,
+    values: PropTypes.shape({
+      keyOfItemBarcodeField: PropTypes.string,
+      item: PropTypes.shape({
+        barcode: PropTypes.string,
+      }),
+    }).isRequired,
     onSetSelectedItem: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     submitting: PropTypes.bool.isRequired,
@@ -39,12 +47,28 @@ class ItemInformation extends Component {
     enterButtonClass: PropTypes.string.isRequired,
     isItemPreselected: PropTypes.bool.isRequired,
     isEditMode: PropTypes.bool.isRequired,
-    request: PropTypes.object,
+    request: REQUEST_PROP_TYPES,
     stripes: PropTypes.shape({
-      hasPerm: PropTypes.func,
+      hasPerm: PropTypes.func.isRequired,
     }).isRequired,
-    selectedLoan: PropTypes.object,
-    selectedItem: PropTypes.object,
+    selectedLoan: PropTypes.shape({
+      dueDate: PropTypes.string,
+    }),
+    selectedItem: PropTypes.shape({
+      id: PropTypes.string,
+      barcode: PropTypes.string,
+      instanceId: PropTypes.string,
+      holdingsRecordId: PropTypes.string,
+      location: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+      status: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+      contributors: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+      })),
+    }),
   };
 
   constructor(props) {

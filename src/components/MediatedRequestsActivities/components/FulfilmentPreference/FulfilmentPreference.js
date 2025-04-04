@@ -11,7 +11,11 @@ import { useStripes } from '@folio/stripes/core';
 
 import DeliveryAddress from '../DeliveryAddress';
 import PickupServicePoint from '../PickupServicePoint';
-import { MEDIATED_REQUEST_FORM_FIELD_NAMES } from '../../../../constants';
+import {
+  MEDIATED_REQUEST_FORM_FIELD_NAMES,
+  REQUEST_PROP_TYPES,
+  MEDIATED_REQUEST_TYPES,
+} from '../../../../constants';
 import { isDelivery } from '../../../../utils';
 
 const FulfilmentPreference = ({
@@ -101,13 +105,36 @@ const FulfilmentPreference = ({
 
 FulfilmentPreference.propTypes = {
   setDeliveryAddress: PropTypes.func.isRequired,
-  requestTypes: PropTypes.object.isRequired,
-  request: PropTypes.object.isRequired,
-  form: PropTypes.object.isRequired,
-  values: PropTypes.object.isRequired,
+  requestTypes: PropTypes.shape({
+    [MEDIATED_REQUEST_TYPES.RECALL]: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    })),
+    [MEDIATED_REQUEST_TYPES.HOLD]: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    })),
+    [MEDIATED_REQUEST_TYPES.PAGE]: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+    })),
+  }).isRequired,
+  request: REQUEST_PROP_TYPES,
+  form: PropTypes.shape({
+    change: PropTypes.func.isRequired,
+  }).isRequired,
+  values: PropTypes.shape({
+    requestType: PropTypes.string,
+  }).isRequired,
   deliveryAddress: PropTypes.node,
-  deliveryLocations: PropTypes.arrayOf(PropTypes.object),
-  fulfillmentTypeOptions: PropTypes.arrayOf(PropTypes.object),
+  deliveryLocations: PropTypes.arrayOf({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
+  fulfillmentTypeOptions: PropTypes.arrayOf({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
   isDeliverySelected: PropTypes.bool,
 };
 

@@ -46,6 +46,7 @@ import {
   SEARCH_FIELDS,
   FILTER_CONFIG,
   REPORT_HEADERS,
+  CONTENT_DATA_PROP_TYPES,
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
 import {
@@ -359,7 +360,7 @@ MediatedRequestsActivities.propTypes = {
   onNeedMoreData: PropTypes.func.isRequired,
   resources: PropTypes.shape({
     [MEDIATED_REQUESTS_RECORDS_NAME]: PropTypes.shape({
-      records: PropTypes.arrayOf(PropTypes.object),
+      records: CONTENT_DATA_PROP_TYPES,
     }),
   }).isRequired,
   mutator: PropTypes.shape({
@@ -375,7 +376,13 @@ MediatedRequestsActivities.propTypes = {
     totalCount: PropTypes.func,
     loaded: PropTypes.func,
   }).isRequired,
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.shape({
+    items: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.shape({
+        titleLevelRequestsFeatureEnabled: PropTypes.bool,
+      }),
+    })),
+  }).isRequired,
   children: PropTypes.node,
 };
 

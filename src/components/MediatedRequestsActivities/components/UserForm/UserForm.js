@@ -20,6 +20,10 @@ import {
   isProxyFunctionalityAvailable,
 } from '../../../../utils';
 
+import {
+  REQUEST_PROP_TYPES,
+} from '../../../../constants';
+
 const UserForm = ({
   user,
   request,
@@ -84,10 +88,15 @@ UserForm.propTypes = {
     id: PropTypes.string,
     barcode: PropTypes.string,
   }),
-  request: PropTypes.shape({
-    proxyUserId: PropTypes.string,
+  request: REQUEST_PROP_TYPES,
+  proxy: PropTypes.shape({
+    id: PropTypes.string,
+    barcode: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    middleName: PropTypes.string,
+    preferredFirstName: PropTypes.string,
   }),
-  proxy: PropTypes.object,
   patronGroup: PropTypes.string,
   selectRequester: PropTypes.func.isRequired,
   closeProxyManager: PropTypes.func.isRequired,

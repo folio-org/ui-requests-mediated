@@ -133,7 +133,9 @@ const RequestsMediated = (props) => {
 };
 
 RequestsMediated.propTypes = {
-  match: PropTypes.object.isRequired,
+  match: PropTypes.shape({
+    path: PropTypes.string,
+  }).isRequired,
   showSettings: PropTypes.bool,
 };
 
