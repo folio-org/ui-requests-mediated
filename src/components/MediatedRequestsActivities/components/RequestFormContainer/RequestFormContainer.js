@@ -33,6 +33,7 @@ import {
   RESOURCE_TYPES,
   MEDIATED_REQUEST_LEVEL,
   SAVE_BUTTON_ID,
+  REQUEST_PROP_TYPES,
   getMediatedRequestsActivitiesUrl,
 } from '../../../../constants';
 import { useAddressTypes } from '../../../../hooks';
@@ -264,14 +265,20 @@ const RequestFormContainer = ({
 };
 
 RequestFormContainer.propTypes = {
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.shape({
+    items: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.shape({
+        titleLevelRequestsFeatureEnabled: PropTypes.bool,
+      }),
+    })),
+  }).isRequired,
   patronGroups: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     group: PropTypes.string,
   })).isRequired,
   isEditMode: PropTypes.bool.isRequired,
   setRequest: PropTypes.func,
-  request: PropTypes.object,
+  request: REQUEST_PROP_TYPES,
 };
 
 export default RequestFormContainer;
