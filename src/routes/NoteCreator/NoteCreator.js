@@ -38,8 +38,23 @@ const NoteCreator = ({
 };
 
 NoteCreator.propTypes = {
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired,
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      referredRecordData: PropTypes.shape({
+        instanceId: PropTypes.string.isRequired,
+        instanceTitle: PropTypes.string.isRequired,
+        itemBarcode: PropTypes.string.isRequired,
+        itemId: PropTypes.string.isRequired,
+        holdingsRecordId: PropTypes.string.isRequired,
+        requestCreateDate: PropTypes.string.isRequired,
+        requesterId: PropTypes.string.isRequired,
+        requesterName: PropTypes.string.isRequired,
+      }),
+    }),
+  }).isRequired,
+  history: PropTypes.shape({
+    goBack: PropTypes.func.isRequired,
+  }).isRequired,
 };
 
 export default NoteCreator;

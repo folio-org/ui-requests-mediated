@@ -43,6 +43,7 @@ import {
   CONFIRM_BUTTON_ID,
   EMPTY_MEDIATED_REQUEST_FORM_VALUE,
   EMPTY_RESOURCE_VALUE,
+  REQUEST_PROP_TYPES,
 } from '../../../../constants';
 import {
   handleKeyCommand,
@@ -66,22 +67,40 @@ class RequestForm extends React.Component {
   static propTypes = {
     handleSubmit: PropTypes.func.isRequired,
     findResource: PropTypes.func.isRequired,
-    submitInitiator: PropTypes.object.isRequired,
+    submitInitiator: PropTypes.shape({
+      current: PropTypes.string,
+    }).isRequired,
     addressTypes: PropTypes.arrayOf({
       addressType: PropTypes.string,
       id: PropTypes.string,
     }).isRequired,
-    request: PropTypes.object.isRequired,
+    request: REQUEST_PROP_TYPES,
     settings: PropTypes.shape({
-      items: PropTypes.arrayOf(PropTypes.object),
+      items: PropTypes.arrayOf(PropTypes.shape({
+        value: PropTypes.shape({
+          titleLevelRequestsFeatureEnabled: PropTypes.bool,
+        }),
+      })),
     }),
-    initialValues: PropTypes.object.isRequired,
+    initialValues: PropTypes.shape({
+      fulfillmentPreference: PropTypes.string,
+    }).isRequired,
     location: PropTypes.shape({
       search: PropTypes.string,
     }).isRequired,
     onCancel: PropTypes.func.isRequired,
-    values: PropTypes.object.isRequired,
-    form: PropTypes.object.isRequired,
+    values: PropTypes.shape({
+      keyOfItemBarcodeField: PropTypes.string,
+      keyOfInstanceIdField: PropTypes.string,
+      keyOfRequestTypeField: PropTypes.string,
+      keyOfUserBarcodeField: PropTypes.string,
+      deliveryAddressTypeId: PropTypes.string,
+      pickupServicePointId: PropTypes.string,
+      requestType: PropTypes.string,
+    }).isRequired,
+    form: PropTypes.shape({
+      change: PropTypes.func.isRequired,
+    }).isRequired,
     onSetSelectedItem: PropTypes.func.isRequired,
     onSetSelectedUser: PropTypes.func.isRequired,
     onSetSelectedProxy: PropTypes.func.isRequired,
@@ -94,11 +113,51 @@ class RequestForm extends React.Component {
     }).isRequired,
     setRequest: PropTypes.func,
     submitting: PropTypes.bool,
-    patronGroups: PropTypes.arrayOf(PropTypes.object),
-    selectedItem: PropTypes.object,
-    selectedInstance: PropTypes.object,
-    selectedUser: PropTypes.object,
-    selectedProxy: PropTypes.object,
+    patronGroups: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      group: PropTypes.string,
+    })),
+    selectedItem: PropTypes.shape({
+      id: PropTypes.string,
+      barcode: PropTypes.string,
+      instanceId: PropTypes.string,
+      holdingsRecordId: PropTypes.string,
+      location: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+      status: PropTypes.shape({
+        name: PropTypes.string,
+      }),
+      contributors: PropTypes.arrayOf(PropTypes.shape({
+        name: PropTypes.string,
+      })),
+    }),
+    selectedInstance: PropTypes.shape({
+      id: PropTypes.string,
+      hrid: PropTypes.string,
+      instanceId: PropTypes.string,
+      title: PropTypes.string,
+      contributors: PropTypes.string,
+      publications: PropTypes.string,
+      editions: PropTypes.string,
+      identifiers: PropTypes.string,
+    }),
+    selectedUser: PropTypes.shape({
+      id: PropTypes.string,
+      barcode: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      middleName: PropTypes.string,
+      preferredFirstName: PropTypes.string,
+    }),
+    selectedProxy: PropTypes.shape({
+      id: PropTypes.string,
+      barcode: PropTypes.string,
+      firstName: PropTypes.string,
+      lastName: PropTypes.string,
+      middleName: PropTypes.string,
+      preferredFirstName: PropTypes.string,
+    }),
   };
 
   static defaultProps = {
