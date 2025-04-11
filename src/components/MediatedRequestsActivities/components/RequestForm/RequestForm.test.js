@@ -1028,8 +1028,8 @@ describe('RequestForm', () => {
 
       beforeEach(async () => {
         ItemsDialog.mockImplementation(({
-           onRowClick,
-         }) => {
+          onRowClick,
+        }) => {
           const handleItemClick = () => {
             onRowClick({}, mockedItem);
           };
