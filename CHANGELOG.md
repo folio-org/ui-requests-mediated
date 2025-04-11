@@ -3,6 +3,8 @@
 ## 4.0.0 IN PROGRESS
 
 * *BREAKING* Use `convertToSlipData` and supporting functions from `stripes-util`. Refs UIREQMED-92.
+* Replace moment with day.js. Refs UIREQMED-96.
+* Reduce count of eslint errors after update eslint-config-stripes. Refs UIREQMED-95.
 * Fix validation issue while creating a request for item without barcode. Refs UIREQMED-99.
 
 ## [3.0.0] (https://github.com/folio-org/ui-requests-mediated/tree/v3.0.0) (2025-03-14)
@@ -18,6 +20,10 @@
 * Migrate to shared GA workflows. Refs UIREQMED-87.
 * *BREAKING* Update stripes-* dependencies to latest version. Refs UIREQMED-88.
 * Use NoValue component for missed data. Refs UIREQMED-91.
+
+## [2.0.3] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.3) (2025-03-27)
+[Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.2...v2.0.3)
+* Remove validation from Request type field. Refs UIREQMED-97.
 
 ## [2.0.2] (https://github.com/folio-org/ui-requests-mediated/tree/v2.0.2) (2025-02-07)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.1...v2.0.2)

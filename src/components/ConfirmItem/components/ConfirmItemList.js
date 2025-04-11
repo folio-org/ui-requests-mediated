@@ -26,6 +26,7 @@ import {
   CONFIRM_ITEM_RECORD_FIELD_PATH,
   CONFIRM_ITEM_TYPES,
   DEFAULT_VIEW_VALUE,
+  CONTENT_DATA_PROP_TYPES,
 } from '../../../constants';
 import {
   getRequesterName,
@@ -123,7 +124,7 @@ const ConfirmItem = ({
 };
 
 ConfirmItem.propTypes = {
-  contentData: PropTypes.arrayOf(PropTypes.object),
+  contentData: CONTENT_DATA_PROP_TYPES,
   confirmItemType: PropTypes.oneOf([CONFIRM_ITEM_TYPES.CONFIRM_ITEM_ARRIVAL, CONFIRM_ITEM_TYPES.SEND_ITEM_IN_TRANSIT]).isRequired,
 };
 

@@ -13,12 +13,12 @@ import {
   unset,
 } from 'lodash';
 import { stringify } from 'query-string';
-import moment from 'moment-timezone';
 
 import {
   useOkapiKy,
   useCallout,
 } from '@folio/stripes/core';
+import { dayjs } from '@folio/stripes/components';
 
 import RequestForm from '../RequestForm';
 import {
@@ -33,6 +33,7 @@ import {
   RESOURCE_TYPES,
   MEDIATED_REQUEST_LEVEL,
   SAVE_BUTTON_ID,
+  REQUEST_PROP_TYPES,
   getMediatedRequestsActivitiesUrl,
 } from '../../../../constants';
 import { useAddressTypes } from '../../../../hooks';
@@ -153,7 +154,7 @@ const RequestFormContainer = ({
       requestData.requestLevel = getRequestLevelValue(requestData.createTitleLevelRequest);
     }
 
-    requestData.requestDate = moment.tz(intl.timeZone).toISOString();
+    requestData.requestDate = dayjs().tz(intl.timeZone).toISOString();
 
     if (selectedProxy) {
       userData = selectedProxy;
@@ -265,14 +266,20 @@ const RequestFormContainer = ({
 };
 
 RequestFormContainer.propTypes = {
-  settings: PropTypes.object.isRequired,
+  settings: PropTypes.shape({
+    items: PropTypes.arrayOf(PropTypes.shape({
+      value: PropTypes.shape({
+        titleLevelRequestsFeatureEnabled: PropTypes.bool,
+      }),
+    })),
+  }).isRequired,
   patronGroups: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     group: PropTypes.string,
   })).isRequired,
   isEditMode: PropTypes.bool.isRequired,
   setRequest: PropTypes.func,
-  request: PropTypes.object,
+  request: REQUEST_PROP_TYPES,
 };
 
 export default RequestFormContainer;

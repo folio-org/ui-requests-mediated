@@ -15,7 +15,10 @@ import {
 import { effectiveCallNumber } from '@folio/stripes/util';
 import { ClipCopy } from '@folio/stripes/smart-components';
 
-import { ITEM_STATUS_TRANSLATION_KEYS } from '../../../../constants';
+import {
+  ITEM_STATUS_TRANSLATION_KEYS,
+  REQUEST_PROP_TYPES,
+} from '../../../../constants';
 
 import css from './ItemDetail.css';
 
@@ -116,9 +119,25 @@ const ItemDetail = ({
 };
 
 ItemDetail.propTypes = {
-  item: PropTypes.object.isRequired,
-  loan: PropTypes.object,
-  request: PropTypes.object,
+  item: PropTypes.shape({
+    id: PropTypes.string,
+    barcode: PropTypes.string,
+    instanceId: PropTypes.string,
+    holdingsRecordId: PropTypes.string,
+    location: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+    status: PropTypes.shape({
+      name: PropTypes.string,
+    }),
+    contributors: PropTypes.arrayOf(PropTypes.shape({
+      name: PropTypes.string,
+    })),
+  }).isRequired,
+  loan: PropTypes.shape({
+    dueDate: PropTypes.string,
+  }),
+  request: REQUEST_PROP_TYPES,
 };
 
 export default ItemDetail;

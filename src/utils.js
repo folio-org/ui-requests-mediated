@@ -20,8 +20,6 @@ import {
   MEDIATED_REQUEST_TYPE_TRANSLATION_KEYS,
   ID_TYPE_MAP,
   MEDIATED_REQUEST_LEVEL,
-  MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS,
-  MEDIATED_REQUEST_TYPE_ERROR_LEVEL,
   REQUEST_PARAMS,
   USER_NAMES,
   STAFF_SLIPS_TYPE,
@@ -222,12 +220,6 @@ export const getResourceTypeId = (isTitleLevelRequest) => (isTitleLevelRequest ?
 export const getRequestInformation = (isTitleLevelRequest, selectedInstance, selectedItem) => {
   return isTitleLevelRequest ? selectedInstance : selectedItem;
 };
-
-export const getNoRequestTypeErrorMessageId = (isTitleLevelRequest) => (
-  isTitleLevelRequest ?
-    MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.TITLE_LEVEL_ERROR] :
-    MEDIATED_REQUEST_TYPE_ERROR_TRANSLATIONS[MEDIATED_REQUEST_TYPE_ERROR_LEVEL.ITEM_LEVEL_ERROR]
-);
 
 export const getUserPreferences = (mediatedRequest, userData, servicePoints) => {
   const userPreferences = {};

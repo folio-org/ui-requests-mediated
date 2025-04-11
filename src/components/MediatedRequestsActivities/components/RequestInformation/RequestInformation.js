@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Field } from 'react-final-form';
 import PropTypes from 'prop-types';
@@ -18,8 +17,8 @@ import {
   MEDIATED_REQUEST_STATUS_TRANSLATION_KEYS,
   MEDIATED_REQUEST_FORM_FIELD_NAMES,
   DEFAULT_REQUEST_TYPE_VALUE,
+  REQUEST_PROP_TYPES,
 } from '../../../../constants';
-import { getNoRequestTypeErrorMessageId } from '../../../../utils';
 
 const RequestInformation = ({
   request,
@@ -38,13 +37,6 @@ const RequestInformation = ({
   const isMetadata = isEditMode && request?.metadata;
   const isItemOrTitleSelected = isTitleLevelRequest ? isSelectedInstance : isSelectedItem;
   const isRequestTypeDisabled = requestTypeOptions.length === 0 || !(isItemOrTitleSelected && isSelectedUser) || !isEditPermission;
-  const validateRequestType = useCallback(() => {
-    if (isItemOrTitleSelected && isSelectedUser && requestTypeOptions.length === 0 && isRequestTypesReceived) {
-      return <FormattedMessage id={getNoRequestTypeErrorMessageId(isTitleLevelRequest)} />;
-    }
-
-    return undefined;
-  }, [isItemOrTitleSelected, isSelectedUser, requestTypeOptions, isTitleLevelRequest, isRequestTypesReceived]);
 
   return (
     <>
@@ -62,7 +54,6 @@ const RequestInformation = ({
                 key={values.keyOfRequestTypeField ?? 0}
                 name={MEDIATED_REQUEST_FORM_FIELD_NAMES.REQUEST_TYPE}
                 validateFields={[]}
-                validate={validateRequestType}
               >
                 {({
                   input,
@@ -142,9 +133,14 @@ RequestInformation.propTypes = {
   isRequestTypesReceived: PropTypes.bool.isRequired,
   isRequestTypeLoading: PropTypes.bool.isRequired,
   isEditMode: PropTypes.bool.isRequired,
-  request: PropTypes.object.isRequired,
-  values: PropTypes.object.isRequired,
-  requestTypeOptions: PropTypes.arrayOf(PropTypes.object),
+  request: REQUEST_PROP_TYPES,
+  values: PropTypes.shape({
+    keyOfRequestTypeField: PropTypes.string,
+  }).isRequired,
+  requestTypeOptions: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string,
+    value: PropTypes.string,
+  })),
 };
 
 export default RequestInformation;
