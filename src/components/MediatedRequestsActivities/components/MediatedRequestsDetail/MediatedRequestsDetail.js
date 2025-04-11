@@ -259,7 +259,9 @@ const MediatedRequestsDetail = ({
 };
 
 MediatedRequestsDetail.propTypes = {
-  stripes: PropTypes.object.isRequired,
+  stripes: PropTypes.shape({
+    hasPerm: PropTypes.func.isRequired,
+  }).isRequired,
   setRequest: PropTypes.func.isRequired,
   updateMediatedRequestList: PropTypes.func.isRequired,
   patronGroups: PropTypes.arrayOf(PropTypes.shape({

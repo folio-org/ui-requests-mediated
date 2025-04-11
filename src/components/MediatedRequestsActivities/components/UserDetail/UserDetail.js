@@ -17,6 +17,10 @@ import {
 } from '../../../../utils';
 import UserHighlightBox from '../UserHighlightBox';
 
+import {
+  REQUEST_PROP_TYPES,
+} from '../../../../constants';
+
 const UserDetail = ({
   user,
   request,
@@ -73,10 +77,27 @@ const UserDetail = ({
 
 UserDetail.propTypes = {
   patronGroup: PropTypes.string,
-  user: PropTypes.object.isRequired,
-  request: PropTypes.object,
-  userPreferences: PropTypes.object,
-  proxy: PropTypes.object,
+  user: PropTypes.shape({
+    id: PropTypes.string,
+    barcode: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    middleName: PropTypes.string,
+    preferredFirstName: PropTypes.string,
+  }).isRequired,
+  request: REQUEST_PROP_TYPES,
+  userPreferences: PropTypes.shape({
+    value: PropTypes.string,
+    label: PropTypes.string,
+  }),
+  proxy: PropTypes.shape({
+    id: PropTypes.string,
+    barcode: PropTypes.string,
+    firstName: PropTypes.string,
+    lastName: PropTypes.string,
+    middleName: PropTypes.string,
+    preferredFirstName: PropTypes.string,
+  }),
 };
 
 export default UserDetail;

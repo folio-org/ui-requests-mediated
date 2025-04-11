@@ -107,8 +107,6 @@
     "form.request.type.page": "Page",
     "form.request.fulfillment.delivery": "Delivery",
     "form.request.fulfillment.holdShelf": "Hold Shelf",
-    "form.errors.requestType.titleLevelRequest": "None available for this title and patron combination",
-    "form.errors.requestType.itemLevelRequest": "None available for this item and patron combination",
     "form.saveRequest.success": "Mediated request has been successfully saved",
     "form.createRequest.success": "Request has been successfully created for {requester}",
     "form.saveRequest.error": "Mediated request cannot be successfully saved",
@@ -149,7 +147,7 @@
     "mediatedRequestStatus.openInTransitToBeCheckedOut": "Open - In transit to be checked out",
     "mediatedRequestStatus.openNotYetFilled": "Open - Not yet filled",
     "mediatedRequestList.actionMenu.exportResults": "Export results (CSV)",
-    "mediatedRequestList.actionMenu.reportPending": "CSV report is being generated. Please wait.",
+    "mediatedRequestList.actionMenu.reportPending": "CSV звіт генерується. Зачекайте, будь ласка.",
     "mediatedRequest.notification.CSVReport": "A CSV results report is being generated. This may take some time for larger result sets.",
     "report.requestType": "Mediated request type",
     "report.status": "Mediated request status",
@@ -210,6 +208,6 @@
     "declineModal.confirm": "Confirm",
     "declineModal.back": "Back",
     "form.errors.titleDoesNotExist": "Title with this HRID or UUID does not exist",
-    "itemDetails.barcode.ariaLabel": "View item record",
-    "requesterDetails.barcode.ariaLabel": "View requester record"
+    "itemDetails.barcode.ariaLabel": "Переглянути запис примірника",
+    "requesterDetails.barcode.ariaLabel": "Переглянути запис замовника"
 }
