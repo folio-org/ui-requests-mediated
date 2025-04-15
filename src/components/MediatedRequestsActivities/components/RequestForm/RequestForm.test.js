@@ -30,6 +30,7 @@ import {
 } from '../../../../utils';
 import FulfilmentPreference from '../FulfilmentPreference';
 import AddressDetails from '../AddressDetails';
+import ItemsDialog from '../ItemsDialog';
 
 const basicProps = {
   handleSubmit: jest.fn(),
@@ -1007,6 +1008,62 @@ describe('RequestForm', () => {
 
       it('should reset selected item', () => {
         expect(basicProps.onSetSelectedItem).toHaveBeenCalledWith(EMPTY_RESOURCE_VALUE);
+      });
+    });
+
+    describe('When item from item dialog does not have a barcode', () => {
+      const props = {
+        ...basicProps,
+        values: {
+          createTitleLevelRequest: true,
+        },
+      };
+      const mockedItem = {
+        id: 'itemId',
+      };
+
+      afterEach(() => {
+        ItemsDialog.mockClear();
+      });
+
+      beforeEach(async () => {
+        ItemsDialog.mockImplementation(({
+          onRowClick,
+        }) => {
+          const handleItemClick = () => {
+            onRowClick({}, mockedItem);
+          };
+
+          return (
+            <button
+              data-testid={testIds.rowElement}
+              type="button"
+              onClick={handleItemClick}
+            >
+              Row element
+            </button>
+          );
+        });
+        render(
+          <RequestForm
+            {...props}
+          />
+        );
+
+        const tlrCheckbox = screen.getByTestId(testIds.tlrCheckbox);
+
+        basicProps.findResource.mockResolvedValue({});
+        await userEvent.click(tlrCheckbox);
+      });
+
+
+      it('should trigger item field validation for item without barcode', async () => {
+        const rowElement = screen.getByTestId(testIds.rowElement);
+        const expectedArgs = [MEDIATED_REQUEST_FORM_FIELD_NAMES.KEY_OF_ITEM_BARCODE_FIELD, 1];
+
+        await userEvent.click(rowElement);
+
+        expect(basicProps.form.change).toHaveBeenCalledWith(...expectedArgs);
       });
     });
   });

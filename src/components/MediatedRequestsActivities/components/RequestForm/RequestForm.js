@@ -456,7 +456,10 @@ class RequestForm extends React.Component {
   getItemValidationData = (key, value) => {
     const { findResource } = this.props;
 
-    this.setState({ isItemOrInstanceLoading: true });
+    this.setState({
+      isItemOrInstanceLoading: true,
+      isItemIdRequest: false,
+    });
 
     return findResource(RESOURCE_TYPES.ITEM, value, key)
       .then((result) => result?.items?.length)
@@ -685,6 +688,8 @@ class RequestForm extends React.Component {
     if (item?.barcode) {
       isBarcodeRequired = true;
       this.setState({ isItemIdRequest: false });
+    } else {
+      this.setState({ isItemIdRequest: true }, this.triggerItemBarcodeValidation);
     }
 
     this.findItem(RESOURCE_KEYS.ID, item.id, isBarcodeRequired)
@@ -895,6 +900,7 @@ class RequestForm extends React.Component {
   handleDataSubmit = (e) => {
     e.preventDefault();
 
+    const { isItemIdRequest } = this.state;
     const {
       submitInitiator,
       handleSubmit,
@@ -904,6 +910,10 @@ class RequestForm extends React.Component {
       submitInitiator.current = SAVE_BUTTON_ID;
     } else {
       submitInitiator.current = CONFIRM_BUTTON_ID;
+    }
+
+    if (isItemIdRequest) {
+      this.triggerItemBarcodeValidation();
     }
 
     handleSubmit();

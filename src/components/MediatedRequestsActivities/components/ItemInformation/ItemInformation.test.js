@@ -190,6 +190,11 @@ describe('ItemInformation', () => {
     });
 
     it('should trigger "input.onBlur" if there is no item barcode', () => {
+      const props = {
+        ...basicProps,
+        isItemIdRequest: false,
+      };
+
       Field.mockImplementation(jest.fn(({
         children,
         'data-testid': testId,
@@ -208,7 +213,7 @@ describe('ItemInformation', () => {
 
       render(
         <ItemInformation
-          {...basicProps}
+          {...props}
         />
       );
 

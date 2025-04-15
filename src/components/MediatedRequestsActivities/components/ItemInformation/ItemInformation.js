@@ -164,10 +164,14 @@ class ItemInformation extends Component {
   };
 
   handleBlur = (input) => () => {
-    const { triggerValidation } = this.props;
     const { validatedBarcode } = this.state;
+    const {
+      triggerValidation,
+      isItemIdRequest,
+    } = this.props;
+    const isNotValidatedBarcode = input.value !== validatedBarcode;
 
-    if (input.value && input.value !== validatedBarcode) {
+    if (input.value && isNotValidatedBarcode) {
       this.resetItem();
       this.setState({
         shouldValidate: true,
@@ -177,7 +181,7 @@ class ItemInformation extends Component {
         input.onBlur();
         triggerValidation();
       });
-    } else if (!input.value) {
+    } else if (!input.value && !(isNotValidatedBarcode && isItemIdRequest)) {
       this.resetItem();
       input.onBlur();
     }

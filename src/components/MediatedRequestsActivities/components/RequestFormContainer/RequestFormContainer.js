@@ -180,6 +180,7 @@ const RequestFormContainer = ({
     if (requestData.requestLevel === MEDIATED_REQUEST_LEVEL.ITEM) {
       requestData.instanceId = selectedItem?.instanceId;
       requestData.holdingsRecordId = selectedItem?.holdingsRecordId;
+      requestData.itemId = selectedItem?.id;
     }
 
     if (requestData.requestLevel === MEDIATED_REQUEST_LEVEL.TITLE) {

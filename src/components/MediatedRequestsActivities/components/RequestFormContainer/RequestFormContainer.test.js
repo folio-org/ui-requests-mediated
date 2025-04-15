@@ -100,11 +100,17 @@ const mockedProxy = {
     lastName: 'proxyLastName',
   },
 };
+const mockedItem = {
+  id: 'itemId',
+  barcode: 'itemBarcode',
+};
+
 const mockSubmitFunctionality = (dataToSubmit, isSavingRequest, isProxy, props = basicProps) => {
   RequestForm.mockImplementation(({
     onSubmit,
     submitInitiator,
     onSetSelectedProxy,
+    onSetSelectedItem,
   }) => {
     if (isSavingRequest) {
       submitInitiator.current = SAVE_BUTTON_ID;
@@ -113,6 +119,8 @@ const mockSubmitFunctionality = (dataToSubmit, isSavingRequest, isProxy, props =
     if (isProxy) {
       onSetSelectedProxy(mockedProxy);
     }
+
+    onSetSelectedItem(mockedItem);
 
     const submitData = () => {
       onSubmit(dataToSubmit);
@@ -209,7 +217,6 @@ describe('RequestFormContainer', () => {
 
     describe('Data submitting', () => {
       const basicDataToSend = {
-        itemId: 'itemId',
         item: {},
         createTitleLevelRequest: false,
         keyOfItemBarcodeField: 1,
@@ -242,7 +249,7 @@ describe('RequestFormContainer', () => {
             'circulation-bff/mediated-requests/confirm',
             {
               json: expect.objectContaining({
-                itemId: basicDataToSend.itemId,
+                itemId: mockedItem.id,
                 item: basicDataToSend.item,
                 pickupServicePointId: basicDataToSend.pickupServicePointId,
                 requestDate: expect.any(String),
@@ -315,7 +322,7 @@ describe('RequestFormContainer', () => {
             'circulation-bff/mediated-requests/confirm',
             {
               json: expect.objectContaining({
-                itemId: basicDataToSend.itemId,
+                itemId: mockedItem.id,
                 item: basicDataToSend.item,
                 requestDate: expect.any(String),
                 requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
@@ -342,7 +349,7 @@ describe('RequestFormContainer', () => {
             'requests-mediated/mediated-requests',
             {
               json: expect.objectContaining({
-                itemId: basicDataToSend.itemId,
+                itemId: mockedItem.id,
                 item: basicDataToSend.item,
                 requestDate: expect.any(String),
                 requestLevel: MEDIATED_REQUEST_LEVEL.ITEM,
@@ -416,7 +423,7 @@ describe('RequestFormContainer', () => {
             `requests-mediated/mediated-requests/${props.request.id}`,
             {
               json: expect.objectContaining({
-                itemId: basicDataToSend.itemId,
+                itemId: mockedItem.id,
                 item: basicDataToSend.item,
                 pickupServicePointId: basicDataToSend.pickupServicePointId,
                 requestDate: expect.any(String),
@@ -446,7 +453,7 @@ describe('RequestFormContainer', () => {
             'circulation-bff/mediated-requests/confirm',
             {
               json: expect.objectContaining({
-                itemId: basicDataToSend.itemId,
+                itemId: mockedItem.id,
                 item: basicDataToSend.item,
                 pickupServicePointId: basicDataToSend.pickupServicePointId,
                 requestDate: expect.any(String),
