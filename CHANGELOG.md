@@ -1,5 +1,10 @@
 # Change history for ui-requests-mediated
 
+## [3.0.1] (https://github.com/folio-org/ui-requests-mediated/tree/v3.0.1) (2025-04-22)
+[Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v3.0.0...v3.0.1)
+
+* Fix validation issue with creating a request for item without barcode. Refs UIREQMED-99.
+
 ## [3.0.0] (https://github.com/folio-org/ui-requests-mediated/tree/v3.0.0) (2025-03-14)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v2.0.2...v3.0.0)
 
