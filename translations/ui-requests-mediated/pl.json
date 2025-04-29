@@ -26,7 +26,7 @@
     "form.requester.inputLabel": "Requester barcode",
     "form.requester.lookupLabel": "Znajdź rezerwującego",
     "form.requesterLookup.name": "Requester name",
-    "form.requesterLookup.patronGroup": "Grupa czytelnika rezerwującego",
+    "form.requesterLookup.patronGroup": "Grupa czytelników rezerwującego",
     "form.requesterLookup.username": "Nazwa użytkownika",
     "form.requesterLookup.barcode": "Barcode",
     "form.errors.selectInstance": "Please select an instance and hit enter",

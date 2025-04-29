@@ -15,7 +15,7 @@
     "form.cancelButton": "Zrušit",
     "form.confirmButton": "Potvrdit",
     "form.instance.accordionLabel": "Informace o názvu",
-    "form.instance.inputPlaceholder": "Zadat HRID nebo UUID",
+    "form.instance.inputPlaceholder": "Zadejte HRID nebo UUID",
     "form.instance.inputLabel": "HRID nebo UUID titulu",
     "form.instance.lookupLabel": "Vyhledat názvy",
     "form.item.accordionLabel": "Informace o jednotce",
