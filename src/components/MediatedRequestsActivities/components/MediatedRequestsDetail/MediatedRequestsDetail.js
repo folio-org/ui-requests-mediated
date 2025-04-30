@@ -267,7 +267,7 @@ MediatedRequestsDetail.propTypes = {
   patronGroups: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     group: PropTypes.string,
-  })).isRequired,
+  })),
 };
 
 export default MediatedRequestsDetail;

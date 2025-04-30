@@ -81,7 +81,7 @@ MediatedRequestsFilters.propTypes = {
         titleLevelRequestsFeatureEnabled: PropTypes.bool,
       }),
     })),
-  }).isRequired,
+  }),
 };
 
 export default MediatedRequestsFilters;

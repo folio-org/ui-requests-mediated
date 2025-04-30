@@ -375,14 +375,14 @@ MediatedRequestsActivities.propTypes = {
   source: PropTypes.shape({
     totalCount: PropTypes.func,
     loaded: PropTypes.func,
-  }).isRequired,
+  }),
   settings: PropTypes.shape({
     items: PropTypes.arrayOf(PropTypes.shape({
       value: PropTypes.shape({
         titleLevelRequestsFeatureEnabled: PropTypes.bool,
       }),
     })),
-  }).isRequired,
+  }),
   children: PropTypes.node,
 };
 
