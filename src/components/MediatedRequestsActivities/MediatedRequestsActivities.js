@@ -382,7 +382,7 @@ MediatedRequestsActivities.propTypes = {
         titleLevelRequestsFeatureEnabled: PropTypes.bool,
       }),
     })),
-  }).isRequired,
+  }),
   children: PropTypes.node,
 };
 
