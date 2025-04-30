@@ -35,7 +35,7 @@ class ItemInformation extends Component {
       change: PropTypes.func.isRequired,
     }).isRequired,
     values: PropTypes.shape({
-      keyOfItemBarcodeField: PropTypes.string,
+      keyOfItemBarcodeField: PropTypes.number,
       item: PropTypes.shape({
         barcode: PropTypes.string,
       }),

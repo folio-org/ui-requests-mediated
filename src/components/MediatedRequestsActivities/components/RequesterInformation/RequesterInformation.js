@@ -46,7 +46,7 @@ class RequesterInformation extends Component {
       change: PropTypes.func.isRequired,
     }).isRequired,
     values: PropTypes.shape({
-      keyOfUserBarcodeField: PropTypes.string,
+      keyOfUserBarcodeField: PropTypes.number,
       requester: PropTypes.shape({
         barcode: PropTypes.string,
       }),

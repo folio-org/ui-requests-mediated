@@ -40,7 +40,7 @@ class InstanceInformation extends Component {
       change: PropTypes.func.isRequired,
     }).isRequired,
     values: PropTypes.shape({
-      keyOfInstanceIdField: PropTypes.string,
+      keyOfInstanceIdField: PropTypes.number,
       instance: PropTypes.shape({
         hrid: PropTypes.string,
       }),
