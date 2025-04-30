@@ -70,10 +70,10 @@ class RequestForm extends React.Component {
     submitInitiator: PropTypes.shape({
       current: PropTypes.string,
     }).isRequired,
-    addressTypes: PropTypes.arrayOf({
+    addressTypes: PropTypes.arrayOf(PropTypes.shape({
       addressType: PropTypes.string,
       id: PropTypes.string,
-    }).isRequired,
+    })),
     request: REQUEST_PROP_TYPES,
     settings: PropTypes.shape({
       items: PropTypes.arrayOf(PropTypes.shape({
@@ -90,10 +90,10 @@ class RequestForm extends React.Component {
     }).isRequired,
     onCancel: PropTypes.func.isRequired,
     values: PropTypes.shape({
-      keyOfItemBarcodeField: PropTypes.string,
-      keyOfInstanceIdField: PropTypes.string,
-      keyOfRequestTypeField: PropTypes.string,
-      keyOfUserBarcodeField: PropTypes.string,
+      keyOfItemBarcodeField: PropTypes.number,
+      keyOfInstanceIdField: PropTypes.number,
+      keyOfRequestTypeField: PropTypes.number,
+      keyOfUserBarcodeField: PropTypes.number,
       deliveryAddressTypeId: PropTypes.string,
       pickupServicePointId: PropTypes.string,
       requestType: PropTypes.string,
