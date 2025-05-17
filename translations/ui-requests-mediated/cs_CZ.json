@@ -10,7 +10,7 @@
     "filters.mediatedRequestLevel.accordionTitle": "Úroveň zprostředkované žádanky",
     "filters.mediatedRequestLevel.item": "Jednotka",
     "filters.mediatedRequestLevel.title": "Název",
-    "form.tlrCheckboxLabel": "Vytvořit žádanku na úrovni názvu",
+    "form.tlrCheckboxLabel": "Vytvořit požadavek (žádanku/rezervaci) na titul",
     "form.enterButton": "Potvrdit",
     "form.cancelButton": "Zrušit",
     "form.confirmButton": "Potvrdit",
