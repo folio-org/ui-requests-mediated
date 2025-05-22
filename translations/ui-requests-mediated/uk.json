@@ -156,7 +156,7 @@
     "report.instance.title": "Назва",
     "report.instance.contributorNames": "Контрибутор",
     "report.item.location.libraryName": "Library",
-    "report.item.callNumberComponents.prefix": "Effective call number prefix",
+    "report.item.callNumberComponents.prefix": "Префікс для ефективного шифру",
     "report.item.callNumberComponents.callNumber": "Effective call number",
     "report.item.callNumberComponents.suffix": "Effective call number suffix",
     "report.item.volume": "Volume",
