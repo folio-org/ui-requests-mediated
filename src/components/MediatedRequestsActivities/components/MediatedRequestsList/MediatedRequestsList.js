@@ -148,7 +148,7 @@ MediatedRequestsList.propTypes = {
   contentData: CONTENT_DATA_PROP_TYPES,
   source: PropTypes.shape({
     totalCount: PropTypes.func,
-  }).isRequired,
+  }),
   query: PropTypes.shape({
     query: PropTypes.string,
     sort: PropTypes.string,

@@ -126,7 +126,7 @@ const RequestInformation = ({
 };
 
 RequestInformation.propTypes = {
-  isTitleLevelRequest: PropTypes.bool.isRequired,
+  isTitleLevelRequest: PropTypes.bool,
   isSelectedInstance: PropTypes.bool.isRequired,
   isSelectedItem: PropTypes.bool.isRequired,
   isSelectedUser: PropTypes.bool.isRequired,
@@ -135,7 +135,7 @@ RequestInformation.propTypes = {
   isEditMode: PropTypes.bool.isRequired,
   request: REQUEST_PROP_TYPES,
   values: PropTypes.shape({
-    keyOfRequestTypeField: PropTypes.string,
+    keyOfRequestTypeField: PropTypes.number,
   }).isRequired,
   requestTypeOptions: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
