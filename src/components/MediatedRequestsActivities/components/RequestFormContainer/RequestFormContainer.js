@@ -272,11 +272,11 @@ RequestFormContainer.propTypes = {
         titleLevelRequestsFeatureEnabled: PropTypes.bool,
       }),
     })),
-  }).isRequired,
+  }),
   patronGroups: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string,
     group: PropTypes.string,
-  })).isRequired,
+  })),
   isEditMode: PropTypes.bool.isRequired,
   setRequest: PropTypes.func,
   request: REQUEST_PROP_TYPES,
