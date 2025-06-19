@@ -1,5 +1,8 @@
 # Change history for ui-requests-mediated
 
+## [3.0.2] (https://github.com/folio-org/ui-requests-mediated/tree/v3.0.2) (2025-06-19)
+[Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v3.0.1...v3.0.2)
+
 * Fix Send item in transit date. Refs UIREQMED-104.
 
 ## [3.0.1] (https://github.com/folio-org/ui-requests-mediated/tree/v3.0.1) (2025-04-22)
