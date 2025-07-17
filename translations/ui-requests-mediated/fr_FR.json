@@ -58,7 +58,7 @@
     "instanceDetails.identifiers": "ISBN(s)",
     "requesterDetails.patronGroup": "Groupe usager du réservataire",
     "requesterDetails.barcode": "Code-barres",
-    "item.status.agedToLost": "Considéré comme perdu",
+    "item.status.agedToLost": "Perdu",
     "item.status.available": "Disponible",
     "item.status.awaitingDelivery": "En attente de livraison",
     "item.status.awaitingPickup": "En attente de retrait",
