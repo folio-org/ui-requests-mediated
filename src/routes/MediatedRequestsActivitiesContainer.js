@@ -22,11 +22,12 @@ import {
   SEARCH_FIELDS,
   FILTER_CONFIG,
   CONTENT_DATA_PROP_TYPES,
+  MEDIATED_REQUEST_SEARCH_PARAMS,
 } from '../constants';
 
 export const buildQuery = (queryParams, pathComponents, resourceData, logger, props) => {
   const customFilterConfig = buildFilterConfig(queryParams.filters);
-  const mapFields = (index) => `${index}=="%{query.query}*"`;
+  const mapFields = (index) => (index === MEDIATED_REQUEST_SEARCH_PARAMS.ID ? `${index}=="%{query.query}"` : `${index}=="%{query.query}*"`);
   const getCql = makeQueryFunction(
     'cql.allRecords=1',
     SEARCH_FIELDS.map(mapFields).join(' or '),

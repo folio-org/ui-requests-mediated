@@ -47,6 +47,7 @@ import {
   FILTER_CONFIG,
   REPORT_HEADERS,
   CONTENT_DATA_PROP_TYPES,
+  MEDIATED_REQUEST_SEARCH_PARAMS,
   getMediatedRequestsActivitiesUrl,
 } from '../../constants';
 import {
@@ -134,7 +135,7 @@ export const getActionMenu = ({
     const queryParams = [];
 
     if (searchValue?.query) {
-      const searchQuery = SEARCH_FIELDS.map(searchSubQuery => `${searchSubQuery}==${searchValue.query}*`).join(' or ');
+      const searchQuery = SEARCH_FIELDS.map((searchSubQuery) => (searchSubQuery === MEDIATED_REQUEST_SEARCH_PARAMS.ID ? `${searchSubQuery}==${searchValue.query}` : `${searchSubQuery}==${searchValue.query}*`)).join(' or ');
 
       queryParams.push(`(${searchQuery})`);
     }
