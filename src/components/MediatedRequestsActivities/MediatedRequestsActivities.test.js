@@ -25,6 +25,7 @@ import {
   MODULE_ROUTE,
   MEDIATED_REQUESTS_ACTIVITIES,
   FILTER_CONFIG, SEARCH_FIELDS,
+  MEDIATED_REQUEST_SEARCH_PARAMS,
 } from '../../constants';
 
 jest.mock('../NavigationMenu', () => jest.fn((props) => (<div {...props} />)));
@@ -267,7 +268,7 @@ describe('getActionMenu', () => {
       });
 
       it('should get data to report with correct query', () => {
-        const query = SEARCH_FIELDS.map(searchSubQuery => `${searchSubQuery}==${actionMenuData.searchValue.query}*`).join(' or ');
+        const query = SEARCH_FIELDS.map(searchSubQuery => (searchSubQuery === MEDIATED_REQUEST_SEARCH_PARAMS.ID ? `${searchSubQuery}==${actionMenuData.searchValue.query}` : `${searchSubQuery}==${actionMenuData.searchValue.query}*`)).join(' or ');
 
         expect(actionMenuData.reportRecords.GET).toHaveBeenCalledWith({
           params: {
