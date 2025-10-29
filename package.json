@@ -164,7 +164,22 @@
         "subPermissions": [
           "ui-requests-mediated.view",
           "ui-requests-mediated.create",
-          "ui-requests-mediated.requests-mediated.edit"
+          "ui-requests-mediated.requests-mediated.edit",
+          "search.instances.collection.get",
+          "search.facets.collection.get",
+          "consortium-search.locations.collection.get",
+          "inventory-storage.material-types.collection.get",
+          "inventory-storage.nature-of-content-terms.collection.get",
+          "inventory-storage.holdings-types.collection.get",
+          "inventory-storage.modes-of-issuance.collection.get",
+          "inventory-storage.instance-statuses.collection.get",
+          "inventory-storage.statistical-code-types.collection.get",
+          "inventory-storage.instance-formats.collection.get",
+          "inventory-storage.statistical-codes.collection.get",
+          "inventory-storage.instance-types.collection.get",
+          "inventory-storage.holdings-sources.collection.get",
+          "inventory-storage.instance-date-types.collection.get",
+          "inventory-storage.contributor-types.collection.get"
         ],
         "visible": true
       },
