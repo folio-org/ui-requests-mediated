@@ -8,6 +8,7 @@
 * Add ability to search by Mediated requests UUID. Refs UIREQMED-112.
 * Add missing subPermissions for "Mediated requests: View, create, edit" permission. Refs UIREQMED-116.
 * Added global permissions for get read-access to values such as tenant’s locale, timezone, and currency. Refs UIREQMED-117.
+* *BREAKING* Migrate config values from mod-configuration. Refs UIREQMED-110.
 
 ## [3.0.2] (https://github.com/folio-org/ui-requests-mediated/tree/v3.0.2) (2025-06-19)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v3.0.1...v3.0.2)

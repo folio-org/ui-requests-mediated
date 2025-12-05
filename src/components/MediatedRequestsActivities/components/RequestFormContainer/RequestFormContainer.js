@@ -120,7 +120,7 @@ const RequestFormContainer = ({
   const initialValues = {
     requestType: DEFAULT_REQUEST_TYPE_VALUE,
     fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
-    createTitleLevelRequest: getTlrSettings(settings?.items[0]?.value)?.createTitleLevelRequestsByDefault,
+    createTitleLevelRequest: getTlrSettings(settings?.circulationSettings[0]?.value)?.createTitleLevelRequestsByDefault,
   };
 
   const findResource = (resource, value, idType = 'id') => {
@@ -267,7 +267,7 @@ const RequestFormContainer = ({
 
 RequestFormContainer.propTypes = {
   settings: PropTypes.shape({
-    items: PropTypes.arrayOf(PropTypes.shape({
+    circulationSettings: PropTypes.arrayOf(PropTypes.shape({
       value: PropTypes.shape({
         titleLevelRequestsFeatureEnabled: PropTypes.bool,
       }),
