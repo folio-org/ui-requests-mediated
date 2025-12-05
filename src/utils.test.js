@@ -79,7 +79,7 @@ describe('utils', () => {
   describe('getIsTitleLevelRequestsFeatureEnabled', () => {
     it('should return true', () => {
       const data = {
-        items: [{
+        circulationSettings: [{
           value: {
             titleLevelRequestsFeatureEnabled: true,
           },
@@ -91,7 +91,7 @@ describe('utils', () => {
 
     it('should return false', () => {
       const data = {
-        items: [{
+        circulationSettings: [{
           value: {
             titleLevelRequestsFeatureEnabled: false,
           },
