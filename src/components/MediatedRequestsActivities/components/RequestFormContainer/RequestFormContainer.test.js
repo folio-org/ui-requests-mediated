@@ -30,7 +30,7 @@ import {
 
 const basicProps = {
   settings: {
-    items: [
+    circulationSettings: [
       {
         value: {
           createTitleLevelRequestsByDefault: false,
@@ -179,7 +179,7 @@ describe('RequestFormContainer', () => {
           initialValues: {
             requestType: DEFAULT_REQUEST_TYPE_VALUE,
             fulfillmentPreference: FULFILMENT_TYPES.HOLD_SHELF,
-            createTitleLevelRequest: basicProps.settings.items[0].value.createTitleLevelRequestsByDefault,
+            createTitleLevelRequest: basicProps.settings.circulationSettings[0].value.createTitleLevelRequestsByDefault,
           },
           onSetSelectedItem: expect.any(Function),
           onSetSelectedUser: expect.any(Function),

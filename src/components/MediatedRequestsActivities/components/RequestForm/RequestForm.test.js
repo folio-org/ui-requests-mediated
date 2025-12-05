@@ -63,7 +63,7 @@ const basicProps = {
   isEditMode: false,
   setRequest: jest.fn(),
   settings: {
-    items: [
+    circulationSettings: [
       {
         value: {},
       }
@@ -803,7 +803,7 @@ describe('RequestForm', () => {
     const newProps = {
       ...basicProps,
       settings: {
-        items: [
+        circulationSettings: [
           {
             value: {
               titleLevelRequestsFeatureEnabled: true,
@@ -828,7 +828,7 @@ describe('RequestForm', () => {
     });
 
     it('should trigger "getTlrSettings" with correct argument', () => {
-      expect(getTlrSettings).toHaveBeenCalledWith(newProps.settings.items[0].value);
+      expect(getTlrSettings).toHaveBeenCalledWith(newProps.settings.circulationSettings[0].value);
     });
   });
 
