@@ -38,7 +38,7 @@
     "itemDetails.id": "ID egzemplarza",
     "itemDetails.title": "Tytuł",
     "itemDetails.contributor": "Współautor",
-    "itemDetails.effectiveLocation": "Aktualna lokalizacja",
+    "itemDetails.effectiveLocation": "Efektywna lokalizacja",
     "itemDetails.callNumber": "Efektywna sygnatura całkowita",
     "itemDetails.status": "Status egzemplarza",
     "itemDetails.dueDate": "Aktualny termin zwrotu",
