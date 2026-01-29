@@ -78,6 +78,7 @@
     ],
     "okapiInterfaces": {
       "circulation-bff-requests": "1.0",
+      "circulation-settings": "1.0",
       "requests-mediated": "2.0",
       "requests-mediated-actions": "1.0",
       "request-preference-storage": "2.0",
@@ -110,7 +111,7 @@
           "usergroups.collection.get",
           "inventory-storage.service-points.collection.get",
           "users.item.get",
-          "configuration.entries.collection.get",
+          "circulation.settings.collection.get",
           "requests-mediated.mediated-request.collection.get",
           "requests-mediated.mediated-request.item.get",
           "addresstypes.collection.get"

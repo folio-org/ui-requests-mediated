@@ -34,7 +34,7 @@ export const transformRequestFilterOptions = (formatMessage, source = []) => (
 );
 
 export const getIsTitleLevelRequestsFeatureEnabled = (data) => (
-  data?.items[0]?.value?.titleLevelRequestsFeatureEnabled || false
+  data?.circulationSettings[0]?.value?.titleLevelRequestsFeatureEnabled || false
 );
 
 export const handleKeyCommand = (handler, { disabled } = {}) => {

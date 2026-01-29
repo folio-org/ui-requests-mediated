@@ -76,7 +76,7 @@ class RequestForm extends React.Component {
     })),
     request: REQUEST_PROP_TYPES,
     settings: PropTypes.shape({
-      items: PropTypes.arrayOf(PropTypes.shape({
+      circulationSettings: PropTypes.arrayOf(PropTypes.shape({
         value: PropTypes.shape({
           titleLevelRequestsFeatureEnabled: PropTypes.bool,
         }),
@@ -171,7 +171,7 @@ class RequestForm extends React.Component {
       settings,
       initialValues,
     } = props;
-    const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.items[0]?.value);
+    const { titleLevelRequestsFeatureEnabled } = getTlrSettings(settings?.circulationSettings[0]?.value);
 
     this.state = {
       selectedLoan: EMPTY_RESOURCE_VALUE,
@@ -210,9 +210,9 @@ class RequestForm extends React.Component {
   componentDidUpdate(prevProps) {
     const { settings } = this.props;
     const { settings: prevSettings } = prevProps;
-    const newSettings = settings?.items[0]?.value;
+    const newSettings = settings?.circulationSettings[0]?.value;
 
-    if (prevSettings?.items[0]?.value !== newSettings) {
+    if (prevSettings?.circulationSettings[0]?.value !== newSettings) {
       const { titleLevelRequestsFeatureEnabled } = getTlrSettings(newSettings);
 
       // eslint-disable-next-line react/no-did-update-set-state

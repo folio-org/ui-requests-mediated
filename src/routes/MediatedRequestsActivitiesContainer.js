@@ -127,7 +127,7 @@ class MediatedRequestsActivitiesContainer extends React.Component {
       hasPerm: PropTypes.func.isRequired,
     }).isRequired,
     settings: PropTypes.shape({
-      items: PropTypes.arrayOf(PropTypes.shape({
+      circulationSettings: PropTypes.arrayOf(PropTypes.shape({
         value: PropTypes.shape({
           titleLevelRequestsFeatureEnabled: PropTypes.bool,
         }),
