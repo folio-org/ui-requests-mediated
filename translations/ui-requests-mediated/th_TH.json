@@ -57,7 +57,7 @@
     "instanceDetails.edition": "Edition",
     "instanceDetails.identifiers": "ISBN(s)",
     "requesterDetails.patronGroup": "Requester patron group",
-    "requesterDetails.barcode": "Barcode",
+    "requesterDetails.barcode": "บาร์โค้ด",
     "item.status.agedToLost": "Aged to lost",
     "item.status.available": "Available",
     "item.status.awaitingDelivery": "Awaiting delivery",
