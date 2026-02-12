@@ -94,7 +94,7 @@
     "mediatedRequestDetails.paneTitle": "Szczegóły rezerwacji pośredniej",
     "mediatedRequestDetails.actionMenu.editAndConfirm": "Edytuj i potwierdź",
     "mediatedRequestDetails.actionMenu.decline": "Odrzuć",
-    "form.request.accordionLabel": "Informacje o rezerwacji",
+    "form.request.accordionLabel": "Informacja o rezerwacji",
     "form.request.requestType": "Rodzaj rezerwacji",
     "form.request.selectRequestType": "Wybierz rodzaj rezerwacji",
     "form.request.status": "Status rezerwacji",
