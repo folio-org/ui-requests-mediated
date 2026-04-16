@@ -1,6 +1,7 @@
 # Change history for ui-requests-mediated
 
-## 4.0.0 IN PROGRESS
+## [4.0.0] (https://github.com/folio-org/ui-requests-mediated/tree/v4.0.0) (2026-04-16)
+[Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v3.0.2...v4.0.0)
 
 * *BREAKING* Use `convertToSlipData` and supporting functions from `stripes-util`. Refs UIREQMED-92.
 * Replace moment with day.js. Refs UIREQMED-96.
