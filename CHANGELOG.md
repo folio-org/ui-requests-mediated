@@ -1,5 +1,9 @@
 # Change history for ui-requests-mediated
 
+## [4.1.0] IN_PROGRESS
+
+* Update `@folio/plugin-find-instance` to `^10.0.0`. Refs UIREQMED-120.
+
 ## [4.0.0] (https://github.com/folio-org/ui-requests-mediated/tree/v4.0.0) (2026-04-16)
 [Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v3.0.2...v4.0.0)
 
