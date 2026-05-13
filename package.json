@@ -1,6 +1,6 @@
 {
   "name": "@folio/requests-mediated",
-  "version": "4.0.0",
+  "version": "4.1.0",
   "description": "Mediated requests",
   "main": "src/index.js",
   "repository": "folio-org/ui-requests-mediated",
@@ -59,7 +59,7 @@
     "react-router-dom": "^5.2.0"
   },
   "optionalDependencies": {
-    "@folio/plugin-find-instance": "^9.0.0",
+    "@folio/plugin-find-instance": "^10.0.0",
     "@folio/plugin-find-user": "^8.0.0"
   },
   "stripes": {
