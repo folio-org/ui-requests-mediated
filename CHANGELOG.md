@@ -2,6 +2,9 @@
 
 ## [4.1.0] IN_PROGRESS
 
+## [4.0.1] (https://github.com/folio-org/ui-requests-mediated/tree/v4.0.1) (2026-05-15)
+[Full Changelog](https://github.com/folio-org/ui-requests-mediated/compare/v4.0.0...v4.0.1)
+
 * Update `@folio/plugin-find-instance` to `^10.0.0`. Refs UIREQMED-120.
 
 ## [4.0.0] (https://github.com/folio-org/ui-requests-mediated/tree/v4.0.0) (2026-04-16)
